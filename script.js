@@ -1,36 +1,51 @@
-function showContent(section) {
-    const content = document.getElementById('content');
+let currentContent = 'content1';  // Track which container is currently active
 
-    if (section === 'about') {
-        fetch('about.html')
+function showContent(section) {
+    // Update the active button state immediately
+    updateActiveButton(section);
+
+    const oldContent = document.getElementById(currentContent);
+    const newContent = document.getElementById(currentContent === 'content1' ? 'content2' : 'content1');
+
+    // Start fade-out on the old content
+    oldContent.classList.remove('fade-in');
+    oldContent.classList.add('fade-out');
+
+    // Load the new content after fade-out completes
+    setTimeout(() => {
+        // Fetch the new content and insert it into the hidden container
+        fetch(`${section}.html`)
             .then(response => response.text())
             .then(data => {
-                content.innerHTML = data;
-                addFadeInEffect(); // Apply the animation after loading
+                newContent.innerHTML = data;
+                newContent.style.display = 'block';
+                
+                // Start fade-in on the new content
+                newContent.classList.remove('fade-out');
+                newContent.classList.add('fade-in');
+                
+                // Hide the old content after fade-out
+                oldContent.style.display = 'none';
+                
+                // Update the active container
+                currentContent = currentContent === 'content1' ? 'content2' : 'content1';
             });
-    } else if (section === 'music') {
-        fetch('music.html')
-            .then(response => response.text())
-            .then(data => {
-                content.innerHTML = data;
-                addFadeInEffect(); // Apply the animation after loading
-            });
-    } else if (section === 'tools') {
-        fetch('tools.html')
-            .then(response => response.text())
-            .then(data => {
-                content.innerHTML = data;
-                addFadeInEffect(); // Apply the animation after loading
-            });
+    }, 500);  // Timeout matches the faster fade-out duration (0.5s)
+}
+
+function updateActiveButton(section) {
+    // Remove the 'active' class from all buttons
+    const buttons = document.querySelectorAll('.nav-buttons button');
+    buttons.forEach(button => button.classList.remove('active'));
+
+    // Add the 'active' class to the currently selected button
+    const activeButton = document.querySelector(`.nav-buttons button[onclick="showContent('${section}')"]`);
+    if (activeButton) {
+        activeButton.classList.add('active');
     }
 }
 
-function addFadeInEffect() {
-    // Select all elements with the fade-in class in the loaded content
-    const fadeInElements = document.querySelectorAll('.fade-in');
-    fadeInElements.forEach(element => {
-        element.classList.remove('fade-in'); // Reset the animation
-        void element.offsetWidth; // Trigger reflow
-        element.classList.add('fade-in'); // Reapply the animation class
-    });
-}
+// Load the "About" section by default when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    showContent('about');
+});

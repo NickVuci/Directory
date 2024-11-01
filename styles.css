@@ -14,37 +14,34 @@ body {
     align-items: center;
 }
 
-/* Full-width header styling */
+/* Header styling */
 .header {
     width: 100%;
-    background: rgba(30, 31, 38, 0.9);
-    padding: 40px;
+    background: rgba(30, 31, 38, 0.9); /* Dark background color */
+    padding: 40px 0 30px;  /* Adjust padding for header content spacing */
     text-align: center;
     color: #e9c46a;
-    animation: fadeIn 1.5s ease-in-out;
 }
 
+/* Title and subtitle styling */
 .header h1 {
     font-size: 3em;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 .header h2 {
     font-size: 1.5em;
     color: #a8dadc;
+    margin-bottom: 30px; /* Space between subtitle and buttons */
 }
 
-/* Navigation Buttons */
+/* Navigation buttons container */
 .nav-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 15px 0;
-    background: rgba(30, 31, 38, 0.9);
-    position: sticky;
-    top: 0;
-    animation: fadeIn 1.5s ease-in-out;
+    display: flex;           /* Use flexbox for button layout */
+    justify-content: center;  /* Center the buttons */
+    gap: 20px;                /* Space between buttons */
 }
+
+/* Individual button styling */
 .nav-buttons button {
     padding: 10px 20px;
     font-size: 1em;
@@ -53,10 +50,17 @@ body {
     border: 2px solid #e9c46a;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.3s ease;
 }
+
+/* Hover effect */
 .nav-buttons button:hover {
-    background-color: #f4a261;
+    transform: scale(1.05);
+}
+
+/* Active button styling */
+.nav-buttons button.active {
+    background-color: #f4a261; /* Highlight color for active button */
     color: #1e1f26;
     transform: scale(1.05);
 }
@@ -140,20 +144,33 @@ body {
     margin-bottom: 10px;
 }
 
-/* Fade-In Animation for All Elements */
+/* Fade-in effect */
 .fade-in {
-    animation: fadeIn 1.5s ease-in-out;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+/* Fade-out effect */
+.fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
 }
 
 @keyframes fadeIn {
-    0% {
+    from {
         opacity: 0;
     }
-    100% {
+    to {
         opacity: 1;
     }
 }
 
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
 
 /* Link styling */
 a {
