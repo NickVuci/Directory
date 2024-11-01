@@ -3,162 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nick Vuci's Projects</title>
-    <style>
-        /* Reset and body styling */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e1f26, #283c63);
-            color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: start;
-            min-height: 100vh;
-            padding-top: 20px;
-        }
-
-        /* Container styling */
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        /* Header and subtitle */
-        .header {
-            position: sticky;
-            top: 0;
-            background: rgba(30, 31, 38, 0.9);
-            padding: 15px 20px;
-            border-radius: 10px;
-        }
-        h1 {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: #e9c46a;
-        }
-        h2 {
-            font-size: 1.2em;
-            font-weight: 300;
-            color: #a8dadc;
-        }
-
-        /* Button styling */
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
-            position: sticky;
-            top: 70px;
-            background: rgba(30, 31, 38, 0.9);
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 10;
-        }
-        .nav-buttons button {
-            padding: 10px 20px;
-            font-size: 1em;
-            color: #e9c46a;
-            background: transparent;
-            border: 2px solid #e9c46a;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .nav-buttons button:hover {
-            background-color: #f4a261;
-            color: #1e1f26;
-            transform: scale(1.05);
-        }
-
-        /* Main content area */
-        .content {
-            font-size: 1.2em;
-            color: #f0f0f0;
-            text-align: left;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 5px;
-            line-height: 1.6;
-            margin-top: 20px;
-            min-height: 200px;
-        }
-
-        /* Link styling */
-        a {
-            color: #f4a261;
-            text-decoration: none;
-            transition: color 0.3s ease, text-decoration 0.3s ease;
-        }
-        a:hover {
-            color: #e76f51;
-            text-decoration: underline;
-        }
-
-        /* Footer styling */
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: #a8dadc;
-        }
-    </style>
+    <title>Nick Vuci - Xenharmonic Musician</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Nick Vuci</h1>
-            <h2>Xenharmonic Musician</h2>
-        </div>
+    <header class="header">
+        <h1>Nick Vuci</h1>
+        <h2>Xenharmonic Musician</h2>
+    </header>
 
-        <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <button onclick="showContent('about')">About</button>
-            <button onclick="showContent('music')">Music</button>
-            <button onclick="showContent('tools')">Tools</button>
-        </div>
+    <!-- Navigation Buttons -->
+    <nav class="nav-buttons">
+        <button onclick="showContent('about')">About</button>
+        <button onclick="showContent('music')">Music</button>
+        <button onclick="showContent('tools')">Tools</button>
+    </nav>
 
-        <!-- Main content area -->
-        <div id="content" class="content">
-            <p>Select a section to explore Nick Vuci's work.</p>
-        </div>
+    <!-- Main content area -->
+    <section id="content" class="content">
+        <p></p>
+    </section>
 
-        <div class="footer">
-            <p>&copy; 2024 Nick Vuci. All rights reserved.</p>
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>🧐</p>
+    </footer>
 
-    <!-- JavaScript for dynamic content switching -->
-    <script>
-        function showContent(section) {
-            const content = document.getElementById('content');
-            if (section === 'about') {
-                content.innerHTML = '<p>Work in progress</p>';
-            } else if (section === 'music') {
-                content.innerHTML = '<p>Work in progress</p>';
-            } else if (section === 'tools') {
-                content.innerHTML = `
-                    <h3>Tools</h3>
-                    <ul>
-                        <li><a href="/MicrotonalEarTrainer">Microtonal Ear Trainer</a></li>
-                        <li><a href="/GeneralizedTonnetz">Generalized Tonnetz</a></li>
-                        <li><a href="/MosEdoJiCircleV1.0.0">Microtonal Concepts Visualizer</a></li>
-                        <li><a href="/SimpleCommaVisualizer">Simple Comma Visualizer</a></li>
-                    </ul>
-                `;
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

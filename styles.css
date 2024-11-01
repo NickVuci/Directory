@@ -1,0 +1,178 @@
+/* Reset and body styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Lato', sans-serif;
+    background: linear-gradient(135deg, #1e1f26, #283c63);
+    color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Full-width header styling */
+.header {
+    width: 100%;
+    background: rgba(30, 31, 38, 0.9);
+    padding: 40px;
+    text-align: center;
+    color: #e9c46a;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.header h1 {
+    font-size: 3em;
+    margin-bottom: 5px;
+}
+.header h2 {
+    font-size: 1.5em;
+    color: #a8dadc;
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px 0;
+    background: rgba(30, 31, 38, 0.9);
+    position: sticky;
+    top: 0;
+    animation: fadeIn 1.5s ease-in-out;
+}
+.nav-buttons button {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #e9c46a;
+    background: transparent;
+    border: 2px solid #e9c46a;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.nav-buttons button:hover {
+    background-color: #f4a261;
+    color: #1e1f26;
+    transform: scale(1.05);
+}
+
+/* Main content area with consistent hero and card styling */
+.content {
+    width: 90%;
+    max-width: 1200px;
+    padding: 40px;
+    margin-top: 20px;
+    background: transparent;
+    border-radius: 10px;
+    text-align: left;
+    color: #f0f0f0;
+}
+
+/* Hero Section for About, Music, and Tools */
+.section-hero {
+    position: relative;
+    background: (#283c63),
+                url('path-to-background-image.jpg') center/cover no-repeat;
+    padding: 40px 20px;
+    border-radius: 10px;
+    color: #f0f0f0;
+    margin-bottom: 20px;
+    overflow: hidden;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Section Card Styling with Fade-In Animation */
+.section-card {
+    background: (#283c63); /* Matches main background */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px (#283c63);
+    text-align: left;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.section-card h3 {
+    font-size: 2em;
+    color: #e9c46a;
+    margin-bottom: 10px;
+}
+
+.section-card p, .section-card ul {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #a8dadc;
+}
+
+.section-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+.section-card ul li {
+    margin: 8px 0;
+}
+.section-card ul li a {
+    color: #f4a261;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.section-card ul li a:hover {
+    color: #e76f51;
+    text-decoration: underline;
+}
+
+/* Music Card Styling */
+.music-card {
+    margin-top: 20px;
+    padding: 15px;
+    background: (#283c63); /* Matches main background */
+    border-radius: 10px;
+    color: #a8dadc;
+}
+
+.music-card h4 {
+    font-size: 1.5em;
+    color: #e9c46a;
+    margin-bottom: 10px;
+}
+
+/* Fade-In Animation for All Elements */
+.fade-in {
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+/* Link styling */
+a {
+    color: #f4a261;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+a:hover {
+    color: #e76f51;
+    text-decoration: underline;
+}
+
+/* Footer styling */
+.footer {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background: rgba(30, 31, 38, 0.9);
+    color: #a8dadc;
+    margin-top: auto;
+    animation: fadeIn 1.5s ease-in-out;
+}
