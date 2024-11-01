@@ -17,32 +17,41 @@
             color: #f0f0f0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: start;
             min-height: 100vh;
+            padding-top: 20px;
         }
 
         /* Container styling */
         .container {
-            text-align: center;
             max-width: 700px;
-            padding: 20px;
+            width: 100%;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            overflow: hidden;
         }
 
         /* Header and subtitle */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(30, 31, 38, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
         h1 {
             font-size: 2.5em;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             color: #e9c46a;
         }
         h2 {
             font-size: 1.2em;
             font-weight: 300;
             color: #a8dadc;
-            margin-bottom: 30px;
         }
 
         /* Button styling */
@@ -50,7 +59,13 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 30px;
+            margin: 15px 0;
+            position: sticky;
+            top: 70px;
+            background: rgba(30, 31, 38, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
         }
         .nav-buttons button {
             padding: 10px 20px;
@@ -77,6 +92,8 @@
             padding: 20px;
             border-radius: 5px;
             line-height: 1.6;
+            margin-top: 20px;
+            min-height: 200px;
         }
 
         /* Link styling */
@@ -100,8 +117,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Nick Vuci</h1>
-        <h2>Xenharmonic Musician</h2>
+        <div class="header">
+            <h1>Nick Vuci</h1>
+            <h2>Xenharmonic Musician</h2>
+        </div>
 
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
@@ -135,6 +154,7 @@
                         <li><a href="/MicrotonalEarTrainer">Microtonal Ear Trainer</a></li>
                         <li><a href="/GeneralizedTonnetz">Generalized Tonnetz</a></li>
                         <li><a href="/MosEdoJiCircleV1.0.0">Microtonal Concepts Visualizer</a></li>
+                        <li><a href="/SimpleCommaVisualizer">Simple Comma Visualizer</a></li>
                     </ul>
                 `;
             }
