@@ -726,8 +726,7 @@ a:hover {
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
     }
-    
-    .header {
+      .header {
         position: fixed; /* Keep header fixed to prevent overlap */
         top: env(safe-area-inset-top); /* Respect iOS safe area */
         left: 0;
@@ -735,7 +734,7 @@ a:hover {
         width: 100%;
         background: rgba(30, 31, 38, 0.95);
         backdrop-filter: blur(10px);
-        padding: 20px 0 10px; /* Reduced bottom padding by half */
+        padding: 15px 0 8px; /* Further reduced padding for more space */
         text-align: center;
         color: #e9c46a;
         border-bottom: 2px solid rgba(233, 196, 106, 0.3);
@@ -743,12 +742,13 @@ a:hover {
     }
     
     .header h1 {
-        font-size: 2em;
+        font-size: 1.6em; /* Reduced from 2em for more space */
+        margin-bottom: 5px; /* Reduced margin */
     }
     
     .header h2 {
-        font-size: 1.2em;
-        margin-bottom: 20px;
+        font-size: 1em; /* Reduced from 1.2em for more space */
+        margin-bottom: 15px; /* Reduced margin */
     }
 
     .nav-buttons {
