@@ -1,6 +1,6 @@
-# Development Documentation
+# Developer Documentation: Refactoring & Technical Guidelines
 
-This folder contains documentation related to the development and refactoring of the Nick Vuci website.
+This folder contains technical documentation related to the development, refactoring, and maintenance of the Nick Vuci website codebase.
 
 ## Contents
 
