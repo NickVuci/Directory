@@ -3,7 +3,9 @@
    ========================================== */
 
 :root {
-    /* Color Palette */
+    /* ==========================================
+       COLOR PALETTE
+       ========================================== */
     --primary-gold: #e9c46a;
     --secondary-teal: #a8dadc;
     --accent-orange: #f4a261;
@@ -11,46 +13,97 @@
     --dark-bg: #1e1f26;
     --darker-bg: #283c63;
     --text-light: #f0f0f0;
+    --text-secondary: #a8dadc;
+    --bg-overlay: rgba(30, 31, 38, 0.95);
+    --border-accent: rgba(233, 196, 106, 0.3);
     
-    /* Spacing */
+    /* ==========================================
+       TYPOGRAPHY SCALE
+       ========================================== */
+    --font-size-xs: 0.7em;      /* 11.2px @ 16px base */
+    --font-size-sm: 0.8em;      /* 12.8px @ 16px base */
+    --font-size-base: 1em;      /* 16px base */
+    --font-size-md: 1.1em;      /* 17.6px @ 16px base */
+    --font-size-lg: 1.2em;      /* 19.2px @ 16px base */
+    --font-size-xl: 1.5em;      /* 24px @ 16px base */
+    --font-size-2xl: 2em;       /* 32px @ 16px base */
+    --font-size-3xl: 3em;       /* 48px @ 16px base */
+    
+    /* ==========================================
+       SPACING SCALE
+       ========================================== */
+    --spacing-xs: 3px;
+    --spacing-sm: 6px;
+    --spacing-md: 10px;
+    --spacing-lg: 15px;
+    --spacing-xl: 20px;
+    --spacing-2xl: 30px;
+    --spacing-3xl: 40px;
+    
+    /* Layout Spacing */
     --header-height: 180px;
     --footer-height: 80px;
     --mobile-footer-height: 65px;
     --mobile-breakpoint: 768px;
     
-    /* Transitions */
+    /* ==========================================
+       BORDER RADIUS SCALE
+       ========================================== */
+    --radius-xs: 2px;
+    --radius-sm: 3px;
+    --radius-md: 4px;
+    --radius-lg: 10px;
+    --radius-xl: 15px;
+    --radius-circle: 50%;
+    
+    /* ==========================================
+       Z-INDEX SCALE
+       ========================================== */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-header: 999;
+    --z-player: 1000;
+    --z-modal: 9999;
+    
+    /* ==========================================
+       ANIMATION & TRANSITIONS
+       ========================================== */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
     
-    /* Shadows */
+    /* ==========================================
+       SHADOWS
+       ========================================== */
     --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
     --shadow-heavy: 0 12px 50px rgba(0, 0, 0, 0.5);
     
-    /* Component Styling Variables */
+    /* ==========================================
+       COMPONENT VARIABLES
+       ========================================== */
+    
+    /* Slider Components */
     --slider-track-bg: rgba(168, 218, 220, 0.3);
     --slider-thumb-color: var(--primary-gold);
     --slider-thumb-size: 12px;
-    --slider-track-radius: 2px;
-      --button-bg: rgba(233, 196, 106, 0.2);
+    --slider-track-radius: var(--radius-xs);
+    
+    /* Button Components */
+    --button-bg: rgba(233, 196, 106, 0.2);
     --button-border: 1px solid var(--primary-gold);
     --button-color: var(--primary-gold);
     --button-hover-bg: var(--primary-gold);
     --button-hover-color: var(--dark-bg);
-    --button-radius: 50%;
-      /* Card Styling Variables */
+    --button-radius: var(--radius-circle);
+    
+    /* Card Components */
     --card-bg: rgba(233, 196, 106, 0.2);
     --card-border: 1px solid var(--primary-gold);
     --card-hover-bg: var(--primary-gold);
     --card-hover-color: var(--dark-bg);
     --card-transform: translateY(-2px);
-    --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    
-    /* Additional Color Variables */
-    --text-secondary: #a8dadc;
-    --bg-overlay: rgba(30, 31, 38, 0.95);
-    --border-accent: rgba(233, 196, 106, 0.3);
+    --card-shadow: var(--shadow-medium);
 }
 
 /* ==========================================
@@ -186,23 +239,23 @@ body {
     right: 0;
     width: 100%;
     background: var(--bg-overlay);
-    backdrop-filter: blur(10px);
-    padding: 40px 0 30px;
+    backdrop-filter: blur(var(--spacing-md));
+    padding: var(--spacing-3xl) 0 var(--spacing-2xl);
     text-align: center;
     color: var(--primary-gold);
-    z-index: 999;
+    z-index: var(--z-header);
     border-bottom: 2px solid var(--border-accent);
 }
 
 /* Title and subtitle styling */
 .header h1 {
-    font-size: 3em;
-    margin-bottom: 10px;
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-md);
 }
 .header h2 {
-    font-size: 1.5em;
+    font-size: var(--font-size-xl);
     color: var(--text-secondary);
-    margin-bottom: 30px; /* Space between subtitle and buttons */
+    margin-bottom: var(--spacing-2xl); /* Space between subtitle and buttons */
 }
 
 /* ==========================================
@@ -213,26 +266,7 @@ body {
 .nav-buttons {
     display: flex;           /* Use flexbox for button layout */
     justify-content: center;  /* Center the buttons */
-    gap: 20px;                /* Space between buttons */
-}
-
-/* Individual button styling */
-.nav-buttons button {
-    padding: 10px 20px;
-    font-size: 1em;
-    color: var(--primary-gold);
-    background: var(--card-bg);
-    border: var(--card-border);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-}
-
-/* Active button styling */
-.nav-buttons button.active {
-    background: #e9c46a;
-    color: #1e1f26;
-    transform: scale(1.05);
+    gap: var(--spacing-xl);                /* Space between buttons */
 }
 
 /* ==========================================
@@ -243,20 +277,20 @@ body {
 .content {
     width: 90%;
     max-width: 1200px;
-    padding: 40px;
+    padding: var(--spacing-3xl);
     margin: 0 auto;
     background: transparent;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     text-align: left;
-    color: #f0f0f0;
+    color: var(--text-light);
 }
 
 /* Scrollable content container */
 .main-content {
     flex: 1;
     overflow-y: auto;
-    padding-top: 180px; /* Space for fixed header */
-    padding-bottom: 80px; /* Space for fixed footer */
+    padding-top: var(--header-height); /* Space for fixed header */
+    padding-bottom: var(--footer-height); /* Space for fixed footer */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -267,34 +301,38 @@ body {
     position: relative;
     background: (#283c63),
                 url('path-to-background-image.jpg') center/cover no-repeat;
-    padding: 40px 20px;
-    border-radius: 10px;
-    color: #f0f0f0;
-    margin-bottom: 20px;
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    color: var(--text-light);
+    margin-bottom: var(--spacing-xl);
     overflow: hidden;
     animation: fadeIn 1.5s ease-in-out;
 }
 
-/* Section Card Styling with Fade-In Animation */
+/* ==========================================
+   CARD COMPONENTS
+   ========================================== */
+
+/* Section Cards */
 .section-card {
     background: (#283c63); /* Matches main background */
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 10px (#283c63);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-light);
     text-align: left;
     animation: fadeIn 1s ease-in-out;
 }
 
 .section-card h3 {
-    font-size: 2em;
-    color: #e9c46a;
-    margin-bottom: 10px;
+    font-size: var(--font-size-2xl);
+    color: var(--primary-gold);
+    margin-bottom: var(--spacing-md);
 }
 
 .section-card p, .section-card ul {
-    font-size: 1.1em;
+    font-size: var(--font-size-md);
     line-height: 1.6;
-    color: #a8dadc;
+    color: var(--text-secondary);
 }
 
 .section-card ul {
@@ -302,119 +340,133 @@ body {
     padding-left: 0;
 }
 .section-card ul li {
-    margin: 8px 0;
+    margin: var(--spacing-sm) 0;
 }
 .section-card ul li a {
-    color: #f4a261;
+    color: var(--accent-orange);
     text-decoration: none;
     transition: color var(--transition-normal), text-decoration var(--transition-normal);
 }
 .section-card ul li a:hover {
-    color: #e76f51;
+    color: var(--accent-red);
     text-decoration: underline;
 }
 
-/* Music Card Styling */
-.music-card {
-    margin-top: 20px;
-    padding: 15px;
-    background: (#283c63); /* Matches main background */
-    border-radius: 10px;
-    color: #a8dadc;
+/* Navigation Cards (Button styling) */
+.nav-buttons button {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-base);
+    color: var(--primary-gold);
+    background: var(--card-bg);
+    border: var(--card-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
 }
 
-/* ==========================================
-   MUSIC LIBRARY & CARD STYLING
-   ========================================== */
+.nav-buttons button.active {
+    background: var(--primary-gold);
+    color: var(--dark-bg);
+    transform: scale(1.05);
+}
 
-/* Music Library Styles */
+/* Music Library & Cards */
 .music-library {
     display: grid;
-    gap: 20px;
-    margin: 20px 0;
+    gap: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
 }
 
 .music-card {
     background: var(--card-bg);
     border: var(--card-border);
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
     cursor: pointer;
     transition: all var(--transition-normal);
     position: relative;
 }
 
 .music-card h4 {
-    color: #e9c46a;
-    margin-bottom: 10px;
-    font-size: 1.2em;
+    color: var(--primary-gold);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-lg);
 }
 
 .music-card:hover h4 {
-    color: #1e1f26;
+    color: var(--dark-bg);
 }
 
 .music-card p {
-    color: #a8dadc;
-    margin-bottom: 10px;
-    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm);
 }
 
 .music-card:hover p {
-    color: #1e1f26;
+    color: var(--dark-bg);
 }
 
 .music-format {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #e9c46a;
-    color: #1e1f26;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8em;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: var(--primary-gold);
+    color: var(--dark-bg);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-sm);
     font-weight: bold;
 }
 
 .music-tuning {
     position: absolute;
-    bottom: 15px;
-    right: 15px;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
     background: rgba(168, 218, 220, 0.2);
-    color: #a8dadc;
-    padding: 3px 6px;
-    border-radius: 3px;
-    font-size: 0.7em;
+    color: var(--text-secondary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
     border: 1px solid rgba(168, 218, 220, 0.3);
 }
 
 .music-info {
-    margin-top: 30px;
-    padding: 20px;
+    margin-top: var(--spacing-2xl);
+    padding: var(--spacing-xl);
     background: rgba(30, 31, 38, 0.5);
-    border-radius: 10px;
-    border-left: 4px solid #e9c46a;
+    border-radius: var(--radius-lg);
+    border-left: var(--spacing-xs) solid var(--primary-gold);
 }
 
 .music-info h4 {
-    color: #e9c46a;
-    margin-bottom: 15px;
+    color: var(--primary-gold);
+    margin-bottom: var(--spacing-lg);
 }
 
 .music-info p {
-    color: #a8dadc;
+    color: var(--text-secondary);
     line-height: 1.6;
 }
 
-/* Fade-in effect */
+
+
+/* ==========================================
+   UTILITY CLASSES & ANIMATIONS
+   ========================================== */
+
+/* Animation Classes */
 .fade-in {
     animation: fadeIn 0.5s ease-in-out forwards;
 }
 
-/* Fade-out effect */
 .fade-out {
     animation: fadeOut 0.5s ease-in-out forwards;
 }
+
+/* ==========================================
+   KEYFRAME ANIMATIONS
+   ========================================== */
 
 @keyframes fadeIn {
     from {
@@ -434,18 +486,32 @@ body {
     }
 }
 
+@keyframes pulse {
+    0%, 100% { 
+        background: rgba(233, 196, 106, 0.4);
+    }
+    50% { 
+        background: rgba(233, 196, 106, 0.6);
+    }
+}
+
+@keyframes hintFlash {
+    0%, 80%, 100% { opacity: 0; }
+    10%, 70% { opacity: 1; }
+}
+
 /* ==========================================
    GENERAL STYLING & LINKS
    ========================================== */
 
 /* Link styling */
 a {
-    color: #f4a261;
+    color: var(--accent-orange);
     text-decoration: none;
     transition: color var(--transition-normal), text-decoration var(--transition-normal);
 }
 a:hover {
-    color: #e76f51;
+    color: var(--accent-red);
     text-decoration: underline;
 }
 
@@ -457,11 +523,11 @@ a:hover {
     right: 0;
     width: 100%;
     text-align: center;
-    padding: 20px;
+    padding: var(--spacing-xl);
     background: var(--bg-overlay);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(var(--spacing-md));
     color: var(--text-secondary);
-    z-index: 999;
+    z-index: var(--z-header);
     border-top: 2px solid var(--border-accent);
     animation: fadeIn 1.5s ease-in-out;
 }
@@ -470,17 +536,17 @@ a:hover {
    DESKTOP MUSIC PLAYER
    ========================================== */
 
-/* Music Player Styles */
+/* Desktop Player Container */
 .music-player {
     position: fixed;
     top: 200px;
-    left: 20px;
-    background: rgba(30, 31, 38, 0.95);
-    border: 2px solid #e9c46a;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
+    left: var(--spacing-xl);
+    background: var(--bg-overlay);
+    border: 2px solid var(--primary-gold);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-medium);
+    backdrop-filter: blur(var(--spacing-md));
+    z-index: var(--z-player);
     max-width: 350px;
     width: 350px;
     height: auto;
@@ -494,7 +560,7 @@ a:hover {
 }
 
 .music-player:active {
-    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-heavy);
 }
 
 .music-player.dragging {
@@ -511,23 +577,23 @@ a:hover {
     transform: none !important;
 }
 
-/* Collapsed state - perfect circle */
+/* Desktop Player Collapsed State */
 .music-player.collapsed {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
+    border-radius: var(--radius-circle);
     cursor: pointer;
-    background: rgba(233, 196, 106, 0.2);
-    border: 1px solid #e9c46a;
+    background: var(--button-bg);
+    border: var(--button-border);
 }
 
 .music-player.collapsed:hover {
-    background: #e9c46a;
-    color: #1e1f26;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: var(--primary-gold);
+    color: var(--dark-bg);
+    box-shadow: var(--card-shadow);
 }
 
-/* Music icon overlay - visible when collapsed */
+/* Desktop Player Music Icon Overlay (Collapsed State) */
 .music-icon-overlay {
     position: absolute;
     top: 0;
@@ -553,31 +619,29 @@ a:hover {
 
 .music-icon {
     font-size: 24px;
-    color: #e9c46a;
+    color: var(--primary-gold);
 }
 
 .music-player.collapsed:hover .music-icon {
-    color: #1e1f26;
+    color: var(--dark-bg);
 }
 
-
-
-/* Collapse button - visible when expanded */
+/* Desktop Player Collapse Button */
 .collapse-btn {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: var(--spacing-md);
+    left: var(--spacing-md);
     width: 24px;
     height: 24px;
-    background: rgba(233, 196, 106, 0.2);
-    border: 1px solid #e9c46a;
-    border-radius: 50%;
-    color: #e9c46a;
+    background: var(--button-bg);
+    border: var(--button-border);
+    border-radius: var(--radius-circle);
+    color: var(--primary-gold);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: bold;
     transition: all var(--transition-normal);
     z-index: 3;
@@ -585,8 +649,8 @@ a:hover {
 }
 
 .collapse-btn:hover {
-    background: #e9c46a;
-    color: #1e1f26;
+    background: var(--primary-gold);
+    color: var(--dark-bg);
 }
 
 .music-player.collapsed .collapse-btn {
@@ -599,7 +663,12 @@ a:hover {
     pointer-events: auto;
 }
 
-/* Player content - hidden when collapsed */
+/* Desktop Player Content Container */
+.player-content {
+    padding: var(--spacing-xl);
+    display: block;
+}
+
 .music-player.collapsed .player-content {
     opacity: 0;
     pointer-events: none;
@@ -612,7 +681,90 @@ a:hover {
     visibility: visible;
 }
 
-/* Ensure all interactive elements are disabled when collapsed */
+/* Desktop Player Track Information */
+.track-info {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.track-title {
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    color: var(--primary-gold);
+    margin-bottom: var(--spacing-xs);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+/* Desktop Player Controls */
+.player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    pointer-events: auto;
+}
+
+.control-btn {
+    width: var(--spacing-3xl);
+    height: var(--spacing-3xl);
+    font-size: var(--font-size-base);
+}
+
+.play-pause {
+    width: 50px;
+    height: 50px;
+    font-size: var(--font-size-xl);
+}
+
+/* Desktop Player Progress Bar */
+.player-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    pointer-events: auto;
+}
+
+.time-display {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    min-width: 35px;
+    user-select: none;
+}
+
+.progress-bar {
+    flex: 1;
+    height: var(--spacing-xs);
+}
+
+/* Desktop Player Volume Control */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    pointer-events: auto;
+}
+
+.volume-icon {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.volume-slider {
+    flex: 1;
+    height: var(--spacing-xs);
+}
+
+/* Desktop Player Collapsed Interaction Disabling */
 .music-player.collapsed .player-controls,
 .music-player.collapsed .player-progress,
 .music-player.collapsed .volume-control,
@@ -622,90 +774,6 @@ a:hover {
     pointer-events: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
-}
-
-.player-content {
-    padding: 20px;
-    display: block;
-}
-
-.track-info {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.track-title {
-    font-size: 14px;
-    font-weight: bold;
-    color: #e9c46a;
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-artist {
-    font-size: 12px;
-    color: #a8dadc;
-}
-
-.player-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    pointer-events: auto;
-}
-
-.control-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-}
-
-.play-pause {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-}
-
-.player-progress {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    pointer-events: auto;
-}
-
-.time-display {
-    font-size: 11px;
-    color: #a8dadc;
-    min-width: 35px;
-    user-select: none;
-}
-
-.progress-bar {
-    flex: 1;
-    height: 4px;
-}
-
-.volume-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    pointer-events: auto;
-}
-
-.volume-icon {
-    font-size: 14px;
-    color: #a8dadc;
-    user-select: none;
-}
-
-.volume-slider {
-    flex: 1;
-    height: 4px;
 }
 
 /* ==========================================
@@ -725,40 +793,37 @@ a:hover {
         /* Add safe area padding for iOS notch/home indicator */
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
-    }
-      .header {
+    }    .header {
         position: fixed; /* Keep header fixed to prevent overlap */
         top: env(safe-area-inset-top); /* Respect iOS safe area */
         left: 0;
         right: 0;
         width: 100%;
-        background: rgba(30, 31, 38, 0.95);
-        backdrop-filter: blur(10px);
-        padding: 15px 0 8px; /* Further reduced padding for more space */
+        background: var(--bg-overlay);
+        backdrop-filter: blur(var(--spacing-md));
+        padding: var(--spacing-lg) 0 var(--spacing-sm); /* Further reduced padding for more space */
         text-align: center;
-        color: #e9c46a;
-        border-bottom: 2px solid rgba(233, 196, 106, 0.3);
-        z-index: 999;
+        color: var(--primary-gold);
+        border-bottom: 2px solid var(--border-accent);
+        z-index: var(--z-header);
     }
     
     .header h1 {
         font-size: 1.6em; /* Reduced from 2em for more space */
-        margin-bottom: 5px; /* Reduced margin */
+        margin-bottom: var(--spacing-xs); /* Reduced margin */
     }
     
     .header h2 {
-        font-size: 1em; /* Reduced from 1.2em for more space */
-        margin-bottom: 15px; /* Reduced margin */
-    }
-
-    .nav-buttons {
-        gap: 8px;
+        font-size: var(--font-size-base); /* Reduced from 1.2em for more space */
+        margin-bottom: var(--spacing-lg); /* Reduced margin */
+    }    .nav-buttons {
+        gap: var(--spacing-sm);
         flex-wrap: nowrap;
     }
     
     .nav-buttons button {
-        padding: 6px 10px;
-        font-size: 0.8em;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
         flex: 1;
         min-width: 0;
     }
@@ -776,13 +841,18 @@ a:hover {
     
     .content {
         width: 95%;
-        padding: 20px;
+        padding: var(--spacing-xl);
     }
-    
-    /* Hide desktop music player on mobile */
+      /* Hide desktop music player on mobile */
     .music-player {
         display: none !important;
-    }    /* Mobile footer with integrated music player */
+    }
+
+    /* ==========================================
+       MOBILE MUSIC PLAYER
+       ========================================== */
+
+    /* Mobile Player Footer Container */
     .footer {
         position: relative; /* Change from fixed to relative for flex layout */
         bottom: auto;
@@ -790,15 +860,17 @@ a:hover {
         right: auto;
         width: 100%;
         padding: 0;
-        background: rgba(30, 31, 38, 0.98);
-        backdrop-filter: blur(15px);
-        border-top: 2px solid rgba(233, 196, 106, 0.3);
-        z-index: 1000;
-        min-height: 65px; /* Further reduced height for very compact layout */
+        background: var(--bg-overlay);
+        backdrop-filter: blur(var(--spacing-lg));
+        border-top: 2px solid var(--border-accent);
+        z-index: var(--z-player);
+        min-height: var(--mobile-footer-height); /* Further reduced height for very compact layout */
         flex-shrink: 0; /* Prevent footer from shrinking */
         /* Ensure footer sticks to bottom even with iOS dynamic UI */
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-    }    /* Mobile music player integrated in footer */
+        padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
+    }
+
+    /* Mobile Player Container */
     .mobile-music-player {
         display: block;
         width: 100%;
@@ -807,133 +879,92 @@ a:hover {
         border-radius: 0;
         box-shadow: none;
         position: relative;
-        padding: 8px 12px; /* Reduced horizontal padding to maximize slider width */
+        padding: var(--spacing-sm) var(--spacing-md); /* Reduced horizontal padding to maximize slider width */
         cursor: default;
         box-sizing: border-box; /* Include padding in width calculation */
     }
-    
+
+    /* Mobile Player Main Layout */
     .mobile-player-main {
         display: flex;
         align-items: center;
         justify-content: space-between; /* Space between prev button, track info, and next button */
-        margin-bottom: 8px; /* Space before progress bar */
+        margin-bottom: var(--spacing-sm); /* Space before progress bar */
     }
-    
+
+    /* Mobile Player Track Information */
     .mobile-track-info {
         text-align: center; /* Center align track info */
         margin-bottom: 0;
         flex: 1; /* Take remaining space between buttons */
         min-width: 0; /* Allow text to shrink */
-        padding: 0 10px; /* Add space on both sides */
+        padding: 0 var(--spacing-sm); /* Add space on both sides */
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
-    
+
     .mobile-track-title {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         font-weight: bold;
-        color: #e9c46a;
-        margin-bottom: 2px;
+        color: var(--primary-gold);
+        margin-bottom: var(--spacing-xs);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    
+
     .mobile-track-tuning {
-        font-size: 11px;
-        color: #a8dadc;
+        font-size: var(--font-size-xs);
+        color: var(--text-secondary);
         opacity: 0.8;
     }
-      .mobile-control-btn {
-        width: 36px; /* Slightly larger for easier touch */
-        height: 36px;
-        font-size: 14px; /* Larger font for better visibility */
+
+    /* Mobile Player Control Buttons */
+    .mobile-control-btn {
+        width: var(--spacing-2xl); /* Slightly larger for easier touch */
+        height: var(--spacing-2xl);
+        font-size: var(--font-size-sm); /* Larger font for better visibility */
         flex-shrink: 0; /* Prevent buttons from shrinking */
     }
-      .mobile-player-progress {
+
+    /* Mobile Player Progress Section */
+    .mobile-player-progress {
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-top: 6px; /* Reduced margin */
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs); /* Reduced margin */
         width: 100%; /* Ensure full width */
-    }    .mobile-progress-container {
+    }
+
+    .mobile-progress-container {
         flex: 1; /* Take all remaining space between time displays */
         position: relative;
         display: flex;
         flex-direction: column;
         align-items: stretch; /* Make child elements stretch to full width */
         min-width: 0; /* Allow shrinking if needed */
-        padding: 15px 0; /* Add padding to accommodate custom thumb */
-    }    /* Custom slider thumb with play/pause icon */
-    .mobile-slider-thumb {
-        position: absolute;
-        top: 50%; /* Center vertically in the container */
-        left: 0%; /* Will be updated by JavaScript */
-        width: 36px;
-        height: 36px;
-        background: rgba(233, 196, 106, 0.2);
-        border: 1px solid #e9c46a;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        color: #e9c46a;        pointer-events: none; /* Let slider handle events */
-        transition: all var(--transition-normal);
-        transform: translate(-50%, -50%); /* Center on position both horizontally and vertically */
-        z-index: 10;
-        margin-left: 0; /* Ensure no extra margin affects positioning */
+        padding: var(--spacing-md) 0; /* Add padding to accommodate custom thumb */
     }
-    
-    .mobile-slider-thumb.playing {
-        background: #e9c46a;
-        color: #1e1f26;
-    }
-    
-    .mobile-slider-thumb.active {
-        background: #f4a261;
-        color: #1e1f26;
-        box-shadow: 0 0 10px rgba(244, 162, 97, 0.7);
-    }    .mobile-progress-hint {
-        font-size: 9px; /* Slightly larger for readability */
-        color: rgba(168, 218, 220, 0.7);
-        text-align: center;
-        margin-top: 3px;        opacity: 0;
-        transition: opacity var(--transition-normal);
-        pointer-events: none;
-        white-space: nowrap;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Better contrast */
-        align-self: center; /* Center the hint within the flex container */
-        position: absolute;
-        bottom: -18px; /* Position below the progress bar */
-        left: 50%;
-        transform: translateX(-50%);
-        width: max-content;
-    }
-    
-    .mobile-progress-container:hover .mobile-progress-hint,
-    .mobile-progress-bar.active + .mobile-progress-hint {
-        opacity: 1;
-    }
-    
-    /* Show hint on first load briefly */
-    @keyframes hintFlash {
-        0%, 80%, 100% { opacity: 0; }
-        10%, 70% { opacity: 1; }
-    }
-      .mobile-time-display {
-        font-size: 10px;
-        color: #a8dadc;
-        min-width: 36px; /* Slightly larger for consistency (00:00 format) */
-        max-width: 36px; /* Prevent expansion */
+
+    .mobile-time-display {
+        font-size: var(--font-size-xs);
+        color: var(--text-secondary);
+        min-width: var(--spacing-2xl); /* Slightly larger for consistency (00:00 format) */
+        max-width: var(--spacing-2xl); /* Prevent expansion */
         text-align: center;
         user-select: none;
-        flex-shrink: 0; /* Prevent shrinking */    }    .mobile-progress-bar {
+        flex-shrink: 0; /* Prevent shrinking */
+    }
+
+    /* Mobile Player Progress Bar */
+    .mobile-progress-bar {
         width: 100%; /* Ensure full width of container */
-        height: 6px; /* Slightly larger by default for better touch targeting */
+        height: var(--spacing-xs); /* Slightly larger by default for better touch targeting */
         align-self: center; /* Center in the flex container */
-    }.mobile-progress-bar::-webkit-slider-thumb {
+    }
+
+    .mobile-progress-bar::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 0; /* Hide default thumb */
@@ -942,64 +973,115 @@ a:hover {
         border: none;
         cursor: pointer;
     }
-    
+
     .mobile-progress-bar::-moz-range-thumb {
         width: 0; /* Hide default thumb */
         height: 0;
         background: transparent;
         border: none;
         cursor: pointer;
-    }/* Enhanced mobile progress bar states */    .mobile-progress-bar.active {
-        height: 8px; /* More noticeable feedback */
+    }
+
+    /* Mobile Player Progress Bar Enhanced States */
+    .mobile-progress-bar.active {
+        height: var(--spacing-sm); /* More noticeable feedback */
         background: rgba(168, 218, 220, 0.5);
         transition: all var(--transition-fast);
         width: 100%; /* Ensure full width is maintained */
     }
-    
+
     .mobile-progress-bar.active::-webkit-slider-thumb {
         width: 22px;
         height: 22px;
-        background: #f4a261;
-        box-shadow: 0 0 10px rgba(244, 162, 97, 0.7);
+        background: var(--accent-orange);
+        box-shadow: 0 0 var(--spacing-sm) rgba(244, 162, 97, 0.7);
     }
-      .mobile-progress-bar.playing {
+
+    .mobile-progress-bar.playing {
         background: rgba(233, 196, 106, 0.4);
         animation: pulse 2s infinite ease-in-out;
         width: 100%; /* Maintain full width during playing state */
     }
-    
+
     .mobile-progress-bar.playing::-webkit-slider-thumb {
-        background: #e9c46a;
-        box-shadow: 0 0 6px rgba(233, 196, 106, 0.8);
+        background: var(--primary-gold);
+        box-shadow: 0 0 var(--spacing-xs) rgba(233, 196, 106, 0.8);
     }
-    
-    @keyframes pulse {
-        0%, 100% { 
-            background: rgba(233, 196, 106, 0.4);
-        }
-        50% { 
-            background: rgba(233, 196, 106, 0.6);
-        }
+
+    /* Mobile Player Custom Slider Thumb */
+    .mobile-slider-thumb {
+        position: absolute;
+        top: 50%; /* Center vertically in the container */
+        left: 0%; /* Will be updated by JavaScript */
+        width: var(--spacing-2xl);
+        height: var(--spacing-2xl);
+        background: rgba(233, 196, 106, 0.2);
+        border: 1px solid var(--primary-gold);
+        border-radius: var(--radius-circle);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--font-size-sm);
+        color: var(--primary-gold);
+        pointer-events: none; /* Let slider handle events */
+        transition: all var(--transition-normal);
+        transform: translate(-50%, -50%); /* Center on position both horizontally and vertically */
+        z-index: var(--spacing-sm);
+        margin-left: 0; /* Ensure no extra margin affects positioning */
     }
-    
+
+    .mobile-slider-thumb.playing {
+        background: var(--primary-gold);
+        color: var(--dark-bg);
+    }
+
+    .mobile-slider-thumb.active {
+        background: var(--accent-orange);
+        color: var(--dark-bg);
+        box-shadow: 0 0 var(--spacing-sm) rgba(244, 162, 97, 0.7);
+    }
+
+    /* Mobile Player Progress Hint */
+    .mobile-progress-hint {
+        font-size: var(--font-size-xs); /* Slightly larger for readability */
+        color: rgba(168, 218, 220, 0.7);
+        text-align: center;
+        margin-top: var(--spacing-xs);
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+        pointer-events: none;
+        white-space: nowrap;
+        text-shadow: 0 1px var(--spacing-xs) rgba(0, 0, 0, 0.5); /* Better contrast */
+        align-self: center; /* Center the hint within the flex container */
+        position: absolute;
+        bottom: -18px; /* Position below the progress bar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+    }
+
+    .mobile-progress-container:hover .mobile-progress-hint,
+    .mobile-progress-bar.active + .mobile-progress-hint {
+        opacity: 1;
+    }    /* Mobile Player Volume Control (Legacy - Currently Hidden) */
     .mobile-volume-control {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--spacing-sm);
         margin-left: auto;
         min-width: 80px;
     }
-    
+
     .mobile-volume-icon {
-        font-size: 12px;
-        color: #a8dadc;
+        font-size: var(--font-size-xs);
+        color: var(--text-secondary);
         user-select: none;
     }
-      .mobile-volume-slider {
+
+    .mobile-volume-slider {
         width: 60px;
-        height: 4px;
-    }
-    
+        height: var(--spacing-xs);
+    }    /* Mobile Player Footer Text Override */
     /* Hide copyright text on mobile since player replaces it */
     .footer p {
         display: none;
