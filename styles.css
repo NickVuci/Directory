@@ -27,6 +27,97 @@
     --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
     --shadow-heavy: 0 12px 50px rgba(0, 0, 0, 0.5);
+    
+    /* Component Styling Variables */
+    --slider-track-bg: rgba(168, 218, 220, 0.3);
+    --slider-thumb-color: var(--primary-gold);
+    --slider-thumb-size: 12px;
+    --slider-track-radius: 2px;
+      --button-bg: rgba(233, 196, 106, 0.2);
+    --button-border: 1px solid var(--primary-gold);
+    --button-color: var(--primary-gold);
+    --button-hover-bg: var(--primary-gold);
+    --button-hover-color: var(--dark-bg);
+    --button-radius: 50%;
+      /* Card Styling Variables */
+    --card-bg: rgba(233, 196, 106, 0.2);
+    --card-border: 1px solid var(--primary-gold);
+    --card-hover-bg: var(--primary-gold);
+    --card-hover-color: var(--dark-bg);
+    --card-transform: translateY(-2px);
+    --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    
+    /* Additional Color Variables */
+    --text-secondary: #a8dadc;
+    --bg-overlay: rgba(30, 31, 38, 0.95);
+    --border-accent: rgba(233, 196, 106, 0.3);
+}
+
+/* ==========================================
+   REUSABLE COMPONENT STYLES
+   ========================================== */
+
+/* Base slider styling - consolidated from 4 different slider classes */
+.slider-base {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--slider-track-bg);
+    border-radius: var(--slider-track-radius);
+    outline: none;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Base slider thumb styling for webkit browsers */
+.slider-base::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    background: var(--slider-thumb-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Base slider thumb styling for Firefox */
+.slider-base::-moz-range-thumb {
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    background: var(--slider-thumb-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Base button styling - consolidated from desktop and mobile control buttons */
+.btn-base {
+    background: var(--button-bg);
+    border: var(--button-border);
+    color: var(--button-color);
+    border-radius: var(--button-radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+    user-select: none;
+}
+
+.btn-base:hover,
+.btn-base:active {
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+}
+
+/* Base card hover styling - consolidated from music cards and nav buttons */
+.card-hover-base:hover {
+    background: var(--card-hover-bg);
+    color: var(--card-hover-color);
+    transform: var(--card-transform);
+    box-shadow: var(--card-shadow);
 }
 
 /* ==========================================
@@ -55,7 +146,7 @@
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, rgba(233, 196, 106, 0.6), rgba(168, 218, 220, 0.6));
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -94,13 +185,13 @@ body {
     left: 0;
     right: 0;
     width: 100%;
-    background: rgba(30, 31, 38, 0.95);
+    background: var(--bg-overlay);
     backdrop-filter: blur(10px);
     padding: 40px 0 30px;
     text-align: center;
-    color: #e9c46a;
+    color: var(--primary-gold);
     z-index: 999;
-    border-bottom: 2px solid rgba(233, 196, 106, 0.3);
+    border-bottom: 2px solid var(--border-accent);
 }
 
 /* Title and subtitle styling */
@@ -110,7 +201,7 @@ body {
 }
 .header h2 {
     font-size: 1.5em;
-    color: #a8dadc;
+    color: var(--text-secondary);
     margin-bottom: 30px; /* Space between subtitle and buttons */
 }
 
@@ -129,19 +220,12 @@ body {
 .nav-buttons button {
     padding: 10px 20px;
     font-size: 1em;
-    color: #e9c46a;
-    background: rgba(233, 196, 106, 0.2);
-    border: 1px solid #e9c46a;
+    color: var(--primary-gold);
+    background: var(--card-bg);
+    border: var(--card-border);
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-/* Hover effect */
-.nav-buttons button:hover {
-    background: #e9c46a;
-    color: #1e1f26;
-    transform: scale(1.05);
+    transition: all var(--transition-normal);
 }
 
 /* Active button styling */
@@ -223,7 +307,7 @@ body {
 .section-card ul li a {
     color: #f4a261;
     text-decoration: none;
-    transition: color 0.3s ease, text-decoration 0.3s ease;
+    transition: color var(--transition-normal), text-decoration var(--transition-normal);
 }
 .section-card ul li a:hover {
     color: #e76f51;
@@ -251,20 +335,13 @@ body {
 }
 
 .music-card {
-    background: rgba(233, 196, 106, 0.2);
-    border: 1px solid #e9c46a;
+    background: var(--card-bg);
+    border: var(--card-border);
     border-radius: 10px;
     padding: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
     position: relative;
-}
-
-.music-card:hover {
-    background: #e9c46a;
-    color: #1e1f26;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .music-card h4 {
@@ -365,7 +442,7 @@ body {
 a {
     color: #f4a261;
     text-decoration: none;
-    transition: color 0.3s ease, text-decoration 0.3s ease;
+    transition: color var(--transition-normal), text-decoration var(--transition-normal);
 }
 a:hover {
     color: #e76f51;
@@ -381,11 +458,11 @@ a:hover {
     width: 100%;
     text-align: center;
     padding: 20px;
-    background: rgba(30, 31, 38, 0.95);
+    background: var(--bg-overlay);
     backdrop-filter: blur(10px);
-    color: #a8dadc;
+    color: var(--text-secondary);
     z-index: 999;
-    border-top: 2px solid rgba(233, 196, 106, 0.3);
+    border-top: 2px solid var(--border-accent);
     animation: fadeIn 1.5s ease-in-out;
 }
 
@@ -502,7 +579,7 @@ a:hover {
     justify-content: center;
     font-size: 16px;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
     z-index: 3;
     line-height: 1;
 }
@@ -582,24 +659,9 @@ a:hover {
 }
 
 .control-btn {
-    background: rgba(233, 196, 106, 0.2);
-    border: 1px solid #e9c46a;
-    color: #e9c46a;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 16px;
-    transition: all 0.3s ease;
-    user-select: none;
-}
-
-.control-btn:hover {
-    background: #e9c46a;
-    color: #1e1f26;
 }
 
 .play-pause {
@@ -626,29 +688,6 @@ a:hover {
 .progress-bar {
     flex: 1;
     height: 4px;
-    background: rgba(168, 218, 220, 0.3);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-    user-select: none;
-}
-
-.progress-bar::-webkit-slider-thumb {
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    background: #e9c46a;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.progress-bar::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    background: #e9c46a;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
 }
 
 .volume-control {
@@ -667,29 +706,6 @@ a:hover {
 .volume-slider {
     flex: 1;
     height: 4px;
-    background: rgba(168, 218, 220, 0.3);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-    user-select: none;
-}
-
-.volume-slider::-webkit-slider-thumb {
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    background: #e9c46a;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.volume-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    background: #e9c46a;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
 }
 
 /* ==========================================
@@ -829,28 +845,11 @@ a:hover {
         color: #a8dadc;
         opacity: 0.8;
     }
-    
-    .mobile-control-btn {
-        background: rgba(233, 196, 106, 0.2);
-        border: 1px solid #e9c46a;
-        color: #e9c46a;
+      .mobile-control-btn {
         width: 36px; /* Slightly larger for easier touch */
         height: 36px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         font-size: 14px; /* Larger font for better visibility */
-        transition: all 0.3s ease;
-        user-select: none;
         flex-shrink: 0; /* Prevent buttons from shrinking */
-    }
-    
-    .mobile-control-btn:hover,
-    .mobile-control-btn:active {
-        background: #e9c46a;
-        color: #1e1f26;
     }
       .mobile-player-progress {
         display: flex;
@@ -880,9 +879,8 @@ a:hover {
         align-items: center;
         justify-content: center;
         font-size: 14px;
-        color: #e9c46a;
-        pointer-events: none; /* Let slider handle events */
-        transition: all 0.3s ease;
+        color: #e9c46a;        pointer-events: none; /* Let slider handle events */
+        transition: all var(--transition-normal);
         transform: translate(-50%, -50%); /* Center on position both horizontally and vertically */
         z-index: 10;
         margin-left: 0; /* Ensure no extra margin affects positioning */
@@ -901,9 +899,8 @@ a:hover {
         font-size: 9px; /* Slightly larger for readability */
         color: rgba(168, 218, 220, 0.7);
         text-align: center;
-        margin-top: 3px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        margin-top: 3px;        opacity: 0;
+        transition: opacity var(--transition-normal);
         pointer-events: none;
         white-space: nowrap;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Better contrast */
@@ -932,19 +929,9 @@ a:hover {
         max-width: 36px; /* Prevent expansion */
         text-align: center;
         user-select: none;
-        flex-shrink: 0; /* Prevent shrinking */
-    }    .mobile-progress-bar {
+        flex-shrink: 0; /* Prevent shrinking */    }    .mobile-progress-bar {
         width: 100%; /* Ensure full width of container */
         height: 6px; /* Slightly larger by default for better touch targeting */
-        background: rgba(168, 218, 220, 0.3);
-        border-radius: 3px;
-        outline: none;
-        cursor: pointer;
-        user-select: none;
-        -webkit-appearance: none;
-        appearance: none;
-        margin: 0; /* Remove margin since container has padding */
-        box-sizing: border-box; /* Include any padding/border in width calculation */
         align-self: center; /* Center in the flex container */
     }.mobile-progress-bar::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -962,11 +949,10 @@ a:hover {
         background: transparent;
         border: none;
         cursor: pointer;
-    }/* Enhanced mobile progress bar states */
-    .mobile-progress-bar.active {
+    }/* Enhanced mobile progress bar states */    .mobile-progress-bar.active {
         height: 8px; /* More noticeable feedback */
         background: rgba(168, 218, 220, 0.5);
-        transition: all 0.2s ease;
+        transition: all var(--transition-fast);
         width: 100%; /* Ensure full width is maintained */
     }
     
@@ -1009,36 +995,9 @@ a:hover {
         color: #a8dadc;
         user-select: none;
     }
-    
-    .mobile-volume-slider {
+      .mobile-volume-slider {
         width: 60px;
         height: 4px;
-        background: rgba(168, 218, 220, 0.3);
-        border-radius: 2px;
-        outline: none;
-        cursor: pointer;
-        user-select: none;
-        -webkit-appearance: none;
-        appearance: none;
-    }
-    
-    .mobile-volume-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #e9c46a;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-    
-    .mobile-volume-slider::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        background: #e9c46a;
-        border-radius: 50%;
-        cursor: pointer;
-        border: none;
     }
     
     /* Hide copyright text on mobile since player replaces it */

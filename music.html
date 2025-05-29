@@ -24,7 +24,7 @@ function generateMusicLibrary() {
     musicLibrary.innerHTML = window.TRACKS.map((track, index) => {
         const fileExt = track.src.split('.').pop().toUpperCase();
         return `
-            <div class="music-card" onclick="playTrack(${index})">
+            <div class="music-card card-hover-base" onclick="playTrack(${index})">
                 <h4>${track.title}</h4>
                 <p>${track.description || `A ${track.tuning} composition`}</p>
                 <div class="music-format">${fileExt}</div>
