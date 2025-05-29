@@ -1,11 +1,47 @@
-/* Reset and body styling */
+/* ==========================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   ========================================== */
+
+:root {
+    /* Color Palette */
+    --primary-gold: #e9c46a;
+    --secondary-teal: #a8dadc;
+    --accent-orange: #f4a261;
+    --accent-red: #e76f51;
+    --dark-bg: #1e1f26;
+    --darker-bg: #283c63;
+    --text-light: #f0f0f0;
+    
+    /* Spacing */
+    --header-height: 180px;
+    --footer-height: 80px;
+    --mobile-footer-height: 65px;
+    --mobile-breakpoint: 768px;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Shadows */
+    --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-heavy: 0 12px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   BASE STYLES (Reset, Body, Fonts)
+   ========================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Custom Scrollbar Styling */
+/* ==========================================
+   CUSTOM SCROLLBAR STYLING
+   ========================================== */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -47,6 +83,10 @@ body {
     flex-direction: column;
 }
 
+/* ==========================================
+   LAYOUT (Header, Footer, Main Content)
+   ========================================== */
+
 /* Header styling */
 .header {
     position: fixed;
@@ -73,6 +113,10 @@ body {
     color: #a8dadc;
     margin-bottom: 30px; /* Space between subtitle and buttons */
 }
+
+/* ==========================================
+   NAVIGATION
+   ========================================== */
 
 /* Navigation buttons container */
 .nav-buttons {
@@ -106,6 +150,10 @@ body {
     color: #1e1f26;
     transform: scale(1.05);
 }
+
+/* ==========================================
+   CONTENT SECTIONS & ANIMATIONS
+   ========================================== */
 
 /* Main content area with consistent hero and card styling */
 .content {
@@ -190,6 +238,10 @@ body {
     border-radius: 10px;
     color: #a8dadc;
 }
+
+/* ==========================================
+   MUSIC LIBRARY & CARD STYLING
+   ========================================== */
 
 /* Music Library Styles */
 .music-library {
@@ -305,6 +357,10 @@ body {
     }
 }
 
+/* ==========================================
+   GENERAL STYLING & LINKS
+   ========================================== */
+
 /* Link styling */
 a {
     color: #f4a261;
@@ -332,6 +388,10 @@ a:hover {
     border-top: 2px solid rgba(233, 196, 106, 0.3);
     animation: fadeIn 1.5s ease-in-out;
 }
+
+/* ==========================================
+   DESKTOP MUSIC PLAYER
+   ========================================== */
 
 /* Music Player Styles */
 .music-player {
@@ -632,19 +692,28 @@ a:hover {
     border: none;
 }
 
+/* ==========================================
+   MOBILE RESPONSIVE DESIGN
+   ========================================== */
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    /* Mobile body layout - flex container */
+    /* Mobile body layout - flex container with proper viewport handling */
     body {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        /* Use dynamic viewport height that accounts for iOS browser UI */
+        height: 100dvh; /* dvh = dynamic viewport height */
+        min-height: 100vh; /* Fallback for older browsers */
         overflow: hidden;
+        /* Add safe area padding for iOS notch/home indicator */
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
     }
     
     .header {
         position: fixed; /* Keep header fixed to prevent overlap */
-        top: 0;
+        top: env(safe-area-inset-top); /* Respect iOS safe area */
         left: 0;
         right: 0;
         width: 100%;
@@ -664,7 +733,9 @@ a:hover {
     .header h2 {
         font-size: 1.2em;
         margin-bottom: 20px;
-    }.nav-buttons {
+    }
+
+    .nav-buttons {
         gap: 8px;
         flex-wrap: nowrap;
     }
@@ -674,7 +745,9 @@ a:hover {
         font-size: 0.8em;
         flex: 1;
         min-width: 0;
-    }    .main-content {
+    }
+
+    .main-content {
         flex: 1; /* Take up remaining space between header and footer */
         overflow-y: auto;
         padding-top: 170px; /* Extra buffer to ensure no overlap */
@@ -705,10 +778,11 @@ a:hover {
         backdrop-filter: blur(15px);
         border-top: 2px solid rgba(233, 196, 106, 0.3);
         z-index: 1000;
-        height: 120px; /* Fixed height for consistency */
+        min-height: 65px; /* Further reduced height for very compact layout */
         flex-shrink: 0; /* Prevent footer from shrinking */
-    }
-      /* Mobile music player integrated in footer */
+        /* Ensure footer sticks to bottom even with iOS dynamic UI */
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }    /* Mobile music player integrated in footer */
     .mobile-music-player {
         display: block;
         width: 100%;
@@ -717,59 +791,60 @@ a:hover {
         border-radius: 0;
         box-shadow: none;
         position: relative;
-        padding: 15px 20px;
+        padding: 8px 12px; /* Reduced horizontal padding to maximize slider width */
         cursor: default;
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
+    
+    .mobile-player-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Space between prev button, track info, and next button */
+        margin-bottom: 8px; /* Space before progress bar */
     }
     
     .mobile-track-info {
-        text-align: center;
-        margin-bottom: 15px;
+        text-align: center; /* Center align track info */
+        margin-bottom: 0;
+        flex: 1; /* Take remaining space between buttons */
+        min-width: 0; /* Allow text to shrink */
+        padding: 0 10px; /* Add space on both sides */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     
     .mobile-track-title {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         color: #e9c46a;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
     
     .mobile-track-tuning {
-        font-size: 12px;
+        font-size: 11px;
         color: #a8dadc;
         opacity: 0.8;
-    }
-    
-    .mobile-player-main {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-    
-    .mobile-player-controls {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-shrink: 0;
     }
     
     .mobile-control-btn {
         background: rgba(233, 196, 106, 0.2);
         border: 1px solid #e9c46a;
         color: #e9c46a;
-        width: 36px;
+        width: 36px; /* Slightly larger for easier touch */
         height: 36px;
         border-radius: 50%;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+        font-size: 14px; /* Larger font for better visibility */
         transition: all 0.3s ease;
         user-select: none;
+        flex-shrink: 0; /* Prevent buttons from shrinking */
     }
     
     .mobile-control-btn:hover,
@@ -777,56 +852,148 @@ a:hover {
         background: #e9c46a;
         color: #1e1f26;
     }
-    
-    .mobile-play-pause {
-        width: 42px;
-        height: 42px;
-        font-size: 16px;
-    }
-    
-    .mobile-player-progress {
+      .mobile-player-progress {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-top: 8px;
+        margin-top: 6px; /* Reduced margin */
+        width: 100%; /* Ensure full width */
+    }    .mobile-progress-container {
+        flex: 1; /* Take all remaining space between time displays */
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch; /* Make child elements stretch to full width */
+        min-width: 0; /* Allow shrinking if needed */
+        padding: 15px 0; /* Add padding to accommodate custom thumb */
+    }    /* Custom slider thumb with play/pause icon */
+    .mobile-slider-thumb {
+        position: absolute;
+        top: 50%; /* Center vertically in the container */
+        left: 0%; /* Will be updated by JavaScript */
+        width: 36px;
+        height: 36px;
+        background: rgba(233, 196, 106, 0.2);
+        border: 1px solid #e9c46a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #e9c46a;
+        pointer-events: none; /* Let slider handle events */
+        transition: all 0.3s ease;
+        transform: translate(-50%, -50%); /* Center on position both horizontally and vertically */
+        z-index: 10;
+        margin-left: 0; /* Ensure no extra margin affects positioning */
     }
     
-    .mobile-time-display {
+    .mobile-slider-thumb.playing {
+        background: #e9c46a;
+        color: #1e1f26;
+    }
+    
+    .mobile-slider-thumb.active {
+        background: #f4a261;
+        color: #1e1f26;
+        box-shadow: 0 0 10px rgba(244, 162, 97, 0.7);
+    }    .mobile-progress-hint {
+        font-size: 9px; /* Slightly larger for readability */
+        color: rgba(168, 218, 220, 0.7);
+        text-align: center;
+        margin-top: 3px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        white-space: nowrap;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Better contrast */
+        align-self: center; /* Center the hint within the flex container */
+        position: absolute;
+        bottom: -18px; /* Position below the progress bar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+    }
+    
+    .mobile-progress-container:hover .mobile-progress-hint,
+    .mobile-progress-bar.active + .mobile-progress-hint {
+        opacity: 1;
+    }
+    
+    /* Show hint on first load briefly */
+    @keyframes hintFlash {
+        0%, 80%, 100% { opacity: 0; }
+        10%, 70% { opacity: 1; }
+    }
+      .mobile-time-display {
         font-size: 10px;
         color: #a8dadc;
-        min-width: 32px;
+        min-width: 36px; /* Slightly larger for consistency (00:00 format) */
+        max-width: 36px; /* Prevent expansion */
+        text-align: center;
         user-select: none;
-    }
-    
-    .mobile-progress-bar {
-        flex: 1;
-        height: 4px;
+        flex-shrink: 0; /* Prevent shrinking */
+    }    .mobile-progress-bar {
+        width: 100%; /* Ensure full width of container */
+        height: 6px; /* Slightly larger by default for better touch targeting */
         background: rgba(168, 218, 220, 0.3);
-        border-radius: 2px;
+        border-radius: 3px;
         outline: none;
         cursor: pointer;
         user-select: none;
         -webkit-appearance: none;
         appearance: none;
-    }
-    
-    .mobile-progress-bar::-webkit-slider-thumb {
+        margin: 0; /* Remove margin since container has padding */
+        box-sizing: border-box; /* Include any padding/border in width calculation */
+        align-self: center; /* Center in the flex container */
+    }.mobile-progress-bar::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #e9c46a;
-        border-radius: 50%;
+        width: 0; /* Hide default thumb */
+        height: 0;
+        background: transparent;
+        border: none;
         cursor: pointer;
     }
     
     .mobile-progress-bar::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        background: #e9c46a;
-        border-radius: 50%;
-        cursor: pointer;
+        width: 0; /* Hide default thumb */
+        height: 0;
+        background: transparent;
         border: none;
+        cursor: pointer;
+    }/* Enhanced mobile progress bar states */
+    .mobile-progress-bar.active {
+        height: 8px; /* More noticeable feedback */
+        background: rgba(168, 218, 220, 0.5);
+        transition: all 0.2s ease;
+        width: 100%; /* Ensure full width is maintained */
+    }
+    
+    .mobile-progress-bar.active::-webkit-slider-thumb {
+        width: 22px;
+        height: 22px;
+        background: #f4a261;
+        box-shadow: 0 0 10px rgba(244, 162, 97, 0.7);
+    }
+      .mobile-progress-bar.playing {
+        background: rgba(233, 196, 106, 0.4);
+        animation: pulse 2s infinite ease-in-out;
+        width: 100%; /* Maintain full width during playing state */
+    }
+    
+    .mobile-progress-bar.playing::-webkit-slider-thumb {
+        background: #e9c46a;
+        box-shadow: 0 0 6px rgba(233, 196, 106, 0.8);
+    }
+    
+    @keyframes pulse {
+        0%, 100% { 
+            background: rgba(233, 196, 106, 0.4);
+        }
+        50% { 
+            background: rgba(233, 196, 106, 0.6);
+        }
     }
     
     .mobile-volume-control {

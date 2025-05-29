@@ -63,10 +63,22 @@ function togglePlayPause() {
         });
         musicPlayer.playPauseBtn.textContent = '⏸';
         musicPlayer.isPlaying = true;
+        // Add playing state visual feedback to mobile slider
+        if (musicPlayer.mobileProgressBar) {
+            musicPlayer.mobileProgressBar.classList.add('playing');
+        }
+        // Update mobile thumb icon
+        musicPlayer.updateMobileThumbIcon();
     } else {
         musicPlayer.audio.pause();
         musicPlayer.playPauseBtn.textContent = '▶';
         musicPlayer.isPlaying = false;
+        // Remove playing state visual feedback
+        if (musicPlayer.mobileProgressBar) {
+            musicPlayer.mobileProgressBar.classList.remove('playing');
+        }
+        // Update mobile thumb icon
+        musicPlayer.updateMobileThumbIcon();
     }
 }
 

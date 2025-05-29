@@ -1,6 +1,15 @@
+/* ==========================================
+   MUSIC PLAYER CLASS
+   ========================================== */
+
 // Music Player Functionality
 class MusicPlayer {
+    /* ========================================
+       CONSTRUCTOR & INITIALIZATION
+       ======================================== */
+    
     constructor() {
+        // Desktop player elements
         this.audio = document.getElementById('audioPlayer');
         this.playPauseBtn = document.getElementById('playPauseBtn');
         this.progressBar = document.getElementById('progressBar');
@@ -9,19 +18,17 @@ class MusicPlayer {
         this.currentTime = document.getElementById('currentTime');
         this.totalTime = document.getElementById('totalTime');
         this.playerElement = document.getElementById('musicPlayer');
-          // Mobile player elements
+        
+        // Mobile player elements
         this.mobilePlayerElement = document.getElementById('mobileMusicPlayer');
-        this.mobilePlayPauseBtn = document.getElementById('mobilePlayPauseBtn');
         this.mobileProgressBar = document.getElementById('mobileProgressBar');
-        this.mobileVolumeSlider = document.getElementById('mobileVolumeSlider');
+        this.mobileSliderThumb = document.getElementById('mobileSliderThumb');
         this.mobileTrackTitle = document.getElementById('mobileTrackTitle');
         this.mobileTrackTuning = document.getElementById('mobileTrackTuning');
-        this.mobileCurrentTime = document.getElementById('mobileCurrentTime');
-        this.mobileTotalTime = document.getElementById('mobileTotalTime');
+        this.mobileCurrentTime = document.getElementById('mobileCurrentTime');        this.mobileTotalTime = document.getElementById('mobileTotalTime');
         
-        // Load tracks from external file
-        this.tracks = window.TRACKS || [];
-        
+        // Configuration & State
+        this.tracks = window.TRACKS || []; // Load tracks from external file
         this.currentTrackIndex = 0;
         this.isCollapsed = true;
         this.isDragging = false;
@@ -29,11 +36,16 @@ class MusicPlayer {
         this.isPlaying = false; // Track if we're in active playback mode
         this.isMobile = window.innerWidth <= 768;
         
+        // Initialize all components
         this.initializePlayer();
         this.setupEventListeners();
         this.setupDragFunctionality();
         this.setupResponsiveHandling();
-    }
+        this.setupEnhancedMobileSlider();    }
+    
+    /* ========================================
+       CORE INITIALIZATION METHODS
+       ======================================== */
     
     initializePlayer() {
         // Set initial volume
@@ -45,12 +57,39 @@ class MusicPlayer {
         // Start collapsed on desktop
         if (!this.isMobile) {
             document.getElementById('musicPlayer').classList.add('collapsed');
+        }        // Show appropriate player based on screen size
+        this.updatePlayerVisibility();
+        
+        // Setup enhanced mobile slider functionality
+        this.setupEnhancedMobileSlider();
+        
+        // Initialize mobile thumb position and icon
+        if (this.mobileSliderThumb) {
+            this.updateMobileThumbPosition();
+            this.updateMobileThumbIcon();
         }
         
-        // Show appropriate player based on screen size
-        this.updatePlayerVisibility();
+        // Show initial hint flash for mobile users
+        if (this.isMobile) {
+            this.showInitialHint();
+        }
     }
     
+    showInitialHint() {
+        setTimeout(() => {
+            const hint = document.querySelector('.mobile-progress-hint');
+            if (hint) {
+                hint.style.animation = 'hintFlash 3s ease-in-out';
+                setTimeout(() => {
+                    hint.style.animation = '';
+                }, 3000);
+            }        }, 1000);
+    }
+    
+    /* ========================================
+       RESPONSIVE HANDLING
+       ======================================== */
+
     setupResponsiveHandling() {
         window.addEventListener('resize', () => {
             const wasMobile = this.isMobile;
@@ -68,10 +107,13 @@ class MusicPlayer {
             this.playerElement.style.display = 'none';
         } else {
             if (this.mobilePlayerElement) this.mobilePlayerElement.style.display = 'none';
-            this.playerElement.style.display = 'block';
-        }
+            this.playerElement.style.display = 'block';        }
     }
     
+    /* ========================================
+       AUDIO EVENT LISTENERS
+       ======================================== */
+      
     setupEventListeners() {
         // Audio events
         this.audio.addEventListener('loadedmetadata', () => {
@@ -82,10 +124,13 @@ class MusicPlayer {
             if (this.mobileTotalTime) {
                 this.mobileTotalTime.textContent = this.formatTime(this.audio.duration);
                 this.mobileProgressBar.max = this.audio.duration;
+                
+                // Update mobile thumb position and icon
+                this.updateMobileThumbPosition();
+                this.updateMobileThumbIcon();
             }
         });
-        
-        this.audio.addEventListener('timeupdate', () => {
+          this.audio.addEventListener('timeupdate', () => {
             this.currentTime.textContent = this.formatTime(this.audio.currentTime);
             this.progressBar.value = this.audio.currentTime;
             
@@ -93,6 +138,9 @@ class MusicPlayer {
             if (this.mobileCurrentTime) {
                 this.mobileCurrentTime.textContent = this.formatTime(this.audio.currentTime);
                 this.mobileProgressBar.value = this.audio.currentTime;
+                
+                // Update mobile thumb position
+                this.updateMobileThumbPosition();
             }
         });
         
@@ -100,13 +148,14 @@ class MusicPlayer {
             // Auto-advance to next track and continue playing
             this.nextTrack(true);
         });
-        
-        this.audio.addEventListener('play', () => {
+          this.audio.addEventListener('play', () => {
             this.isPlaying = true;
             this.playPauseBtn.textContent = '⏸';
             if (this.mobilePlayPauseBtn) {
                 this.mobilePlayPauseBtn.textContent = '⏸';
             }
+            // Update mobile thumb icon
+            this.updateMobileThumbIcon();
         });
         
         this.audio.addEventListener('pause', () => {
@@ -115,6 +164,8 @@ class MusicPlayer {
             if (this.mobilePlayPauseBtn) {
                 this.mobilePlayPauseBtn.textContent = '▶';
             }
+            // Update mobile thumb icon
+            this.updateMobileThumbIcon();
         });
           this.audio.addEventListener('error', (e) => {
             console.error('Audio error:', e);
@@ -124,9 +175,12 @@ class MusicPlayer {
                 if (this.mobileTrackTuning) {
                     this.mobileTrackTuning.textContent = 'No tuning';
                 }
-            }
-        });
+            }        });
     }
+
+    /* ========================================
+       DESKTOP PLAYER DRAG FUNCTIONALITY
+       ======================================== */
 
     setupDragFunctionality() {
         let startX, startY, initialX, initialY, hasMoved;
@@ -240,15 +294,44 @@ class MusicPlayer {
             this.playerElement.addEventListener('touchstart', handleTouchStart, { passive: false });
             this.playerElement.addEventListener('touchmove', handleTouchMove, { passive: false });
             this.playerElement.addEventListener('touchend', handleTouchEnd);
-            this.playerElement.style.cursor = 'move';
-        }
+            this.playerElement.style.cursor = 'move';        }
     }
     
-    togglePlayer() {
+    /* ========================================
+       BASIC PLAYER CONTROLS
+       ======================================== */
+      togglePlayer() {
         this.playerElement.classList.toggle('collapsed');
         this.isCollapsed = !this.isCollapsed;
     }
-      loadTrack(index) {
+    
+    togglePlayPause() {
+        if (this.audio.paused) {
+            this.audio.play();
+            this.playPauseBtn.textContent = '⏸';
+            // Add playing state visual feedback to mobile slider
+            if (this.mobileProgressBar) {
+                this.mobileProgressBar.classList.add('playing');
+            }
+            // Update mobile thumb icon
+            this.updateMobileThumbIcon();
+        } else {
+            this.audio.pause();
+            this.playPauseBtn.textContent = '▶';
+            // Remove playing state visual feedback
+            if (this.mobileProgressBar) {
+                this.mobileProgressBar.classList.remove('playing');
+            }
+            // Update mobile thumb icon
+            this.updateMobileThumbIcon();
+        }
+    }
+    
+    /* ========================================
+       TRACK MANAGEMENT & NAVIGATION
+       ======================================== */
+      
+    loadTrack(index) {
         if (index >= 0 && index < this.tracks.length) {
             this.currentTrackIndex = index;
             const track = this.tracks[index];
@@ -259,7 +342,6 @@ class MusicPlayer {
             // Update mobile player too
             if (this.mobileTrackTitle) {
                 this.mobileTrackTitle.textContent = track.title;
-                this.mobilePlayPauseBtn.textContent = '▶';
                 
                 // Set tuning information
                 if (this.mobileTrackTuning) {
@@ -267,16 +349,7 @@ class MusicPlayer {
                 }
             }
         }
-    }
-      
-    formatTime(seconds) {
-        if (isNaN(seconds)) return '0:00';
-        const minutes = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${minutes}:${secs.toString().padStart(2, '0')}`;
-    }
-      
-    nextTrack(autoAdvance = false) {
+    }    nextTrack(autoAdvance = false) {
         const nextIndex = (this.currentTrackIndex + 1) % this.tracks.length;
         this.loadTrack(nextIndex);
         
@@ -309,5 +382,135 @@ class MusicPlayer {
                 this.mobilePlayPauseBtn.textContent = '⏸';
             }
         }
+    }
+    
+    /* ========================================
+       MOBILE PLAYER ENHANCED CONTROLS
+       ======================================== */    
+    // Enhanced mobile progress bar with play/pause functionality
+    setupEnhancedMobileSlider() {
+        if (!this.mobileProgressBar || !this.mobileSliderThumb) return;
+        
+        let isDragging = false;
+        let wasPlaying = false;
+        
+        // Initialize thumb position and icon
+        this.updateMobileThumbPosition();
+        this.updateMobileThumbIcon();
+        
+        // Handle touch start - determine if this is a play/pause tap or drag start
+        this.mobileProgressBar.addEventListener('touchstart', (e) => {
+            isDragging = false;
+            wasPlaying = !this.audio.paused;
+            
+            // Add visual feedback
+            this.mobileProgressBar.classList.add('active');
+            if (this.mobileSliderThumb) {
+                this.mobileSliderThumb.classList.add('active');
+            }
+            
+            // Show hint
+            const hint = this.mobileProgressBar.parentElement.querySelector('.mobile-progress-hint');
+            if (hint) hint.style.opacity = '1';
+        });
+        
+        // Handle touch move - this indicates dragging for seek
+        this.mobileProgressBar.addEventListener('touchmove', (e) => {
+            isDragging = true;
+            // Pause during drag for better performance
+            if (!this.audio.paused) {
+                this.audio.pause();
+            }
+        });
+        
+        // Handle touch end - determine final action
+        this.mobileProgressBar.addEventListener('touchend', (e) => {
+            this.mobileProgressBar.classList.remove('active');
+            if (this.mobileSliderThumb) {
+                this.mobileSliderThumb.classList.remove('active');
+            }
+            
+            // Hide hint
+            const hint = this.mobileProgressBar.parentElement.querySelector('.mobile-progress-hint');
+            if (hint) {
+                setTimeout(() => {
+                    hint.style.opacity = '0';
+                }, 1000);
+            }
+            
+            if (!isDragging) {
+                // This was a tap, not a drag - toggle play/pause
+                this.togglePlayPause();
+                
+                // Add haptic feedback on supported devices
+                if (navigator.vibrate) {
+                    navigator.vibrate(50); // Brief vibration
+                }
+            } else {
+                // This was a drag - seek occurred, restore play state if needed
+                if (wasPlaying) {
+                    setTimeout(() => {
+                        this.audio.play();
+                    }, 100);
+                }
+            }
+            
+            isDragging = false;
+        });
+        
+        // Handle mouse events for desktop testing
+        this.mobileProgressBar.addEventListener('click', (e) => {
+            // Small delay to distinguish from drag
+            setTimeout(() => {
+                if (!isDragging) {
+                    this.togglePlayPause();
+                }
+            }, 50);
+        });
+    }
+    
+    /* ========================================
+       MOBILE THUMB POSITION & ICON UPDATES
+       ======================================== */    
+    // Update mobile slider thumb position based on current progress
+    updateMobileThumbPosition() {
+        if (!this.mobileProgressBar || !this.mobileSliderThumb) return;
+        
+        const slider = this.mobileProgressBar;
+        const thumb = this.mobileSliderThumb;
+        const value = parseFloat(slider.value) || 0;
+        const max = parseFloat(slider.max) || 100;
+        const min = parseFloat(slider.min) || 0;
+        
+        // Calculate percentage
+        const percentage = max > min ? ((value - min) / (max - min)) * 100 : 0;
+        
+        // Position the thumb using percentage (CSS will handle the transform)
+        thumb.style.left = `${Math.max(0, Math.min(100, percentage))}%`;
+    }
+    
+    // Update mobile slider thumb icon based on play/pause state
+    updateMobileThumbIcon() {
+        if (!this.mobileSliderThumb) return;
+        
+        const thumb = this.mobileSliderThumb;
+        const isPlaying = !this.audio.paused;
+        
+        // Update icon
+        thumb.textContent = isPlaying ? '⏸' : '▶';
+        
+        // Update state classes
+        thumb.classList.toggle('playing', isPlaying);
+    }
+    
+    /* ========================================
+       UTILITY FUNCTIONS
+       ======================================== */
+    
+    formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
     }
 }
