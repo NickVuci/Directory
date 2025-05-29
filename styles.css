@@ -4,6 +4,39 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(30, 31, 38, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(233, 196, 106, 0.6), rgba(168, 218, 220, 0.6));
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(233, 196, 106, 0.8), rgba(168, 218, 220, 0.8));
+    transform: scale(1.1);
+}
+
+::-webkit-scrollbar-corner {
+    background: rgba(30, 31, 38, 0.3);
+}
+
+/* Firefox scrollbar styling */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(233, 196, 106, 0.6) rgba(30, 31, 38, 0.3);
+}
+
 body {
     font-family: 'Lato', sans-serif;
     background: linear-gradient(135deg, #1e1f26, #283c63);
@@ -601,8 +634,27 @@ a:hover {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    /* Mobile body layout - flex container */
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+    
     .header {
-        padding: 20px 0 15px;
+        position: fixed; /* Keep header fixed to prevent overlap */
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: rgba(30, 31, 38, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px 0 10px; /* Reduced bottom padding by half */
+        text-align: center;
+        color: #e9c46a;
+        border-bottom: 2px solid rgba(233, 196, 106, 0.3);
+        z-index: 999;
     }
     
     .header h1 {
@@ -612,21 +664,25 @@ a:hover {
     .header h2 {
         font-size: 1.2em;
         margin-bottom: 20px;
-    }
-    
-    .nav-buttons {
-        gap: 10px;
-        flex-wrap: wrap;
+    }.nav-buttons {
+        gap: 8px;
+        flex-wrap: nowrap;
     }
     
     .nav-buttons button {
-        padding: 8px 15px;
-        font-size: 0.9em;
-    }
-    
-    .main-content {
-        padding-top: 140px;
-        padding-bottom: 80px;
+        padding: 6px 10px;
+        font-size: 0.8em;
+        flex: 1;
+        min-width: 0;
+    }    .main-content {
+        flex: 1; /* Take up remaining space between header and footer */
+        overflow-y: auto;
+        padding-top: 170px; /* Extra buffer to ensure no overlap */
+        padding-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0; /* Ensure no extra margin */
     }
     
     .content {
@@ -634,31 +690,192 @@ a:hover {
         padding: 20px;
     }
     
+    /* Hide desktop music player on mobile */
     .music-player {
-        top: 150px;
-        left: 10px;
-        right: 10px;
-        max-width: none;
-    }
-      .music-player.collapsed {
-        width: 60px;
-        top: 150px;
-        left: 10px;
+        display: none !important;
+    }    /* Mobile footer with integrated music player */
+    .footer {
+        position: relative; /* Change from fixed to relative for flex layout */
+        bottom: auto;
+        left: auto;
         right: auto;
+        width: 100%;
+        padding: 0;
+        background: rgba(30, 31, 38, 0.98);
+        backdrop-filter: blur(15px);
+        border-top: 2px solid rgba(233, 196, 106, 0.3);
+        z-index: 1000;
+        height: 120px; /* Fixed height for consistency */
+        flex-shrink: 0; /* Prevent footer from shrinking */
+    }
+      /* Mobile music player integrated in footer */
+    .mobile-music-player {
+        display: block;
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        position: relative;
+        padding: 15px 20px;
+        cursor: default;
     }
     
-    /* Reset positioning when dragged on mobile */
-    .music-player[style*="left"] {
-        top: 150px !important;
-        left: 10px !important;
-        right: 10px !important;
-        max-width: none;
+    .mobile-track-info {
+        text-align: center;
+        margin-bottom: 15px;
     }
-      .music-player.collapsed[style*="left"] {
-        top: 150px !important;
-        left: 10px !important;
-        right: auto !important;
+    
+    .mobile-track-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #e9c46a;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .mobile-track-tuning {
+        font-size: 12px;
+        color: #a8dadc;
+        opacity: 0.8;
+    }
+    
+    .mobile-player-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .mobile-player-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+    
+    .mobile-control-btn {
+        background: rgba(233, 196, 106, 0.2);
+        border: 1px solid #e9c46a;
+        color: #e9c46a;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        user-select: none;
+    }
+    
+    .mobile-control-btn:hover,
+    .mobile-control-btn:active {
+        background: #e9c46a;
+        color: #1e1f26;
+    }
+    
+    .mobile-play-pause {
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+    }
+    
+    .mobile-player-progress {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .mobile-time-display {
+        font-size: 10px;
+        color: #a8dadc;
+        min-width: 32px;
+        user-select: none;
+    }
+    
+    .mobile-progress-bar {
+        flex: 1;
+        height: 4px;
+        background: rgba(168, 218, 220, 0.3);
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+        user-select: none;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    .mobile-progress-bar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #e9c46a;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .mobile-progress-bar::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #e9c46a;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .mobile-volume-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+        min-width: 80px;
+    }
+    
+    .mobile-volume-icon {
+        font-size: 12px;
+        color: #a8dadc;
+        user-select: none;
+    }
+    
+    .mobile-volume-slider {
         width: 60px;
-        max-width: 60px;
+        height: 4px;
+        background: rgba(168, 218, 220, 0.3);
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+        user-select: none;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    .mobile-volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #e9c46a;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .mobile-volume-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #e9c46a;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+    }
+    
+    /* Hide copyright text on mobile since player replaces it */
+    .footer p {
+        display: none;
     }
 }

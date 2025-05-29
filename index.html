@@ -50,7 +50,31 @@
         <audio id="audioPlayer" preload="metadata"></audio>
     </div>    <!-- Footer -->
     <footer class="footer">
+        <!-- Desktop copyright (hidden on mobile) -->
         <p>&copy; 2024 Nick Vuci. All rights reserved.</p>
+          <!-- Mobile Music Player (hidden on desktop) -->
+        <div id="mobileMusicPlayer" class="mobile-music-player" style="display: none;">
+            <div class="mobile-track-info">
+                <div class="mobile-track-title" id="mobileTrackTitle">No track selected</div>
+                <div class="mobile-track-tuning" id="mobileTrackTuning">No tuning</div>
+            </div>
+            <div class="mobile-player-main">
+                <div class="mobile-player-controls">
+                    <button class="mobile-control-btn" onclick="previousTrack()">⏮</button>
+                    <button class="mobile-control-btn mobile-play-pause" id="mobilePlayPauseBtn" onclick="togglePlayPause()">▶</button>
+                    <button class="mobile-control-btn" onclick="nextTrack()">⏭</button>
+                </div>
+                <div class="mobile-volume-control">
+                    <span class="mobile-volume-icon">🔊</span>
+                    <input type="range" class="mobile-volume-slider" id="mobileVolumeSlider" min="0" max="100" value="50" oninput="setVolume(this.value)" onchange="setVolume(this.value)">
+                </div>
+            </div>
+            <div class="mobile-player-progress">
+                <span class="mobile-time-display" id="mobileCurrentTime">0:00</span>
+                <input type="range" class="mobile-progress-bar" id="mobileProgressBar" min="0" max="100" value="0" oninput="seekTo(this.value)" onchange="seekTo(this.value)">
+                <span class="mobile-time-display" id="mobileTotalTime">0:00</span>
+            </div>
+        </div>
     </footer>
 
     <script src="tracks.js"></script>

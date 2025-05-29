@@ -4,9 +4,9 @@
 const TRACKS = [
     {
         id: 1,
-        title: "16edo Softer",
+        title: "Softer for J",
         artist: "Nick Vuci",
-        src: "NickVuci-20220211-16edo-Softer.mp3",
+        src: "music/NickVuci-20220211-16edo-Softer.mp3",
         album: null,
         year: 2022,
         genre: "Xenharmonic",
@@ -16,9 +16,9 @@ const TRACKS = [
     },
     {
         id: 2,
-        title: "24EDO Solo Piano Miniature 1",
+        title: "Quarter-Tone Piano Miniature 1",
         artist: "Nick Vuci", 
-        src: "NV-20201021-24EDO-SoloPianoMiniature1.flac",
+        src: "music/NV-20201021-24EDO-SoloPianoMiniature1.flac",
         album: null,
         year: 2020,
         genre: "Xenharmonic",
