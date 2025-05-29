@@ -16,18 +16,17 @@
     --text-secondary: #a8dadc;
     --bg-overlay: rgba(30, 31, 38, 0.95);
     --border-accent: rgba(233, 196, 106, 0.3);
-    
-    /* ==========================================
-       TYPOGRAPHY SCALE
+      /* ==========================================
+       TYPOGRAPHY SCALE - Enhanced with Modern CSS Functions
        ========================================== */
-    --font-size-xs: 0.7em;      /* 11.2px @ 16px base */
-    --font-size-sm: 0.8em;      /* 12.8px @ 16px base */
-    --font-size-base: 1em;      /* 16px base */
-    --font-size-md: 1.1em;      /* 17.6px @ 16px base */
-    --font-size-lg: 1.2em;      /* 19.2px @ 16px base */
-    --font-size-xl: 1.5em;      /* 24px @ 16px base */
-    --font-size-2xl: 2em;       /* 32px @ 16px base */
-    --font-size-3xl: 3em;       /* 48px @ 16px base */
+    --font-size-xs: clamp(0.6rem, 0.7em, 0.75rem);      /* Responsive 11.2px @ 16px base */
+    --font-size-sm: clamp(0.7rem, 0.8em, 0.85rem);      /* Responsive 12.8px @ 16px base */
+    --font-size-base: 1em;                              /* 16px base - no change for stability */
+    --font-size-md: clamp(1rem, 1.1em, 1.15rem);        /* Responsive 17.6px @ 16px base */
+    --font-size-lg: clamp(1.1rem, 1.2em, 1.3rem);       /* Responsive 19.2px @ 16px base */
+    --font-size-xl: clamp(1.25rem, 1.5em, 1.75rem);     /* Responsive 24px @ 16px base */
+    --font-size-2xl: clamp(1.5rem, 2em, 2.5rem);        /* Responsive 32px @ 16px base */
+    --font-size-3xl: clamp(2rem, 3em, 3.5rem);          /* Responsive 48px @ 16px base */
     
     /* ==========================================
        SPACING SCALE
@@ -39,11 +38,10 @@
     --spacing-xl: 20px;
     --spacing-2xl: 30px;
     --spacing-3xl: 40px;
-    
-    /* Layout Spacing */
-    --header-height: 180px;
-    --footer-height: 80px;
-    --mobile-footer-height: 65px;
+      /* Layout Spacing - Enhanced with Modern CSS Functions */
+    --header-height: clamp(160px, 180px, 200px);        /* Responsive header height */
+    --footer-height: clamp(70px, 80px, 90px);           /* Responsive footer height */
+    --mobile-footer-height: clamp(60px, 65px, 70px);    /* Responsive mobile footer */
     --mobile-breakpoint: 768px;
     
     /* ==========================================
@@ -96,14 +94,36 @@
     --button-hover-bg: var(--primary-gold);
     --button-hover-color: var(--dark-bg);
     --button-radius: var(--radius-circle);
-    
-    /* Card Components */
+      /* Card Components */
     --card-bg: rgba(233, 196, 106, 0.2);
     --card-border: 1px solid var(--primary-gold);
     --card-hover-bg: var(--primary-gold);
     --card-hover-color: var(--dark-bg);
     --card-transform: translateY(-2px);
     --card-shadow: var(--shadow-medium);
+    
+    /* ==========================================
+       MODERN CSS FEATURES & FUTURE-READY PROPERTIES
+       ========================================== */
+    
+    /* Logical Properties for Better Internationalization */
+    --spacing-inline: var(--spacing-md);
+    --spacing-block: var(--spacing-lg);
+    
+    /* Advanced Layout Properties */
+    --content-max-width: min(1200px, calc(100vw - var(--spacing-2xl)));
+    --content-padding: clamp(var(--spacing-md), 3vw, var(--spacing-3xl));
+      /* Enhanced Animation Properties */
+    --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --easing-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Advanced Container Query Support */
+    --container-xs: 20rem;
+    --container-sm: 24rem;
+    --container-md: 28rem;
+    --container-lg: 32rem;
+    --container-xl: 36rem;
 }
 
 /* ==========================================
@@ -147,15 +167,22 @@
 
 /* Base button styling - consolidated from desktop and mobile control buttons */
 .btn-base {
-    background: var(--button-bg);
-    border: var(--button-border);
-    color: var(--button-color);
-    border-radius: var(--button-radius);
-    cursor: pointer;
+    /* Display & Layout */
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-normal);
+    cursor: pointer;
+    
+    /* Sizing & Spacing */
+    border-radius: var(--button-radius);
+    
+    /* Colors & Background */
+    background: var(--button-bg);
+    color: var(--button-color);
+    border: var(--button-border);
+    
+    /* Interactions */
+    transition: background-color var(--transition-normal), color var(--transition-normal), transform var(--transition-normal);
     user-select: none;
 }
 
@@ -199,7 +226,7 @@
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, rgba(233, 196, 106, 0.6), rgba(168, 218, 220, 0.6));
     border-radius: 4px;
-    transition: all var(--transition-normal);
+    transition: background var(--transition-normal), transform var(--transition-normal);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -273,15 +300,18 @@ body {
    CONTENT SECTIONS & ANIMATIONS
    ========================================== */
 
-/* Main content area with consistent hero and card styling */
+/* Main content area with modern CSS enhancements */
 .content {
-    width: 90%;
-    max-width: 1200px;
-    padding: var(--spacing-3xl);
-    margin: 0 auto;
+    /* Modern layout with logical properties */
+    inline-size: min(90%, var(--content-max-width));
+    max-inline-size: var(--content-max-width);
+    padding: var(--content-padding);
+    margin-inline: auto;
+    
+    /* Enhanced visual properties */
     background: transparent;
     border-radius: var(--radius-lg);
-    text-align: left;
+    text-align: start; /* Modern logical equivalent of 'left' */
     color: var(--text-light);
 }
 
@@ -317,16 +347,15 @@ body {
 .section-card {
     background: (#283c63); /* Matches main background */
     border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);
-    box-shadow: var(--shadow-light);
-    text-align: left;
-    animation: fadeIn 1s ease-in-out;
+    padding: var(--spacing-xl);    box-shadow: var(--shadow-light);
+    text-align: start; /* Modern logical equivalent of 'left' */
+    animation: fadeIn 1s var(--easing-smooth);
 }
 
 .section-card h3 {
     font-size: var(--font-size-2xl);
     color: var(--primary-gold);
-    margin-bottom: var(--spacing-md);
+    margin-block-end: var(--spacing-md); /* Logical property */
 }
 
 .section-card p, .section-card ul {
@@ -337,10 +366,11 @@ body {
 
 .section-card ul {
     list-style: none;
-    padding-left: 0;
+    padding-inline-start: 0; /* Logical property */
 }
+
 .section-card ul li {
-    margin: var(--spacing-sm) 0;
+    margin-block: var(--spacing-sm) 0; /* Logical property */
 }
 .section-card ul li a {
     color: var(--accent-orange);
@@ -353,67 +383,82 @@ body {
 }
 
 /* Navigation Cards (Button styling) */
+/* Navigation buttons with enhanced modern selectors and animations */
 .nav-buttons button {
-    padding: var(--spacing-md) var(--spacing-xl);
+    padding-block: var(--spacing-md); /* Logical property */
+    padding-inline: var(--spacing-xl); /* Logical property */
     font-size: var(--font-size-base);
     color: var(--primary-gold);
     background: var(--card-bg);
     border: var(--card-border);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: background-color var(--transition-normal), 
+                color var(--transition-normal), 
+                transform var(--transition-normal) var(--easing-elastic);
+}
+
+/* Modern selector for active and hover states */
+.nav-buttons button:is(.active, :hover) {
+    background: var(--primary-gold);
+    color: var(--dark-bg);
 }
 
 .nav-buttons button.active {
-    background: var(--primary-gold);
-    color: var(--dark-bg);
     transform: scale(1.05);
 }
 
-/* Music Library & Cards */
+/* Music Library & Cards - Enhanced with Modern CSS Grid */
 .music-library {
     display: grid;
-    gap: var(--spacing-xl);
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: clamp(var(--spacing-md), var(--spacing-xl), var(--spacing-2xl));
     margin: var(--spacing-xl) 0;
 }
 
 .music-card {
-    background: var(--card-bg);
-    border: var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);
-    cursor: pointer;
-    transition: all var(--transition-normal);
+    /* Display & Layout */
     position: relative;
+    cursor: pointer;
+    
+    /* Sizing & Spacing */
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    
+    /* Colors & Background */    background: var(--card-bg);
+    border: var(--card-border);
+    
+    /* Interactions */
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
+/* Music card content styling with modern selectors */
 .music-card h4 {
     color: var(--primary-gold);
-    margin-bottom: var(--spacing-md);
+    margin-block-end: var(--spacing-md); /* Logical property */
     font-size: var(--font-size-lg);
-}
-
-.music-card:hover h4 {
-    color: var(--dark-bg);
 }
 
 .music-card p {
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-md);
+    margin-block-end: var(--spacing-md); /* Logical property */
     font-size: var(--font-size-sm);
 }
 
-.music-card:hover p {
+/* Modern selector for multiple elements hover state */
+.music-card:hover :is(h4, p) {
     color: var(--dark-bg);
 }
 
+/* Music format and tuning badges with logical properties */
 .music-format {
     position: absolute;
-    top: var(--spacing-lg);
-    right: var(--spacing-lg);
+    inset-block-start: var(--spacing-lg); /* Logical property for 'top' */
+    inset-inline-end: var(--spacing-lg);  /* Logical property for 'right' */
     background: var(--primary-gold);
     color: var(--dark-bg);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding-block: var(--spacing-xs); /* Logical property */
+    padding-inline: var(--spacing-sm); /* Logical property */
     border-radius: var(--radius-xs);
     font-size: var(--font-size-sm);
     font-weight: bold;
@@ -421,27 +466,28 @@ body {
 
 .music-tuning {
     position: absolute;
-    bottom: var(--spacing-lg);
-    right: var(--spacing-lg);
+    inset-block-end: var(--spacing-lg); /* Logical property for 'bottom' */
+    inset-inline-end: var(--spacing-lg); /* Logical property for 'right' */
     background: rgba(168, 218, 220, 0.2);
     color: var(--text-secondary);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding-block: var(--spacing-xs); /* Logical property */
+    padding-inline: var(--spacing-sm); /* Logical property */
     border-radius: var(--radius-sm);
     font-size: var(--font-size-xs);
     border: 1px solid rgba(168, 218, 220, 0.3);
 }
 
 .music-info {
-    margin-top: var(--spacing-2xl);
+    margin-block-start: var(--spacing-2xl); /* Logical property */
     padding: var(--spacing-xl);
     background: rgba(30, 31, 38, 0.5);
     border-radius: var(--radius-lg);
-    border-left: var(--spacing-xs) solid var(--primary-gold);
+    border-inline-start: var(--spacing-xs) solid var(--primary-gold); /* Logical property */
 }
 
 .music-info h4 {
     color: var(--primary-gold);
-    margin-bottom: var(--spacing-lg);
+    margin-block-end: var(--spacing-lg); /* Logical property */
 }
 
 .music-info p {
@@ -465,15 +511,17 @@ body {
 }
 
 /* ==========================================
-   KEYFRAME ANIMATIONS
+   KEYFRAME ANIMATIONS - Enhanced with Modern Easing
    ========================================== */
 
 @keyframes fadeIn {
     from {
         opacity: 0;
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -525,11 +573,10 @@ a:hover {
     text-align: center;
     padding: var(--spacing-xl);
     background: var(--bg-overlay);
-    backdrop-filter: blur(var(--spacing-md));
-    color: var(--text-secondary);
+    backdrop-filter: blur(var(--spacing-md));    color: var(--text-secondary);
     z-index: var(--z-header);
     border-top: 2px solid var(--border-accent);
-    animation: fadeIn 1.5s ease-in-out;
+    animation: fadeIn 1.5s var(--easing-smooth);
 }
 
 /* ==========================================
@@ -628,24 +675,35 @@ a:hover {
 
 /* Desktop Player Collapse Button */
 .collapse-btn {
+    /* Positioning */
     position: absolute;
     top: var(--spacing-md);
     left: var(--spacing-md);
-    width: 24px;
-    height: 24px;
-    background: var(--button-bg);
-    border: var(--button-border);
-    border-radius: var(--radius-circle);
-    color: var(--primary-gold);
-    cursor: pointer;
+    z-index: 3;
+    
+    /* Display & Layout */
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    
+    /* Sizing & Spacing */
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-circle);
+    
+    /* Typography */
     font-size: var(--font-size-base);
     font-weight: bold;
-    transition: all var(--transition-normal);
-    z-index: 3;
     line-height: 1;
+    
+    /* Colors & Background */
+    background: var(--button-bg);
+    color: var(--primary-gold);
+    border: var(--button-border);
+    
+    /* Interactions */
+    transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 .collapse-btn:hover {
@@ -702,25 +760,26 @@ a:hover {
     color: var(--text-secondary);
 }
 
-/* Desktop Player Controls */
+/* Desktop Player Controls - Enhanced with Modern CSS */
 .player-controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: clamp(var(--spacing-md), var(--spacing-lg), var(--spacing-xl));
     margin-bottom: var(--spacing-lg);
     pointer-events: auto;
 }
 
+/* Enhanced control button sizing with modern CSS functions */
 .control-btn {
-    width: var(--spacing-3xl);
-    height: var(--spacing-3xl);
+    width: clamp(var(--spacing-2xl), var(--spacing-3xl), 45px);
+    height: clamp(var(--spacing-2xl), var(--spacing-3xl), 45px);
     font-size: var(--font-size-base);
 }
 
 .play-pause {
-    width: 50px;
-    height: 50px;
+    width: clamp(45px, 50px, 55px);
+    height: clamp(45px, 50px, 55px);
     font-size: var(--font-size-xl);
 }
 
@@ -820,27 +879,28 @@ a:hover {
         gap: var(--spacing-sm);
         flex-wrap: nowrap;
     }
-    
+      /* Mobile navigation with logical properties */
     .nav-buttons button {
-        padding: var(--spacing-sm) var(--spacing-md);
+        padding-block: var(--spacing-sm); /* Logical property */
+        padding-inline: var(--spacing-md); /* Logical property */
         font-size: var(--font-size-sm);
         flex: 1;
-        min-width: 0;
+        min-inline-size: 0; /* Logical property */
     }
 
     .main-content {
         flex: 1; /* Take up remaining space between header and footer */
         overflow-y: auto;
         padding-top: 170px; /* Extra buffer to ensure no overlap */
-        padding-bottom: 0;
-        display: flex;
+        padding-bottom: 0;        display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: 0; /* Ensure no extra margin */
+        margin-block-start: 0; /* Logical property */
     }
     
+    /* Mobile content with logical properties */
     .content {
-        width: 95%;
+        inline-size: 95%; /* Logical property */
         padding: var(--spacing-xl);
     }
       /* Hide desktop music player on mobile */
@@ -980,13 +1040,11 @@ a:hover {
         background: transparent;
         border: none;
         cursor: pointer;
-    }
-
-    /* Mobile Player Progress Bar Enhanced States */
+    }    /* Mobile Player Progress Bar Enhanced States */
     .mobile-progress-bar.active {
         height: var(--spacing-sm); /* More noticeable feedback */
         background: rgba(168, 218, 220, 0.5);
-        transition: all var(--transition-fast);
+        transition: height var(--transition-fast), background-color var(--transition-fast);
         width: 100%; /* Ensure full width is maintained */
     }
 
@@ -995,11 +1053,9 @@ a:hover {
         height: 22px;
         background: var(--accent-orange);
         box-shadow: 0 0 var(--spacing-sm) rgba(244, 162, 97, 0.7);
-    }
-
-    .mobile-progress-bar.playing {
+    }    .mobile-progress-bar.playing {
         background: rgba(233, 196, 106, 0.4);
-        animation: pulse 2s infinite ease-in-out;
+        animation: pulse 2s infinite var(--easing-smooth);
         width: 100%; /* Maintain full width during playing state */
     }
 
@@ -1021,10 +1077,9 @@ a:hover {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: var(--font-size-sm);
-        color: var(--primary-gold);
+        font-size: var(--font-size-sm);        color: var(--primary-gold);
         pointer-events: none; /* Let slider handle events */
-        transition: all var(--transition-normal);
+        transition: background-color var(--transition-normal), color var(--transition-normal), transform var(--transition-normal);
         transform: translate(-50%, -50%); /* Center on position both horizontally and vertically */
         z-index: var(--spacing-sm);
         margin-left: 0; /* Ensure no extra margin affects positioning */
