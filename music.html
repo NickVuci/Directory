@@ -2,14 +2,39 @@
 <div class="section-hero">
     <div class="section-card fade-in">
         <h3>Music</h3>
-        <p>CHOONS</p>
-        <div class="music-card">
-            <h4>test</h4>
-            <audio controls>
-                <source src="NickVuci-20220211-16edo-Softer.mp3" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
+        <p>Welcome to my xenharmonic music collection! Use the music player in the bottom-right corner to play tracks.</p>
+        
+        <div class="music-library" id="musicLibrary">
+            <!-- Track cards will be dynamically generated here -->
         </div>
-        <!-- Add more music cards as needed -->
+        
+        <div class="music-info">
+            <h4>About Xenharmonic Music</h4>
+            <p>Xenharmonic music explores tuning systems beyond the traditional 12-tone equal temperament. 
+               These pieces use microtonal scales that create unique harmonic relationships and sonic textures.</p>
+        </div>
     </div>
 </div>
+
+<script>
+// Generate music library cards from tracks data
+function generateMusicLibrary() {
+    const musicLibrary = document.getElementById('musicLibrary');
+    if (!musicLibrary || !window.TRACKS) return;
+    
+    musicLibrary.innerHTML = window.TRACKS.map((track, index) => {
+        const fileExt = track.src.split('.').pop().toUpperCase();
+        return `
+            <div class="music-card" onclick="playTrack(${index})">
+                <h4>${track.title}</h4>
+                <p>${track.description || `A ${track.tuning} composition`}</p>
+                <div class="music-format">${fileExt}</div>
+                ${track.tuning ? `<div class="music-tuning">${track.tuning}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+// Generate the library when this content loads
+generateMusicLibrary();
+</script>
