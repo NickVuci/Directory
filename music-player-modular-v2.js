@@ -395,13 +395,49 @@ class MusicPlayer {
         }
     }
     
-    nextTrack(autoAdvance = false) {
-        try {
-            const nextIndex = (this.currentTrackIndex + 1) % this.tracks.length;
-            this.loadTrack(nextIndex);
+// filepath: [music-player-modular-v2.js](http://_vscodecontentref_/2)
+loadTrack(index, preservePlayState = false) {
+    try {
+        if (index >= 0 && index < this.tracks.length) {
+            const currentPlayState = preservePlayState ? this.isPlaying : false;
             
-            // Auto-play if this is an auto-advance or if music was already playing
-            if (autoAdvance || this.isPlaying) {
+            this.currentTrackIndex = index;
+            const track = this.tracks[index];
+            
+            if (this.elements.audio) {
+                this.elements.audio.src = track.src;
+            }
+            
+            // Update display using DOM handler
+            if (this.domHandler) {
+                this.domHandler.updateTrackDisplay(track);
+                // Only update play/pause display if not preserving state
+                if (!preservePlayState) {
+                    this.domHandler.updatePlayPauseDisplay(false);
+                    this.isPlaying = false;
+                } else {
+                    // Keep the current state
+                    this.isPlaying = currentPlayState;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error loading track:', error);
+    }
+}
+
+nextTrack(autoAdvance = false) {
+    try {
+        const wasPlaying = this.isPlaying || !this.elements.audio.paused;
+        const nextIndex = (this.currentTrackIndex + 1) % this.tracks.length;
+        
+        // Pass true to preserve play state during track loading
+        this.loadTrack(nextIndex, wasPlaying || autoAdvance);
+        
+        // Always continue playing if music was playing before track change
+        if (wasPlaying || autoAdvance) {
+            // Wait for the new track to load before playing
+            const playWhenReady = () => {
                 if (this.audioEngine) {
                     this.audioEngine.play();
                 } else {
@@ -412,35 +448,56 @@ class MusicPlayer {
                 if (this.domHandler) {
                     this.domHandler.updatePlayPauseDisplay(true);
                 }
+            };
+
+            // If audio is ready, play immediately, otherwise wait
+            if (this.elements.audio.readyState >= 2) {
+                playWhenReady();
+            } else {
+                this.elements.audio.addEventListener('canplay', playWhenReady, { once: true });
             }
-        } catch (error) {
-            console.error('❌ Error advancing to next track:', error);
         }
+    } catch (error) {
+        console.error('❌ Error advancing to next track:', error);
     }
-    
-    previousTrack() {
-        try {
-            const prevIndex = this.currentTrackIndex === 0 
-                ? this.tracks.length - 1 
-                : this.currentTrackIndex - 1;
-            this.loadTrack(prevIndex);
+}
+
+previousTrack() {
+    try {
+        const wasPlaying = this.isPlaying || !this.elements.audio.paused;
+        const prevIndex = this.currentTrackIndex === 0 
+            ? this.tracks.length - 1 
+            : this.currentTrackIndex - 1;
             
-            // Auto-play if music was already playing
-            if (this.isPlaying) {
+        // Pass true to preserve play state during track loading
+        this.loadTrack(prevIndex, wasPlaying);
+        
+        // Continue playing if music was playing before track change
+        if (wasPlaying) {
+            const playWhenReady = () => {
                 if (this.audioEngine) {
                     this.audioEngine.play();
                 } else {
                     this.elements.audio.play().catch(e => console.error('Auto-play error:', e));
                 }
+                this.isPlaying = true;
                 
                 if (this.domHandler) {
                     this.domHandler.updatePlayPauseDisplay(true);
                 }
+            };
+
+            // If audio is ready, play immediately, otherwise wait
+            if (this.elements.audio.readyState >= 2) {
+                playWhenReady();
+            } else {
+                this.elements.audio.addEventListener('canplay', playWhenReady, { once: true });
             }
-        } catch (error) {
-            console.error('❌ Error going to previous track:', error);
         }
+    } catch (error) {
+        console.error('❌ Error going to previous track:', error);
     }
+}
     
     /* ========================================
        LEGACY COMPATIBILITY METHODS
