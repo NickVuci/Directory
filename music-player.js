@@ -8,13 +8,13 @@ class MusicPlayer {
        CONSTRUCTOR & INITIALIZATION
        ======================================== */
     
-    constructor() {
-        // Desktop player elements
+    constructor() {        // Desktop player elements
         this.audio = document.getElementById('audioPlayer');
         this.playPauseBtn = document.getElementById('playPauseBtn');
         this.progressBar = document.getElementById('progressBar');
         this.volumeSlider = document.getElementById('volumeSlider');
         this.trackTitle = document.getElementById('trackTitle');
+        this.trackArtist = document.getElementById('trackArtist');
         this.currentTime = document.getElementById('currentTime');
         this.totalTime = document.getElementById('totalTime');
         this.playerElement = document.getElementById('musicPlayer');
@@ -167,15 +167,15 @@ class MusicPlayer {
             // Update mobile thumb icon
             this.updateMobileThumbIcon();
         });
-          this.audio.addEventListener('error', (e) => {
-            console.error('Audio error:', e);
+          this.audio.addEventListener('error', (e) => {            console.error('Audio error:', e);
             this.trackTitle.textContent = 'Error loading track';
+            this.trackArtist.textContent = 'No tuning';
             if (this.mobileTrackTitle) {
                 this.mobileTrackTitle.textContent = 'Error loading track';
                 if (this.mobileTrackTuning) {
                     this.mobileTrackTuning.textContent = 'No tuning';
                 }
-            }        });
+            }});
     }
 
     /* ========================================
@@ -330,13 +330,13 @@ class MusicPlayer {
     /* ========================================
        TRACK MANAGEMENT & NAVIGATION
        ======================================== */
-      
-    loadTrack(index) {
+        loadTrack(index) {
         if (index >= 0 && index < this.tracks.length) {
             this.currentTrackIndex = index;
             const track = this.tracks[index];
             this.audio.src = track.src;
             this.trackTitle.textContent = track.title;
+            this.trackArtist.textContent = track.tuning || 'Unknown tuning';
             this.playPauseBtn.textContent = '▶';
             
             // Update mobile player too
@@ -349,7 +349,7 @@ class MusicPlayer {
                 }
             }
         }
-    }    nextTrack(autoAdvance = false) {
+    }nextTrack(autoAdvance = false) {
         const nextIndex = (this.currentTrackIndex + 1) % this.tracks.length;
         this.loadTrack(nextIndex);
         
