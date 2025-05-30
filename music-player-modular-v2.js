@@ -247,6 +247,141 @@ class MusicPlayer {
     }
 
     /**
+     * Initialize mobile enhancements while preserving current audio state
+     * This method captures the current audio state before initializing mobile components
+     * to ensure proper synchronization between desktop and mobile views
+     */
+    initializeMobileEnhancementsWithState() {
+        if (!this.isMobile || !this.domHandler) return;
+        
+        try {
+            // Capture current audio state before mobile initialization
+            const currentAudioState = this.getCurrentAudioState();
+            
+            console.log('🔄 Initializing mobile enhancements with preserved state:', currentAudioState);
+            
+            // Validate mobile elements are available before initialization
+            if (!this.validateMobileElements()) {
+                console.warn('🔄 Mobile elements not ready, deferring initialization...');
+                this.deferMobileInitialization();
+                return;
+            }
+            
+            // Use safe initialization method with preserved state
+            this.initializeMobileEnhancementsSafelyWithState(currentAudioState);
+            
+            console.log('📱 Mobile enhancements initialized with preserved state');
+            
+        } catch (error) {
+            console.error('❌ Error initializing mobile enhancements with state:', error);
+            // Fall back to standard initialization if state preservation fails
+            this.initializeMobileEnhancements();
+        }
+    }
+
+    /**
+     * Get current audio state for preservation during mobile initialization
+     * @returns {Object} Current audio state including playback position and status
+     */
+    getCurrentAudioState() {
+        try {
+            // Get state from AudioEngine if available
+            if (this.audioEngine && this.audioEngine.isReady()) {
+                return this.audioEngine.getState();
+            }
+            
+            // Fall back to direct audio element access
+            if (this.elements && this.elements.audio) {
+                const audio = this.elements.audio;
+                return {
+                    paused: audio.paused,
+                    currentTime: audio.currentTime || 0,
+                    duration: audio.duration || 0,
+                    volume: audio.volume || 0.5,
+                    isPlaying: !audio.paused
+                };
+            }
+            
+            // Default state if no audio access
+            return {
+                paused: true,
+                currentTime: 0,
+                duration: 0,
+                volume: 0.5,
+                isPlaying: false
+            };
+        } catch (error) {
+            console.error('❌ Error getting current audio state:', error);
+            return {
+                paused: true,
+                currentTime: 0,
+                duration: 0,
+                volume: 0.5,
+                isPlaying: false
+            };
+        }
+    }
+
+    /**
+     * Safe mobile initialization with preserved audio state
+     * @param {Object} audioState - The preserved audio state
+     */
+    initializeMobileEnhancementsSafelyWithState(audioState) {
+        const errors = [];
+        
+        // Try to update mobile thumb position with current progress
+        try {
+            const progress = audioState.duration > 0 ? audioState.currentTime : 0;
+            const max = audioState.duration > 0 ? audioState.duration : 100;
+            this.domHandler.updateMobileThumbPosition(progress, max);
+        } catch (error) {
+            errors.push({ component: 'MobileThumbPosition', error });
+            console.warn('⚠️ Failed to update mobile thumb position with state:', error);
+        }
+        
+        // Try to update play/pause display with current state
+        try {
+            this.domHandler.updatePlayPauseDisplay(!audioState.paused);
+        } catch (error) {
+            errors.push({ component: 'PlayPauseDisplay', error });
+            console.warn('⚠️ Failed to update play/pause display with state:', error);
+        }
+        
+        // Try to update progress display with current state
+        try {
+            if (this.domHandler.updateProgressDisplay) {
+                this.domHandler.updateProgressDisplay(audioState.currentTime, audioState.duration);
+            }
+        } catch (error) {
+            errors.push({ component: 'ProgressDisplay', error });
+            console.warn('⚠️ Failed to update progress display with state:', error);
+        }
+        
+        // Try to update time display with current state
+        try {
+            if (this.domHandler.updateTimeDisplay) {
+                this.domHandler.updateTimeDisplay(audioState.currentTime, audioState.duration);
+            }
+        } catch (error) {
+            errors.push({ component: 'TimeDisplay', error });
+            console.warn('⚠️ Failed to update time display with state:', error);
+        }
+        
+        // Try to show initial hint (but don't let it interrupt state sync)
+        try {
+            this.showInitialHint();
+        } catch (error) {
+            // Don't add to errors array - this is non-critical
+            console.warn('⚠️ Failed to show initial hint:', error);
+        }
+        
+        // If we have critical failures, activate partial recovery
+        if (errors.length > 0) {
+            this.handlePartialMobileFailure(errors);
+        }
+    }
+
+    /**
      * Handle complete mobile initialization failure
      * @param {Error} error - The initialization error
      */
@@ -595,8 +730,7 @@ class MusicPlayer {
             console.error('❌ Error handling mobile slider seek end:', error);
         }
     }
-    
-    handleResize() {
+      handleResize() {
         try {
             if (this.domHandler && this.domHandler.updateResponsiveState()) {
                 // Screen size changed between mobile/desktop
@@ -604,7 +738,7 @@ class MusicPlayer {
                 
                 // Re-initialize mobile enhancements if switched to mobile
                 if (this.isMobile) {
-                    this.initializeMobileEnhancements();
+                    this.initializeMobileEnhancementsWithState();
                 }
             }
             
