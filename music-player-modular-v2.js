@@ -148,6 +148,9 @@ class MusicPlayer {
             this.domHandler.updateMobileThumbPosition(0, 100);
             this.domHandler.updatePlayPauseDisplay(false);
             
+            // Handle iOS viewport adjustments
+            this.domHandler.handleIOSViewportAdjustment();
+            
             // Show initial hint flash for mobile users
             this.showInitialHint();
             

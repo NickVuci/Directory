@@ -406,6 +406,58 @@ export class DOMHandler {
         return false; // No change
     }
 
+        /**
+     * Handle iOS viewport adjustments for Safari browser controls
+     */
+    handleIOSViewportAdjustment() {
+        if (!this.isMobile) return;
+        
+        // Detect iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (!isIOS) return;
+        
+        const mobilePlayer = this.elements.mobilePlayer;
+        if (!mobilePlayer) return;
+        
+        // Function to adjust player position
+        const adjustPlayerPosition = () => {
+            // Get the actual viewport height
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            
+            // Calculate safe top position (above browser controls)
+            const safeTop = Math.max(
+                20, // Minimum for status bar
+                window.screen.height - window.innerHeight // Browser controls height
+            );
+            
+            mobilePlayer.style.top = `${safeTop}px`;
+            mobilePlayer.style.paddingTop = `${Math.max(10, safeTop)}px`;
+        };
+        
+        // Adjust on load
+        adjustPlayerPosition();
+        
+        // Adjust when viewport changes (browser controls show/hide)
+        window.addEventListener('resize', adjustPlayerPosition);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(adjustPlayerPosition, 500); // Delay for orientation change
+        });
+        
+        // Listen for scroll to detect browser controls hiding/showing
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // Browser controls likely changed if significant height change without scroll
+            if (Math.abs(currentScrollY - lastScrollY) < 10) {
+                setTimeout(adjustPlayerPosition, 100);
+            }
+            
+            lastScrollY = currentScrollY;
+        }, { passive: true });
+    }
+
     /**
      * Get all elements (read-only)
      * @returns {Object} Elements object
