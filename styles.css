@@ -16,9 +16,6 @@
     --text-secondary: #a8dadc;
     --bg-overlay: rgba(30, 31, 38, 0.95);
     --border-accent: rgba(233, 196, 106, 0.3);
-
-    --vh: 1vh; /* Custom viewport height for iOS support */
-
       /* ==========================================
        TYPOGRAPHY SCALE - Enhanced with Modern CSS Functions
        ========================================== */
@@ -855,50 +852,7 @@ a:hover {
         /* Add safe area padding for iOS notch/home indicator */
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
-    }
-
-    /* ADD THIS NEW SECTION HERE - iOS Safe Area Support */
-    /* ==========================================
-       iOS SAFE AREA & BROWSER CONTROLS HANDLING
-       ========================================== */
-    
-    /* iOS Safari specific adjustments for dynamic viewport */
-    @supports (padding: max(0px)) {
-        .footer {
-            /* Use safe area insets to avoid browser controls */
-            bottom: env(safe-area-inset-bottom, 0);
-            padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom, 0));
-            
-            /* Ensure it's above everything */
-            z-index: 10000;
-            position: fixed;
-        }
-        
-        .mobile-music-player {
-            /* Account for iOS dynamic viewport changes */
-            padding-top: max(var(--spacing-sm), env(safe-area-inset-top, 0));
-            padding-bottom: max(var(--spacing-sm), env(safe-area-inset-bottom, 0));
-        }
-    }
-    
-    /* Additional iOS viewport handling */
-    .footer {
-        /* Enhanced positioning for iOS browser controls */
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        
-        /* Use custom viewport height property */
-        min-height: calc(var(--vh, 1vh) * var(--mobile-footer-height));
-        
-        /* Ensure above iOS browser UI */
-        z-index: 10000;
-    }
-    
-    /* END OF NEW iOS SECTION */
-
-    .header {
+    }    .header {
         position: fixed; /* Keep header fixed to prevent overlap */
         top: env(safe-area-inset-top); /* Respect iOS safe area */
         left: 0;
