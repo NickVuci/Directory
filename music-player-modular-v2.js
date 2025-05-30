@@ -139,34 +139,325 @@ class MusicPlayer {
         } catch (error) {
             console.error('❌ Error initializing player:', error);
         }
-    }
-    
-    initializeMobileEnhancements() {
+    }      initializeMobileEnhancements() {
         if (!this.isMobile || !this.domHandler) return;
         
         try {
-            // Update mobile thumb position and icon
-            this.domHandler.updateMobileThumbPosition(0, 100);
-            this.domHandler.updatePlayPauseDisplay(false);
+            // Validate mobile elements are available before initialization
+            if (!this.validateMobileElements()) {
+                console.warn('🔄 Mobile elements not ready, deferring initialization...');
+                this.deferMobileInitialization();
+                return;
+            }
             
-            // Show initial hint flash for mobile users
-            this.showInitialHint();
+            // Use safe initialization method
+            this.initializeMobileEnhancementsSafely();
+            
+            console.log('📱 Mobile enhancements initialized successfully');
             
         } catch (error) {
             console.error('❌ Error initializing mobile enhancements:', error);
+            // Handle initialization failure with recovery
+            this.handleMobileInitializationFailure(error);
         }
     }
-    
-    showInitialHint() {
+
+    /**
+     * Validate that required mobile elements are available
+     * @returns {boolean} True if mobile elements are ready
+     */
+    validateMobileElements() {
+        const requiredMobileElements = [
+            'mobileProgress',
+            'mobileThumb',
+            'mobilePlayer'
+        ];
+        
+        return requiredMobileElements.every(elementKey => {
+            const element = this.elements[elementKey];
+            return element && element.parentElement;
+        });
+    }    /**
+     * Defer mobile initialization until elements are ready
+     */
+    deferMobileInitialization() {
+        const maxRetries = getConfig('errors.maxRetries', 3);
+        const retryDelay = getConfig('errors.retryDelay', 500);
+        let retryCount = 0;
+        
+        const attemptInitialization = () => {
+            retryCount++;
+            
+            if (this.validateMobileElements()) {
+                console.log('✅ Mobile elements ready, initializing enhancements...');
+                try {
+                    this.initializeMobileEnhancementsSafely();
+                    console.log('📱 Deferred mobile enhancements initialized successfully');
+                } catch (error) {
+                    console.error('❌ Error in deferred mobile initialization:', error);
+                    this.handleMobileInitializationFailure(error);
+                }
+            } else if (retryCount < maxRetries) {
+                console.warn(`🔄 Retry ${retryCount}/${maxRetries}: Mobile elements still not ready`);
+                setTimeout(attemptInitialization, retryDelay);
+            } else {
+                console.error('❌ Failed to initialize mobile enhancements after maximum retries');
+                this.activateBasicMobileFallback();
+            }
+        };
+        
+        // Start first retry after a short delay
+        setTimeout(attemptInitialization, retryDelay);
+    }
+
+    /**
+     * Safe mobile enhancement initialization with error recovery
+     */
+    initializeMobileEnhancementsSafely() {
+        const errors = [];
+        
+        // Try to update mobile thumb position
+        try {
+            this.domHandler.updateMobileThumbPosition(0, 100);
+        } catch (error) {
+            errors.push({ component: 'MobileThumbPosition', error });
+            console.warn('⚠️ Failed to update mobile thumb position:', error);
+        }
+        
+        // Try to update play/pause display
+        try {
+            this.domHandler.updatePlayPauseDisplay(false);
+        } catch (error) {
+            errors.push({ component: 'PlayPauseDisplay', error });
+            console.warn('⚠️ Failed to update play/pause display:', error);
+        }
+        
+        // Try to show initial hint
+        try {
+            this.showInitialHint();
+        } catch (error) {
+            errors.push({ component: 'InitialHint', error });
+            console.warn('⚠️ Failed to show initial hint:', error);
+        }
+        
+        // If we have partial failures, activate partial recovery
+        if (errors.length > 0) {
+            this.handlePartialMobileFailure(errors);
+        }
+    }
+
+    /**
+     * Handle complete mobile initialization failure
+     * @param {Error} error - The initialization error
+     */
+    handleMobileInitializationFailure(error) {
+        console.error('🔴 Mobile initialization failed completely:', error);
+        
+        // Log failure for debugging
+        this.logMobileFailure('COMPLETE_INIT_FAILURE', error);
+        
+        // Activate basic mobile fallback
+        this.activateBasicMobileFallback();
+        
+        // Attempt minimal functionality recovery
+        this.attemptMinimalMobileRecovery();
+    }
+
+    /**
+     * Handle partial mobile initialization failure
+     * @param {Array} errors - Array of component-specific errors
+     */
+    handlePartialMobileFailure(errors) {
+        console.warn('🟡 Mobile initialization partially failed:', errors);
+        
+        // Log partial failure for debugging
+        this.logMobileFailure('PARTIAL_INIT_FAILURE', errors);
+        
+        // Try to recover failed components individually
+        errors.forEach(({ component, error }) => {
+            this.attemptComponentRecovery(component, error);
+        });
+    }
+
+    /**
+     * Activate basic mobile fallback functionality
+     */
+    activateBasicMobileFallback() {
+        try {
+            console.log('🛡️ Activating basic mobile fallback...');
+            
+            // Ensure basic mobile player is visible and functional
+            if (this.elements.mobilePlayer) {
+                this.elements.mobilePlayer.style.display = this.isMobile ? 'flex' : 'none';
+            }
+            
+            // Ensure basic progress bar functionality
+            if (this.elements.mobileProgress) {
+                this.elements.mobileProgress.style.pointerEvents = 'auto';
+                this.elements.mobileProgress.setAttribute('title', 'Mobile Player');
+            }
+            
+            // Set fallback visual state
+            this.setFallbackMobileState();
+            
+            console.log('✅ Basic mobile fallback activated');
+        } catch (error) {
+            console.error('🔴 Failed to activate basic mobile fallback:', error);
+            this.logMobileFailure('FALLBACK_ACTIVATION_FAILURE', error);
+        }
+    }
+
+    /**
+     * Attempt minimal mobile functionality recovery
+     */
+    attemptMinimalMobileRecovery() {
+        try {
+            console.log('🔧 Attempting minimal mobile recovery...');
+            
+            // Try to ensure mobile progress works at minimum
+            if (this.elements.mobileProgress && this.elements.audio) {
+                // Basic time update listener
+                this.elements.audio.addEventListener('timeupdate', () => {
+                    try {
+                        const progress = (this.elements.audio.currentTime / this.elements.audio.duration) * 100;
+                        this.elements.mobileProgress.value = progress || 0;
+                    } catch (e) {
+                        // Silent failure for timeupdate
+                    }
+                });
+                
+                console.log('✅ Minimal mobile recovery successful');
+            }
+        } catch (error) {
+            console.error('🔴 Minimal mobile recovery failed:', error);
+            this.logMobileFailure('MINIMAL_RECOVERY_FAILURE', error);
+        }
+    }
+
+    /**
+     * Attempt to recover a specific failed component
+     * @param {string} component - Component name that failed
+     * @param {Error} error - The specific error
+     */
+    attemptComponentRecovery(component, error) {
+        try {
+            console.log(`🔧 Attempting to recover component: ${component}`);
+            
+            switch (component) {
+                case 'MobileThumbPosition':
+                    // Try basic thumb positioning without advanced calculations
+                    if (this.elements.mobileThumb) {
+                        this.elements.mobileThumb.style.left = '0%';
+                    }
+                    break;
+                    
+                case 'PlayPauseDisplay':
+                    // Try basic play/pause icon setup
+                    if (this.elements.mobileThumb) {
+                        this.elements.mobileThumb.textContent = '▶';
+                    }
+                    break;
+                    
+                case 'InitialHint':
+                    // Skip hint if it fails - not critical
+                    console.log('🔄 Skipping hint display due to failure');
+                    break;
+                    
+                default:
+                    console.warn(`🟡 Unknown component for recovery: ${component}`);
+            }
+            
+            console.log(`✅ Component recovery attempted for: ${component}`);
+        } catch (recoveryError) {
+            console.error(`🔴 Component recovery failed for ${component}:`, recoveryError);
+            this.logMobileFailure('COMPONENT_RECOVERY_FAILURE', { component, originalError: error, recoveryError });
+        }
+    }
+
+    /**
+     * Set fallback visual state for mobile components
+     */
+    setFallbackMobileState() {
+        try {
+            // Set basic mobile thumb state
+            if (this.elements.mobileThumb) {
+                this.elements.mobileThumb.textContent = '▶';
+                this.elements.mobileThumb.style.left = '0%';
+                this.elements.mobileThumb.title = 'Play/Pause';
+            }
+            
+            // Set basic progress bar state
+            if (this.elements.mobileProgress) {
+                this.elements.mobileProgress.value = 0;
+                this.elements.mobileProgress.max = 100;
+                this.elements.mobileProgress.title = 'Seek';
+            }
+            
+            // Hide hint to prevent confusion
+            const hint = document.querySelector('.mobile-progress-hint');
+            if (hint) {
+                hint.style.display = 'none';
+            }
+            
+        } catch (error) {
+            console.error('🔴 Failed to set fallback mobile state:', error);
+        }
+    }
+
+    /**
+     * Log mobile failure for debugging and analytics
+     * @param {string} type - Type of failure
+     * @param {Error|Array} details - Error details
+     */
+    logMobileFailure(type, details) {
+        const failureData = {
+            timestamp: new Date().toISOString(),
+            type,
+            details,
+            userAgent: navigator.userAgent,
+            isMobile: this.isMobile,
+            viewport: {
+                width: window.innerWidth,
+                height: window.innerHeight
+            }
+        };
+        
+        // Store in session storage for debugging
+        try {
+            const existingLogs = JSON.parse(sessionStorage.getItem('musicPlayerMobileErrors') || '[]');
+            existingLogs.push(failureData);
+            // Keep only last 10 errors
+            if (existingLogs.length > 10) {
+                existingLogs.splice(0, existingLogs.length - 10);
+            }
+            sessionStorage.setItem('musicPlayerMobileErrors', JSON.stringify(existingLogs));
+        } catch (storageError) {
+            console.warn('Failed to store error log:', storageError);
+        }
+        
+        // Also log to console for immediate debugging
+        console.error(`📊 Mobile Failure Log [${type}]:`, failureData);
+    }
+      showInitialHint() {
+        if (!this.isMobile) return;
+        
         const hintDuration = getConfig('mobile.hintDisplayDuration', 3000);
         
         setTimeout(() => {
-            const hint = document.querySelector('.mobile-progress-hint');
-            if (hint) {
-                hint.style.animation = 'hintFlash 3s ease-in-out';
-                setTimeout(() => {
-                    hint.style.animation = '';
-                }, hintDuration);
+            try {
+                const hint = document.querySelector('.mobile-progress-hint');
+                if (hint && hint.parentElement) {
+                    hint.style.animation = 'hintFlash 3s ease-in-out';
+                    setTimeout(() => {
+                        if (hint.parentElement) { // Check again in case element was removed
+                            hint.style.animation = '';
+                        }
+                    }, hintDuration);
+                } else {
+                    console.warn('📱 Mobile hint element not found, skipping hint animation');
+                }
+            } catch (error) {
+                console.error('❌ Error showing initial hint:', error);
             }
         }, 1000);
     }

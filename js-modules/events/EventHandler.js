@@ -216,84 +216,298 @@ export class EventHandler {
         this.boundHandlers.touchEnd = () => {
             this.boundHandlers.mouseUp();
         };
-        
-        // Attach desktop drag event listeners
+          // Attach desktop drag event listeners
         this.elements.player.addEventListener('mousedown', this.boundHandlers.mouseDown);
-        this.elements.player.addEventListener('touchstart', this.boundHandlers.touchStart, { passive: false });
-        this.elements.player.addEventListener('touchmove', this.boundHandlers.touchMove, { passive: false });
-        this.elements.player.addEventListener('touchend', this.boundHandlers.touchEnd);
         
-        // Set cursor style
-        this.elements.player.style.cursor = 'move';
-    }
-
-    /**
+        // Only attach touch events for desktop drag functionality when NOT in mobile mode
+        // This prevents conflicts with mobile slider touch events
+        if (!this.isMobile) {
+            this.elements.player.addEventListener('touchstart', this.boundHandlers.touchStart, { passive: false });
+            this.elements.player.addEventListener('touchmove', this.boundHandlers.touchMove, { passive: false });
+            this.elements.player.addEventListener('touchend', this.boundHandlers.touchEnd);
+        }
+        
+        // Set cursor style for desktop
+        if (!this.isMobile) {
+            this.elements.player.style.cursor = 'move';
+        }
+    }    /**
      * Setup mobile slider event listeners
      */
     setupMobileSliderEventListeners() {
         if (!this.elements.mobileProgress || !this.isMobile) return;
         
-        // Touch start handler
-        this.boundHandlers.mobileSliderTouchStart = (e) => {
-            this.mobileSliderState.isDragging = false;
-            this.mobileSliderState.wasPlaying = this.elements.audio && !this.elements.audio.paused;
-            
-            // Add visual feedback
-            this.addMobileSliderActiveState();
-            
-            // Show hint
-            this.showMobileSliderHint();
-        };
-        
-        // Touch move handler
-        this.boundHandlers.mobileSliderTouchMove = (e) => {
-            this.mobileSliderState.isDragging = true;
-            
-            // Pause during drag for better performance
-            if (this.elements.audio && !this.elements.audio.paused) {
-                this.elements.audio.pause();
-            }
-        };
-        
-        // Touch end handler
-        this.boundHandlers.mobileSliderTouchEnd = (e) => {
-            this.removeMobileSliderActiveState();
-            this.hideMobileSliderHint();
-            
-            if (!this.mobileSliderState.isDragging) {
-                // This was a tap - toggle play/pause
-                if (this.callbacks.onMobileSliderTap) {
-                    this.callbacks.onMobileSliderTap();
+        try {
+            // Touch start handler with error recovery
+            this.boundHandlers.mobileSliderTouchStart = (e) => {
+                try {
+                    this.mobileSliderState.isDragging = false;
+                    this.mobileSliderState.wasPlaying = this.elements.audio && !this.elements.audio.paused;
+                    
+                    // Add visual feedback
+                    this.addMobileSliderActiveState();
+                    
+                    // Show hint
+                    this.showMobileSliderHint();
+                } catch (error) {
+                    console.error('❌ Error in mobile slider touch start:', error);
+                    this.handleMobileSliderError('TOUCH_START', error);
                 }
-                
-                // Add haptic feedback
-                this.triggerHapticFeedback();
-            } else {
-                // This was a drag - restore play state if needed
-                if (this.mobileSliderState.wasPlaying && this.callbacks.onMobileSliderSeekEnd) {
+            };
+            
+            // Touch move handler with error recovery
+            this.boundHandlers.mobileSliderTouchMove = (e) => {
+                try {
+                    this.mobileSliderState.isDragging = true;
+                    
+                    // Pause during drag for better performance
+                    if (this.elements.audio && !this.elements.audio.paused) {
+                        this.elements.audio.pause();
+                    }
+                } catch (error) {
+                    console.error('❌ Error in mobile slider touch move:', error);
+                    this.handleMobileSliderError('TOUCH_MOVE', error);
+                }
+            };
+            
+            // Touch end handler with error recovery
+            this.boundHandlers.mobileSliderTouchEnd = (e) => {
+                try {
+                    this.removeMobileSliderActiveState();
+                    this.hideMobileSliderHint();
+                    
+                    if (!this.mobileSliderState.isDragging) {
+                        // This was a tap - toggle play/pause
+                        if (this.callbacks.onMobileSliderTap) {
+                            try {
+                                this.callbacks.onMobileSliderTap();
+                            } catch (callbackError) {
+                                console.error('❌ Error in mobile slider tap callback:', callbackError);
+                                this.handleMobileSliderError('TAP_CALLBACK', callbackError);
+                            }
+                        }
+                        
+                        // Add haptic feedback
+                        this.triggerHapticFeedback();
+                    } else {
+                        // This was a drag - restore play state if needed
+                        if (this.mobileSliderState.wasPlaying && this.callbacks.onMobileSliderSeekEnd) {
+                            setTimeout(() => {
+                                try {
+                                    this.callbacks.onMobileSliderSeekEnd();
+                                } catch (callbackError) {
+                                    console.error('❌ Error in mobile slider seek end callback:', callbackError);
+                                    this.handleMobileSliderError('SEEK_CALLBACK', callbackError);
+                                }
+                            }, 100);
+                        }
+                    }
+                    
+                    this.mobileSliderState.isDragging = false;
+                } catch (error) {
+                    console.error('❌ Error in mobile slider touch end:', error);
+                    this.handleMobileSliderError('TOUCH_END', error);
+                    // Ensure state is reset even on error
+                    this.mobileSliderState.isDragging = false;
+                }
+            };
+            
+            // Mouse click handler for desktop testing with error recovery
+            this.boundHandlers.mobileSliderClick = (e) => {
+                try {
                     setTimeout(() => {
-                        this.callbacks.onMobileSliderSeekEnd();
-                    }, 100);
+                        if (!this.mobileSliderState.isDragging && this.callbacks.onMobileSliderTap) {
+                            try {
+                                this.callbacks.onMobileSliderTap();
+                            } catch (callbackError) {
+                                console.error('❌ Error in mobile slider click callback:', callbackError);
+                                this.handleMobileSliderError('CLICK_CALLBACK', callbackError);
+                            }
+                        }
+                    }, 50);
+                } catch (error) {
+                    console.error('❌ Error in mobile slider click:', error);
+                    this.handleMobileSliderError('CLICK', error);
                 }
-            }
+            };
             
-            this.mobileSliderState.isDragging = false;
-        };
+            // Attach mobile slider event listeners with error recovery
+            this.attachMobileSliderEventListenersSafely();
+            
+        } catch (error) {
+            console.error('❌ Failed to setup mobile slider event listeners:', error);
+            this.handleMobileSliderError('SETUP', error);
+            // Attempt basic fallback event setup
+            this.setupBasicMobileSliderFallback();
+        }
+    }
+
+    /**
+     * Safely attach mobile slider event listeners with error recovery
+     */
+    attachMobileSliderEventListenersSafely() {
+        const events = [
+            { event: 'touchstart', handler: 'mobileSliderTouchStart', passive: false },
+            { event: 'touchmove', handler: 'mobileSliderTouchMove', passive: false },
+            { event: 'touchend', handler: 'mobileSliderTouchEnd', passive: true },
+            { event: 'click', handler: 'mobileSliderClick', passive: true }
+        ];
         
-        // Mouse click handler for desktop testing
-        this.boundHandlers.mobileSliderClick = (e) => {
-            setTimeout(() => {
-                if (!this.mobileSliderState.isDragging && this.callbacks.onMobileSliderTap) {
-                    this.callbacks.onMobileSliderTap();
+        events.forEach(({ event, handler, passive }) => {
+            try {
+                this.elements.mobileProgress.addEventListener(event, this.boundHandlers[handler], { passive });
+            } catch (error) {
+                console.error(`❌ Failed to attach ${event} listener:`, error);
+                this.handleMobileSliderError('LISTENER_ATTACHMENT', { event, error });
+            }
+        });
+    }
+
+    /**
+     * Setup basic mobile slider fallback when advanced setup fails
+     */
+    setupBasicMobileSliderFallback() {
+        try {
+            console.log('🛡️ Setting up basic mobile slider fallback...');
+            
+            // Basic touch start fallback
+            const basicTouchStart = () => {
+                try {
+                    this.mobileSliderState.isDragging = false;
+                    this.mobileSliderState.wasPlaying = this.elements.audio && !this.elements.audio.paused;
+                } catch (e) {
+                    // Silent failure for basic functionality
                 }
-            }, 50);
+            };
+            
+            // Basic touch end fallback
+            const basicTouchEnd = () => {
+                try {
+                    if (!this.mobileSliderState.isDragging && this.callbacks.onMobileSliderTap) {
+                        this.callbacks.onMobileSliderTap();
+                    }
+                    this.mobileSliderState.isDragging = false;
+                } catch (e) {
+                    this.mobileSliderState.isDragging = false; // Ensure state reset
+                }
+            };
+            
+            // Attach basic listeners
+            this.elements.mobileProgress.addEventListener('touchstart', basicTouchStart);
+            this.elements.mobileProgress.addEventListener('touchend', basicTouchEnd);
+            this.elements.mobileProgress.addEventListener('click', basicTouchEnd);
+            
+            console.log('✅ Basic mobile slider fallback activated');
+        } catch (error) {
+            console.error('🔴 Failed to setup basic mobile slider fallback:', error);
+        }
+    }
+
+    /**
+     * Handle mobile slider errors with recovery attempts
+     * @param {string} stage - Stage where error occurred
+     * @param {Error} error - The error that occurred
+     */
+    handleMobileSliderError(stage, error) {
+        console.error(`🔴 Mobile slider error at ${stage}:`, error);
+        
+        // Log error for debugging
+        this.logMobileSliderError(stage, error);
+        
+        // Attempt recovery based on error stage
+        switch (stage) {
+            case 'TOUCH_START':
+            case 'TOUCH_MOVE':
+            case 'CLICK':
+                // Reset slider state to prevent stuck interactions
+                this.resetMobileSliderState();
+                break;
+                
+            case 'TOUCH_END':
+                // Ensure state is properly reset
+                this.resetMobileSliderState();
+                this.removeMobileSliderActiveStateSafely();
+                break;
+                
+            case 'TAP_CALLBACK':
+            case 'SEEK_CALLBACK':
+            case 'CLICK_CALLBACK':
+                // Reset state and continue - callback failures shouldn't break slider
+                this.resetMobileSliderState();
+                break;
+                
+            case 'SETUP':
+            case 'LISTENER_ATTACHMENT':
+                // Critical failure - already handled by fallback setup
+                break;
+                
+            default:
+                console.warn(`🟡 Unknown mobile slider error stage: ${stage}`);
+                this.resetMobileSliderState();
+        }
+    }
+
+    /**
+     * Reset mobile slider state to prevent stuck interactions
+     */
+    resetMobileSliderState() {
+        try {
+            this.mobileSliderState.isDragging = false;
+            this.mobileSliderState.wasPlaying = false;
+            console.log('🔄 Mobile slider state reset');
+        } catch (error) {
+            console.error('❌ Failed to reset mobile slider state:', error);
+        }
+    }
+
+    /**
+     * Safely remove active state from mobile slider
+     */
+    removeMobileSliderActiveStateSafely() {
+        try {
+            this.removeMobileSliderActiveState();
+        } catch (error) {
+            console.error('❌ Failed to remove mobile slider active state:', error);
+            // Try direct DOM manipulation as fallback
+            try {
+                if (this.elements.mobileProgress) {
+                    this.elements.mobileProgress.classList.remove('active');
+                }
+                if (this.elements.mobileThumb) {
+                    this.elements.mobileThumb.classList.remove('active');
+                }
+            } catch (fallbackError) {
+                console.error('❌ Fallback active state removal failed:', fallbackError);
+            }
+        }
+    }
+
+    /**
+     * Log mobile slider error for debugging
+     * @param {string} stage - Stage where error occurred
+     * @param {Error} error - The error details
+     */
+    logMobileSliderError(stage, error) {
+        const errorData = {
+            timestamp: new Date().toISOString(),
+            stage,
+            error: error.message || error,
+            stack: error.stack,
+            sliderState: { ...this.mobileSliderState },
+            userAgent: navigator.userAgent
         };
         
-        // Attach mobile slider event listeners
-        this.elements.mobileProgress.addEventListener('touchstart', this.boundHandlers.mobileSliderTouchStart);
-        this.elements.mobileProgress.addEventListener('touchmove', this.boundHandlers.mobileSliderTouchMove);
-        this.elements.mobileProgress.addEventListener('touchend', this.boundHandlers.mobileSliderTouchEnd);
-        this.elements.mobileProgress.addEventListener('click', this.boundHandlers.mobileSliderClick);
+        // Store in session storage for debugging
+        try {
+            const existingErrors = JSON.parse(sessionStorage.getItem('mobileSliderErrors') || '[]');
+            existingErrors.push(errorData);
+            // Keep only last 10 errors
+            if (existingErrors.length > 10) {
+                existingErrors.splice(0, existingErrors.length - 10);
+            }
+            sessionStorage.setItem('mobileSliderErrors', JSON.stringify(existingErrors));        } catch (storageError) {
+            console.warn('Failed to store mobile slider error:', storageError);
+        }
     }
 
     /**
@@ -408,9 +622,7 @@ export class EventHandler {
             const duration = getConfig('responsive.vibrationDuration', 50);
             navigator.vibrate(duration);
         }
-    }
-
-    /**
+    }    /**
      * Update responsive state
      */
     updateResponsiveState() {
@@ -418,12 +630,71 @@ export class EventHandler {
         this.isMobile = window.innerWidth <= getConfig('responsive.mobileBreakpoint', 768);
         
         if (wasMobile !== this.isMobile) {
+            console.log(`📱 Responsive state change: ${wasMobile ? 'Mobile' : 'Desktop'} → ${this.isMobile ? 'Mobile' : 'Desktop'}`);
+            
+            // Validate elements before switching modes
+            if (!this.validateElementsForMode(this.isMobile)) {
+                console.warn('⚠️ Missing elements for responsive mode switch, maintaining current state');
+                this.isMobile = wasMobile; // Revert to previous state
+                return false;
+            }
+            
             // Need to re-setup event listeners for new mode
-            this.removeEventListeners();
-            this.initializeEventListeners();
-            return true;
+            try {
+                this.removeEventListeners();
+                this.initializeEventListeners();
+                console.log(`✅ Event listeners updated for ${this.isMobile ? 'mobile' : 'desktop'} mode`);
+                return true;
+            } catch (error) {
+                console.error('❌ Error updating event listeners for responsive state:', error);
+                // Attempt to restore previous state
+                this.isMobile = wasMobile;
+                this.removeEventListeners();
+                this.initializeEventListeners();
+                return false;
+            }
         }
         return false;
+    }
+
+    /**
+     * Validate that required elements exist for the target mode
+     * @param {boolean} targetIsMobile - Whether switching to mobile mode
+     * @returns {boolean} True if all required elements are available
+     */
+    validateElementsForMode(targetIsMobile) {
+        try {
+            if (targetIsMobile) {
+                // Validate mobile elements
+                const requiredMobileElements = ['mobileProgress', 'mobilePlayer'];
+                const missingMobile = requiredMobileElements.filter(key => !this.elements[key]);
+                
+                if (missingMobile.length > 0) {
+                    console.warn(`⚠️ Missing mobile elements for responsive switch: ${missingMobile.join(', ')}`);
+                    return false;
+                }
+                
+                // Validate mobile elements are properly attached to DOM
+                if (this.elements.mobileProgress && !this.elements.mobileProgress.parentElement) {
+                    console.warn('⚠️ Mobile progress element not attached to DOM');
+                    return false;
+                }
+            } else {
+                // Validate desktop elements
+                const requiredDesktopElements = ['player', 'audio'];
+                const missingDesktop = requiredDesktopElements.filter(key => !this.elements[key]);
+                
+                if (missingDesktop.length > 0) {
+                    console.warn(`⚠️ Missing desktop elements for responsive switch: ${missingDesktop.join(', ')}`);
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Error validating elements for responsive mode:', error);
+            return false;
+        }
     }
 
     /**
