@@ -116,12 +116,13 @@ class MusicPlayer {
             }
             
             // Load first track
-            this.loadTrack(0);
-            
-            // Set initial collapsed state for desktop
+            this.loadTrack(0);            // Set initial collapsed state for desktop
             if (!this.isMobile && this.domHandler) {
                 if (this.isCollapsed) {
-                    this.domHandler.toggleCollapsed();
+                    // Apply collapsed class directly to match initial state
+                    if (this.elements.player && !this.elements.player.classList.contains('collapsed')) {
+                        this.elements.player.classList.add('collapsed');
+                    }
                 }
             }
             
@@ -327,11 +328,13 @@ class MusicPlayer {
     /* ========================================
        BASIC PLAYER CONTROLS
        ======================================== */
-    
-    togglePlayer() {
+      togglePlayer() {
         try {
             if (this.domHandler) {
-                this.isCollapsed = !this.domHandler.toggleCollapsed();
+                // Toggle the DOM state and get the NEW state
+                const isNowCollapsed = this.domHandler.toggleCollapsed();
+                // Sync our JavaScript state with the DOM state
+                this.isCollapsed = isNowCollapsed;
             }
         } catch (error) {
             console.error('❌ Error toggling player:', error);

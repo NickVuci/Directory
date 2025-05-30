@@ -50,11 +50,7 @@ function updateActiveButton(section) {
 let musicPlayer;
 
 // Music player control functions (bridge functions for HTML onclick attributes)
-function togglePlayer() {
-    const player = document.getElementById('musicPlayer');
-    player.classList.toggle('collapsed');
-    musicPlayer.isCollapsed = !musicPlayer.isCollapsed;
-}
+// Note: togglePlayer is now handled directly by musicPlayer.togglePlayer() in HTML
 
 function togglePlayPause() {
     if (musicPlayer.audio.paused) {
@@ -111,10 +107,9 @@ function playTrack(index) {
         });
         musicPlayer.playPauseBtn.textContent = '⏸';
         musicPlayer.isPlaying = true;
-        
-        // Expand player if collapsed
+          // Expand player if collapsed
         if (musicPlayer.isCollapsed) {
-            togglePlayer();
+            musicPlayer.togglePlayer();
         }
     }
 }
