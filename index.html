@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Nick Vuci - Xenharmonic Musician</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- iOS Device Detection and Redirect -->
+    <script>
+        // Redirect iOS devices to mobile-optimized version
+        (function() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isMobilePath = window.location.pathname.includes('/mobile');
+            
+            if (isIOS && !isMobilePath) {
+                console.log('🍎 iOS device detected, redirecting to mobile version');
+                window.location.href = '/mobile/';
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Header with title, subtitle, and navigation buttons -->

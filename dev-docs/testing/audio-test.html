@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Audio Playback Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #111;
+        }
+        .test-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .status.success {
+            background: #0f5132;
+            border: 1px solid #198754;
+        }
+        .status.error {
+            background: #721c24;
+            border: 1px solid #dc3545;
+        }
+        .status.info {
+            background: #055160;
+            border: 1px solid #0dcaf0;
+        }
+        .audio-info {
+            background: #222;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #444;
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #007AFF;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍎 iOS Audio Playback Test</h1>
+    
+    <div class="test-section">
+        <h3>Audio File Loading Test</h3>
+        <button class="test-button" onclick="testFileAccess()">Test File Access</button>
+        <button class="test-button" onclick="testDirectPlay()">Test Direct Play</button>
+        <div id="fileStatus" class="status info">Click "Test File Access" to check audio files</div>
+    </div>
+    
+    <div class="test-section">
+        <h3>iOS Bridge Integration Test</h3>
+        <button class="test-button" onclick="testBridgeIntegration()">Test Bridge</button>
+        <button class="test-button" onclick="testPlayViabridge()">Play Via Bridge</button>
+        <div id="bridgeStatus" class="status info">Click "Test Bridge" to check integration</div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Audio Playback Controls</h3>
+        <button class="test-button" onclick="playFirstTrack()">Play Track 1</button>
+        <button class="test-button" onclick="playSecondTrack()">Play Track 2</button>
+        <button class="test-button" onclick="togglePlayPause()">Play/Pause</button>
+        <button class="test-button" onclick="stopAudio()">Stop</button>
+        
+        <div class="audio-info" id="audioInfo">
+            <div><strong>Current Track:</strong> <span id="currentTrack">None</span></div>
+            <div><strong>Status:</strong> <span id="audioStatus">Stopped</span></div>
+            <div><strong>Time:</strong> <span id="currentTime">0:00</span> / <span id="duration">0:00</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Error Log</h3>
+        <div id="errorLog" style="max-height: 200px; overflow-y: auto; background: #222; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px;"></div>
+    </div>
+
+    <!-- Audio element for testing -->
+    <audio id="testAudio" preload="metadata"></audio>
+
+    <!-- Load required scripts -->
+    <script src="../tracks.js"></script>
+    <script src="ios-player.js"></script>
+    <script src="ios-bridge.js"></script>
+
+    <script>
+        let audio = document.getElementById('testAudio');
+        let currentTrackIndex = -1;
+        let isPlaying = false;
+        
+        // Error logging
+        function logError(message, type = 'info') {
+            const log = document.getElementById('errorLog');
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#6bcf7f' : '#74c0fc';
+            log.innerHTML += `<div style="color: ${color}">[${time}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Status update functions
+        function updateStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+        
+        function updateAudioInfo() {
+            document.getElementById('currentTrack').textContent = 
+                currentTrackIndex >= 0 ? TRACKS[currentTrackIndex].title : 'None';
+            document.getElementById('audioStatus').textContent = 
+                audio.paused ? 'Paused' : (isPlaying ? 'Playing' : 'Stopped');
+            document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+            document.getElementById('duration').textContent = formatTime(audio.duration);
+            
+            if (audio.duration > 0) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+            }
+        }
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Test functions
+        function testFileAccess() {
+            logError('Testing file access...', 'info');
+            updateStatus('fileStatus', 'Testing file access...', 'info');
+            
+            if (!window.TRACKS || TRACKS.length === 0) {
+                updateStatus('fileStatus', 'ERROR: No tracks available', 'error');
+                logError('TRACKS not loaded or empty', 'error');
+                return;
+            }
+            
+            logError(`Found ${TRACKS.length} tracks`, 'success');
+            
+            // Test first audio file
+            const testTrack = TRACKS[0];
+            const audioPath = `../${testTrack.src}`;
+            
+            logError(`Testing path: ${audioPath}`, 'info');
+            
+            audio.src = audioPath;
+            audio.addEventListener('loadedmetadata', function handleLoad() {
+                updateStatus('fileStatus', `SUCCESS: Audio loaded (${formatTime(audio.duration)})`, 'success');
+                logError(`Audio metadata loaded: ${formatTime(audio.duration)}`, 'success');
+                audio.removeEventListener('loadedmetadata', handleLoad);
+            });
+            
+            audio.addEventListener('error', function handleError(e) {
+                updateStatus('fileStatus', `ERROR: Failed to load audio (${e.target.error?.message || 'Unknown error'})`, 'error');
+                logError(`Audio load error: ${e.target.error?.message || 'Unknown error'}`, 'error');
+                audio.removeEventListener('error', handleError);
+            });
+        }
+        
+        function testDirectPlay() {
+            if (!audio.src) {
+                logError('No audio source set. Run file access test first.', 'error');
+                return;
+            }
+            
+            logError('Testing direct audio playback...', 'info');
+            
+            audio.play().then(() => {
+                logError('Direct audio playback started successfully', 'success');
+                isPlaying = true;
+                updateAudioInfo();
+            }).catch(e => {
+                logError(`Direct playback failed: ${e.message}`, 'error');
+            });
+        }
+        
+        function testBridgeIntegration() {
+            logError('Testing iOS Bridge integration...', 'info');
+            updateStatus('bridgeStatus', 'Testing bridge integration...', 'info');
+            
+            const checks = [
+                { name: 'TRACKS', obj: window.TRACKS },
+                { name: 'iosPlayer', obj: window.iosPlayer },
+                { name: 'iOSBridge', obj: window.iOSBridge },
+                { name: 'togglePlayPause function', obj: window.togglePlayPause },
+                { name: 'playTrack function', obj: window.playTrack },
+                { name: 'nextTrack function', obj: window.nextTrack },
+                { name: 'previousTrack function', obj: window.previousTrack }
+            ];
+            
+            let passed = 0;
+            checks.forEach(check => {
+                if (check.obj) {
+                    logError(`✅ ${check.name}: Available`, 'success');
+                    passed++;
+                } else {
+                    logError(`❌ ${check.name}: Missing`, 'error');
+                }
+            });
+            
+            if (passed === checks.length) {
+                updateStatus('bridgeStatus', 'SUCCESS: All bridge components available', 'success');
+            } else {
+                updateStatus('bridgeStatus', `PARTIAL: ${passed}/${checks.length} components available`, 'error');
+            }
+        }
+        
+        function testPlayViabridge() {
+            if (typeof window.playTrack !== 'function') {
+                logError('playTrack function not available', 'error');
+                return;
+            }
+            
+            logError('Testing playback via iOS bridge...', 'info');
+            window.playTrack(0);
+        }
+        
+        function playFirstTrack() {
+            if (!TRACKS || TRACKS.length === 0) return;
+            loadAndPlayTrack(0);
+        }
+        
+        function playSecondTrack() {
+            if (!TRACKS || TRACKS.length < 2) return;
+            loadAndPlayTrack(1);
+        }
+        
+        function loadAndPlayTrack(index) {
+            if (index < 0 || index >= TRACKS.length) return;
+            
+            currentTrackIndex = index;
+            const track = TRACKS[index];
+            const audioPath = `../${track.src}`;
+            
+            logError(`Loading track: ${track.title}`, 'info');
+            
+            audio.src = audioPath;
+            audio.addEventListener('loadeddata', function playWhenReady() {
+                audio.play().then(() => {
+                    logError(`Playing: ${track.title}`, 'success');
+                    isPlaying = true;
+                    updateAudioInfo();
+                }).catch(e => {
+                    logError(`Playback failed: ${e.message}`, 'error');
+                });
+                audio.removeEventListener('loadeddata', playWhenReady);
+            });
+        }
+        
+        function stopAudio() {
+            audio.pause();
+            audio.currentTime = 0;
+            isPlaying = false;
+            logError('Audio stopped', 'info');
+            updateAudioInfo();
+        }
+        
+        // Audio event listeners
+        audio.addEventListener('timeupdate', updateAudioInfo);
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            updateAudioInfo();
+            logError('Track ended', 'info');
+        });
+        audio.addEventListener('pause', () => {
+            isPlaying = false;
+            updateAudioInfo();
+        });
+        audio.addEventListener('play', () => {
+            isPlaying = true;
+            updateAudioInfo();
+        });
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            logError('Audio test page loaded', 'success');
+            updateAudioInfo();
+        });
+    </script>
+</body>
+</html>

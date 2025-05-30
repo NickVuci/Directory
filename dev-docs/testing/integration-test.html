@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #0056CC;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status.warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .status.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .console-output {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 8px;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #007AFF, #00C7BE);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🍎 iOS Mobile Player Integration Test</h1>
+        <p>Comprehensive test suite for iOS mobile player and bridge functionality</p>
+
+        <!-- Test Progress -->
+        <div class="test-section">
+            <h3>Test Progress</h3>
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <p id="progressText">Ready to start tests...</p>
+        </div>
+
+        <!-- Component Status -->
+        <div class="test-section">
+            <h3>Component Status</h3>
+            <div id="componentStatus"></div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="test-section">
+            <h3>Test Controls</h3>
+            <button class="test-button" onclick="runAllTests()">🚀 Run All Tests</button>
+            <button class="test-button" onclick="testPlayerLoad()">📱 Test Player Load</button>
+            <button class="test-button" onclick="testBridgeIntegration()">🌉 Test Bridge</button>
+            <button class="test-button" onclick="testAudioPlayback()">🎵 Test Audio</button>
+            <button class="test-button" onclick="testPlayerControls()">🎮 Test Controls</button>
+            <button class="test-button" onclick="testStateSync()">🔄 Test Sync</button>
+            <button class="test-button" onclick="clearResults()">🧹 Clear Results</button>
+        </div>
+
+        <!-- Console Output -->
+        <div class="test-section">
+            <h3>Console Output</h3>
+            <div class="console-output" id="consoleOutput"></div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="test-results">
+            <h3>Test Results</h3>
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <!-- Load Required Scripts -->
+    <script src="../tracks.js"></script>
+    <script src="ios-player.js"></script>
+    <script src="ios-bridge.js"></script>
+
+    <script>
+        let testResults = [];
+        let currentTestIndex = 0;
+        let totalTests = 0;
+
+        // Console capture
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+
+        function captureConsole() {
+            const output = document.getElementById('consoleOutput');
+            
+            ['log', 'error', 'warn', 'info'].forEach(method => {
+                console[method] = function(...args) {
+                    originalConsole[method].apply(console, args);
+                    const timestamp = new Date().toLocaleTimeString();
+                    const message = args.map(arg => 
+                        typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                    ).join(' ');
+                    output.innerHTML += `[${timestamp}] ${method.toUpperCase()}: ${message}\n`;
+                    output.scrollTop = output.scrollHeight;
+                };
+            });
+        }
+
+        function updateProgress(current, total, text) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const percentage = total > 0 ? (current / total) * 100 : 0;
+            
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = text || `${current}/${total} tests completed`;
+        }
+
+        function addTestResult(testName, status, message, details = null) {
+            const result = {
+                name: testName,
+                status: status,
+                message: message,
+                details: details,
+                timestamp: new Date().toISOString()
+            };
+            
+            testResults.push(result);
+            displayTestResults();
+        }
+
+        function displayTestResults() {
+            const container = document.getElementById('testResults');
+            const passed = testResults.filter(r => r.status === 'success').length;
+            const failed = testResults.filter(r => r.status === 'error').length;
+            
+            let html = `<p><strong>Summary:</strong> ${passed} passed, ${failed} failed, ${testResults.length} total</p>`;
+            
+            testResults.forEach(result => {
+                html += `
+                    <div class="status ${result.status}">
+                        <strong>${result.name}</strong>: ${result.message}
+                        ${result.details ? `<br><small>${result.details}</small>` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateComponentStatus() {
+            const container = document.getElementById('componentStatus');
+            const components = [
+                { name: 'TRACKS Data', check: () => window.TRACKS && window.TRACKS.length > 0 },
+                { name: 'iOS Player', check: () => window.iosPlayer !== undefined },
+                { name: 'iOS Bridge', check: () => window.iOSBridge !== undefined },
+                { name: 'Audio Element', check: () => document.getElementById('audioPlayer') !== null },
+                { name: 'Player Ready', check: () => window.iosPlayer && window.iosPlayer.audio },
+                { name: 'Bridge Ready', check: () => window.iOSBridge && window.iOSBridge.iosPlayer }
+            ];
+
+            let html = '';
+            components.forEach(comp => {
+                const status = comp.check() ? 'success' : 'error';
+                const statusText = comp.check() ? '✅ Ready' : '❌ Not Ready';
+                html += `<div class="status ${status}">${comp.name}: ${statusText}</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        async function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function testPlayerLoad() {
+            console.log('🧪 Testing iOS Player Load...');
+            
+            try {
+                // Check if iOS player exists
+                if (!window.iosPlayer) {
+                    throw new Error('iOS Player not found');
+                }
+
+                if (!window.iosPlayer.audio) {
+                    throw new Error('Audio element not accessible');
+                }
+
+                addTestResult('Player Load', 'success', 'iOS Player loaded successfully');
+                return true;
+            } catch (error) {
+                addTestResult('Player Load', 'error', error.message);
+                return false;
+            }
+        }
+
+        async function testBridgeIntegration() {
+            console.log('🧪 Testing Bridge Integration...');
+            
+            try {
+                // Check bridge exists
+                if (!window.iOSBridge) {
+                    throw new Error('iOS Bridge not found');
+                }
+
+                // Check bridge has required methods
+                const requiredMethods = ['loadTrack', 'nextTrack', 'previousTrack', 'toggleShuffle', 'toggleRepeat'];
+                for (const method of requiredMethods) {
+                    if (typeof window.iOSBridge[method] !== 'function') {
+                        throw new Error(`Bridge method ${method} not found`);
+                    }
+                }
+
+                // Check if bridge is connected to iOS player
+                if (!window.iOSBridge.iosPlayer) {
+                    throw new Error('Bridge not connected to iOS Player');
+                }
+
+                addTestResult('Bridge Integration', 'success', 'Bridge integration working');
+                return true;
+            } catch (error) {
+                addTestResult('Bridge Integration', 'error', error.message);
+                return false;
+            }
+        }
+
+        async function testAudioPlayback() {
+            console.log('🧪 Testing Audio Playback...');
+            
+            try {
+                if (!window.TRACKS || window.TRACKS.length === 0) {
+                    throw new Error('No tracks available for testing');
+                }
+
+                const testTrack = window.TRACKS[0];
+                console.log('Testing with track:', testTrack.title);
+
+                // Load track through bridge
+                if (window.iOSBridge) {
+                    window.iOSBridge.loadTrack(0, false);
+                    await wait(1000); // Wait for track to load
+                }
+
+                // Check if audio source is set
+                const audio = window.iosPlayer.audio;
+                if (!audio.src) {
+                    throw new Error('Audio source not set');
+                }
+
+                addTestResult('Audio Playback', 'success', `Track loaded: ${testTrack.title}`, `Source: ${audio.src}`);
+                return true;
+            } catch (error) {
+                addTestResult('Audio Playback', 'error', error.message);
+                return false;
+            }
+        }
+
+        async function testPlayerControls() {
+            console.log('🧪 Testing Player Controls...');
+            
+            try {
+                if (!window.iosPlayer) {
+                    throw new Error('iOS Player not available');
+                }
+
+                // Test play/pause
+                const initialState = window.iosPlayer.isPlaying;
+                window.iosPlayer.togglePlayPause();
+                await wait(100);
+                
+                // Test volume control
+                const initialVolume = window.iosPlayer.volume;
+                window.iosPlayer.setVolume(50);
+                if (window.iosPlayer.volume !== 0.5) {
+                    throw new Error('Volume control not working');
+                }
+                window.iosPlayer.setVolume(initialVolume * 100);
+
+                addTestResult('Player Controls', 'success', 'Player controls working');
+                return true;
+            } catch (error) {
+                addTestResult('Player Controls', 'error', error.message);
+                return false;
+            }
+        }
+
+        async function testStateSync() {
+            console.log('🧪 Testing State Synchronization...');
+            
+            try {
+                if (!window.iOSBridge) {
+                    throw new Error('iOS Bridge not available');
+                }
+
+                // Test shuffle toggle
+                const initialShuffle = window.iOSBridge.isShuffled;
+                window.iOSBridge.toggleShuffle();
+                if (window.iOSBridge.isShuffled === initialShuffle) {
+                    throw new Error('Shuffle state not changing');
+                }
+
+                // Test repeat toggle
+                const initialRepeat = window.iOSBridge.repeatMode;
+                window.iOSBridge.toggleRepeat();
+                if (window.iOSBridge.repeatMode === initialRepeat) {
+                    throw new Error('Repeat state not changing');
+                }
+
+                // Reset states
+                if (window.iOSBridge.isShuffled !== initialShuffle) {
+                    window.iOSBridge.toggleShuffle();
+                }
+
+                addTestResult('State Sync', 'success', 'State synchronization working');
+                return true;
+            } catch (error) {
+                addTestResult('State Sync', 'error', error.message);
+                return false;
+            }
+        }
+
+        async function runAllTests() {
+            console.log('🚀 Starting comprehensive test suite...');
+            
+            testResults = [];
+            currentTestIndex = 0;
+            totalTests = 5;
+
+            const tests = [
+                { name: 'Player Load', func: testPlayerLoad },
+                { name: 'Bridge Integration', func: testBridgeIntegration },
+                { name: 'Audio Playback', func: testAudioPlayback },
+                { name: 'Player Controls', func: testPlayerControls },
+                { name: 'State Sync', func: testStateSync }
+            ];
+
+            updateProgress(0, totalTests, 'Starting tests...');
+
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                console.log(`\n--- Running Test ${i + 1}/${totalTests}: ${test.name} ---`);
+                
+                updateProgress(i, totalTests, `Running: ${test.name}`);
+                
+                try {
+                    await test.func();
+                } catch (error) {
+                    addTestResult(test.name, 'error', `Test failed: ${error.message}`);
+                }
+                
+                currentTestIndex = i + 1;
+                await wait(500); // Brief pause between tests
+            }
+
+            updateProgress(totalTests, totalTests, 'All tests completed!');
+            console.log('\n🎉 Test suite completed!');
+
+            // Final summary
+            const passed = testResults.filter(r => r.status === 'success').length;
+            const failed = testResults.filter(r => r.status === 'error').length;
+            
+            if (failed === 0) {
+                console.log(`✅ All ${passed} tests passed!`);
+            } else {
+                console.log(`⚠️ ${passed} passed, ${failed} failed`);
+            }
+        }
+
+        function clearResults() {
+            testResults = [];
+            document.getElementById('testResults').innerHTML = '';
+            document.getElementById('consoleOutput').innerHTML = '';
+            updateProgress(0, 0, 'Results cleared');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            captureConsole();
+            console.log('🍎 iOS Integration Test Suite Loaded');
+            
+            // Update component status every 2 seconds
+            setInterval(updateComponentStatus, 2000);
+            updateComponentStatus();
+        });
+    </script>
+</body>
+</html>
