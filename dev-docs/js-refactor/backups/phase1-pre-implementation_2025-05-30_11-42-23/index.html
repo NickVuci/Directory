@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Nick Vuci - Xenharmonic Musician</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header with title, subtitle, and navigation buttons -->
+    <header class="header">
+        <h1>Nick Vuci</h1>
+        <h2>Xenharmonic Musician</h2>
+
+        <!-- Navigation buttons directly inside the header -->        <nav class="nav-buttons">
+            <button class="card-hover-base" onclick="showContent('about')">About</button>
+            <button class="card-hover-base" onclick="showContent('music')">Music</button>
+            <button class="card-hover-base" onclick="showContent('tools')">Tools</button>
+            <button class="card-hover-base" onclick="showContent('contact')">Contact</button>
+        </nav>
+    </header>
+    
+    <!-- Content area for sections -->
+    <main class="main-content">
+        <section id="content1" class="content"></section>
+        <section id="content2" class="content" style="display: none;"></section>
+    </main>
+
+    <!-- Persistent Music Player -->
+    <div id="musicPlayer" class="music-player">
+        <div class="music-icon-overlay">
+            <span class="music-icon">♪</span>
+        </div>
+        <div class="collapse-btn" onclick="musicPlayer.togglePlayer()">—</div>
+        <div class="player-content">            <div class="track-info">
+                <div class="track-title" id="trackTitle">No track selected</div>
+                <div class="track-artist" id="trackArtist">No tuning</div>
+            </div><div class="player-controls">
+                <button class="control-btn btn-base" onclick="previousTrack()">⏮</button>
+                <button class="control-btn btn-base play-pause" id="playPauseBtn" onclick="togglePlayPause()">▶</button>
+                <button class="control-btn btn-base" onclick="nextTrack()">⏭</button>
+            </div>
+            
+            <div class="player-progress">
+                <span class="time-display" id="currentTime">0:00</span>
+                <input type="range" class="progress-bar slider-base" id="progressBar" min="0" max="100" value="0" oninput="seekTo(this.value)" onchange="seekTo(this.value)">
+                <span class="time-display" id="totalTime">0:00</span>
+            </div>
+
+            <div class="volume-control">
+                <span class="volume-icon">🔊</span>                <input type="range" class="volume-slider slider-base" id="volumeSlider" min="0" max="100" value="50" oninput="setVolume(this.value)" onchange="setVolume(this.value)">
+            </div>
+        </div>
+        <audio id="audioPlayer" preload="metadata"></audio>
+    </div>
+    
+    <!-- Footer -->    <footer class="footer">
+        <!-- Desktop copyright (hidden on mobile) -->
+        <p>&copy; 2024 Nick Vuci. All rights reserved.</p>
+          <!-- Mobile Music Player (hidden on desktop) -->        <div id="mobileMusicPlayer" class="mobile-music-player" style="display: none;">
+            <div class="mobile-player-main">
+                <button class="mobile-control-btn btn-base mobile-prev-btn" onclick="previousTrack()">⏮</button>
+                <div class="mobile-track-info">
+                    <div class="mobile-track-title" id="mobileTrackTitle">No track selected</div>
+                    <div class="mobile-track-tuning" id="mobileTrackTuning">No tuning</div>
+                </div>
+                <button class="mobile-control-btn btn-base mobile-next-btn" onclick="nextTrack()">⏭</button>
+            </div>            <div class="mobile-player-progress">
+                <span class="mobile-time-display" id="mobileCurrentTime">0:00</span>
+                <div class="mobile-progress-container">
+                    <input type="range" class="mobile-progress-bar slider-base" id="mobileProgressBar" min="0" max="100" value="0" oninput="seekTo(this.value)" onchange="seekTo(this.value)">
+                    <div class="mobile-slider-thumb" id="mobileSliderThumb">▶</div>
+                    <div class="mobile-progress-hint">Tap to play/pause • Drag to seek</div>
+                </div>
+                <span class="mobile-time-display" id="mobileTotalTime">0:00</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="tracks.js"></script>
+    <script src="music-player.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
