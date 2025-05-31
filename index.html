@@ -187,13 +187,15 @@
                 </div>
                 <span class="mobile-time-display" id="mobileTotalTime">0:00</span>
             </div>
-        </div>
-    </footer>    <script src="tracks.js"></script>
-    <script type="module" src="music-player-modular-v2.js"></script>
-    <script src="main.js"></script>
-      <!-- Conditionally load iOS player scripts -->
+        </div>    </footer>    
+    <!-- Always load tracks data -->
+    <script src="tracks.js"></script>
+    
+    <!-- Conditionally load scripts based on device type -->
     <script>
         if (window.isIOSDevice) {
+            console.log('🍎 Loading iOS-specific scripts only');
+            
             // Load iOS player scripts
             const iosPlayerScript = document.createElement('script');
             iosPlayerScript.src = 'ios-player.js';
@@ -203,19 +205,44 @@
             iosBridgeScript.src = 'ios-bridge-main.js';
             document.head.appendChild(iosBridgeScript);
             
-            // Hide regular players and show iOS player when scripts load
+            // Load minimal main.js for navigation only (no music player)
+            const mainScript = document.createElement('script');
+            mainScript.src = 'main.js';
+            document.head.appendChild(mainScript);
+            
+            // Ensure iOS player visibility when scripts load
             iosPlayerScript.onload = function() {
-                // Hide regular desktop and mobile players
                 const desktopPlayer = document.getElementById('musicPlayer');
                 const mobilePlayer = document.getElementById('mobileMusicPlayer');
                 const iosPlayer = document.getElementById('iosPlayer');
                 
-                if (desktopPlayer) desktopPlayer.style.display = 'none';
-                if (mobilePlayer) mobilePlayer.style.display = 'none';
-                if (iosPlayer) iosPlayer.style.display = 'block';
+                if (desktopPlayer) {
+                    desktopPlayer.style.display = 'none';
+                    desktopPlayer.style.visibility = 'hidden';
+                }
+                if (mobilePlayer) {
+                    mobilePlayer.style.display = 'none';
+                    mobilePlayer.style.visibility = 'hidden';
+                }
+                if (iosPlayer) {
+                    iosPlayer.style.display = 'block';
+                    iosPlayer.style.visibility = 'visible';
+                }
                 
-                console.log('🍎 iOS player loaded and activated');
+                console.log('🍎 iOS player loaded and activated, original players disabled');
             };
+        } else {
+            console.log('🖥️ Loading standard desktop/mobile scripts');
+            
+            // Load standard music player for non-iOS devices
+            const musicPlayerScript = document.createElement('script');
+            musicPlayerScript.type = 'module';
+            musicPlayerScript.src = 'music-player-modular-v2.js';
+            document.head.appendChild(musicPlayerScript);
+            
+            const mainScript = document.createElement('script');
+            mainScript.src = 'main.js';
+            document.head.appendChild(mainScript);
         }
     </script>
 </body>

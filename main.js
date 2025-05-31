@@ -50,56 +50,98 @@ function updateActiveButton(section) {
 let musicPlayer;
 
 // Music player control functions (bridge functions for HTML onclick attributes)
-// Note: togglePlayer is now handled directly by musicPlayer.togglePlayer() in HTML
+// Note: These functions will be overridden by iOS bridge on iOS devices
 
 function togglePlayPause() {
-    if (musicPlayer.audio.paused) {
-        musicPlayer.audio.play().catch(e => {
-            console.error('Play error:', e);
-        });
-        musicPlayer.playPauseBtn.textContent = '⏸';
-        musicPlayer.isPlaying = true;
-        // Add playing state visual feedback to mobile slider
-        if (musicPlayer.mobileProgressBar) {
-            musicPlayer.mobileProgressBar.classList.add('playing');
+    // Skip if on iOS device - handled by iOS player
+    if (window.isIOSDevice) {
+        console.log('🍎 togglePlayPause called on iOS - should be handled by iOS bridge');
+        return;
+    }
+    
+    if (musicPlayer && musicPlayer.audio) {
+        if (musicPlayer.audio.paused) {
+            musicPlayer.audio.play().catch(e => {
+                console.error('Play error:', e);
+            });
+            musicPlayer.playPauseBtn.textContent = '⏸';
+            musicPlayer.isPlaying = true;
+            // Add playing state visual feedback to mobile slider
+            if (musicPlayer.mobileProgressBar) {
+                musicPlayer.mobileProgressBar.classList.add('playing');
+            }
+            // Update mobile thumb icon
+            musicPlayer.updateMobileThumbIcon();
+        } else {
+            musicPlayer.audio.pause();
+            musicPlayer.playPauseBtn.textContent = '▶';
+            musicPlayer.isPlaying = false;
+            // Remove playing state visual feedback
+            if (musicPlayer.mobileProgressBar) {
+                musicPlayer.mobileProgressBar.classList.remove('playing');
+            }
+            // Update mobile thumb icon
+            musicPlayer.updateMobileThumbIcon();
         }
-        // Update mobile thumb icon
-        musicPlayer.updateMobileThumbIcon();
-    } else {
-        musicPlayer.audio.pause();
-        musicPlayer.playPauseBtn.textContent = '▶';
-        musicPlayer.isPlaying = false;
-        // Remove playing state visual feedback
-        if (musicPlayer.mobileProgressBar) {
-            musicPlayer.mobileProgressBar.classList.remove('playing');
-        }
-        // Update mobile thumb icon
-        musicPlayer.updateMobileThumbIcon();
     }
 }
 
 function nextTrack() {
+    // Skip if on iOS device - handled by iOS player
+    if (window.isIOSDevice) {
+        console.log('🍎 nextTrack called on iOS - should be handled by iOS bridge');
+        return;
+    }
+    
     if (musicPlayer) {
         musicPlayer.nextTrack();
     }
 }
 
 function previousTrack() {
+    // Skip if on iOS device - handled by iOS player
+    if (window.isIOSDevice) {
+        console.log('🍎 previousTrack called on iOS - should be handled by iOS bridge');
+        return;
+    }
+    
     if (musicPlayer) {
         musicPlayer.previousTrack();
     }
 }
 
 function seekTo(value) {
-    musicPlayer.audio.currentTime = value;
+    // Skip if on iOS device - handled by iOS player
+    if (window.isIOSDevice) {
+        console.log('🍎 seekTo called on iOS - should be handled by iOS bridge');
+        return;
+    }
+    
+    if (musicPlayer && musicPlayer.audio) {
+        musicPlayer.audio.currentTime = value;
+    }
 }
 
 function setVolume(value) {
-    musicPlayer.audio.volume = value / 100;
+    // Skip if on iOS device - handled by iOS player
+    if (window.isIOSDevice) {
+        console.log('🍎 setVolume called on iOS - should be handled by iOS bridge');
+        return;
+    }
+    
+    if (musicPlayer && musicPlayer.audio) {
+        musicPlayer.audio.volume = value / 100;
+    }
 }
 
 // Function to play specific track from music library
 function playTrack(index) {
+    // Skip if on iOS device - handled by iOS player
+    if (window.isIOSDevice) {
+        console.log('🍎 playTrack called on iOS - should be handled by iOS bridge');
+        return;
+    }
+    
     if (musicPlayer) {
         musicPlayer.loadTrack(index);
         musicPlayer.audio.play().catch(e => {
@@ -117,6 +159,19 @@ function playTrack(index) {
 // Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     showContent('about');
-    // Initialize music player
-    musicPlayer = new MusicPlayer();
+    
+    // Only initialize music player on non-iOS devices
+    if (!window.isIOSDevice) {
+        console.log('🖥️ Initializing standard music player for non-iOS device');
+        // Wait for music-player module to load
+        setTimeout(() => {
+            if (window.MusicPlayer) {
+                musicPlayer = new MusicPlayer();
+            } else {
+                console.warn('MusicPlayer class not available');
+            }
+        }, 100);
+    } else {
+        console.log('🍎 Skipping standard music player initialization on iOS device');
+    }
 });

@@ -1,131 +1,111 @@
 /**
  * iOS Mobile Player Bridge - Main Site Version
- * Connects main site functions with iOS-specific player on same page
+ * Provides iOS-only functionality and completely disables original players
+ * Only loads on iOS devices detected in index.html
  */
 
 class iOSBridge {
     constructor() {
-        this.musicPlayer = null;
         this.iosPlayer = null;
         this.currentTrackIndex = 0;
         this.isShuffled = false;
         this.repeatMode = 'none'; // 'none', 'all', 'one'
         this.tracks = window.TRACKS || [];
         
-        console.log('🍎 iOS Bridge (Main Site) initialized with', this.tracks.length, 'tracks');
+        console.log('🍎 iOS Bridge initialized with', this.tracks.length, 'tracks');
     }
     
     async init() {
-        // Wait for both players to be ready
-        await this.waitForPlayers();
-        this.setupIntegration();
+        // Wait for iOS player to be ready
+        await this.waitForIOSPlayer();
+        this.setupIOSOnlyFunctions();
+        this.enforcePlayerVisibility();
     }
     
-    async waitForPlayers() {
-        // Wait for main music player
-        while (!window.musicPlayer) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
-        this.musicPlayer = window.musicPlayer;
-        
-        // Wait for iOS player
+    async waitForIOSPlayer() {
+        // Wait for iOS player to be available
         while (!window.iosPlayer) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         this.iosPlayer = window.iosPlayer;
+        console.log('🍎 iOS Player ready');
     }
     
-    setupIntegration() {
-        // Sync initial state
-        if (this.musicPlayer && this.tracks.length > 0) {
-            this.loadTrack(0, false);
-        }
-        
-        // Override main player functions to sync with iOS player
-        this.overrideFunctions();
-    }
-    
-    overrideFunctions() {
-        // Store original functions
-        const originalLoadTrack = window.loadTrack;
-        const originalTogglePlayPause = window.togglePlayPause;
-        const originalNextTrack = window.nextTrack;
+    setupIOSOnlyFunctions() {
+        console.log('🍎 Setting up iOS-only global functions');
         const originalPreviousTrack = window.previousTrack;
         const originalToggleShuffle = window.toggleShuffle;
         const originalToggleRepeat = window.toggleRepeat;
         const originalSeekTo = window.seekTo;
         const originalSetVolume = window.setVolume;
         
-        // Override loadTrack
+        console.log('🍎 Bridge: Overriding global functions for iOS-only operation');
+        
+        // Override loadTrack - iOS only, no original calls
         window.loadTrack = (index, autoplay = false) => {
-            console.log('🍎 Bridge: loadTrack called', index, autoplay);
-            if (originalLoadTrack) {
-                originalLoadTrack(index, autoplay);
-            }
+            console.log('🍎 Bridge: loadTrack called (iOS only)', index, autoplay);
             this.loadTrack(index, autoplay);
         };
         
-        // Override togglePlayPause
+        // Override togglePlayPause - iOS only
         window.togglePlayPause = () => {
-            console.log('🍎 Bridge: togglePlayPause called');
-            if (originalTogglePlayPause) {
-                originalTogglePlayPause();
+            console.log('🍎 Bridge: togglePlayPause called (iOS only)');
+            if (this.iosPlayer) {
+                this.iosPlayer.togglePlayback();
             }
-            this.iosPlayer.togglePlayback();
         };
         
-        // Override nextTrack
+        // Override nextTrack - iOS only
         window.nextTrack = () => {
-            console.log('🍎 Bridge: nextTrack called');
-            if (originalNextTrack) {
-                originalNextTrack();
+            console.log('🍎 Bridge: nextTrack called (iOS only)');
+            if (this.iosPlayer) {
+                this.iosPlayer.nextTrack();
             }
-            // Don't call iosPlayer.nextTrack() to avoid double execution
         };
         
-        // Override previousTrack
+        // Override previousTrack - iOS only
         window.previousTrack = () => {
-            console.log('🍎 Bridge: previousTrack called');
-            if (originalPreviousTrack) {
-                originalPreviousTrack();
+            console.log('🍎 Bridge: previousTrack called (iOS only)');
+            if (this.iosPlayer) {
+                this.iosPlayer.previousTrack();
             }
-            // Don't call iosPlayer.previousTrack() to avoid double execution
         };
         
-        // Override toggleShuffle
+        // Override toggleShuffle - iOS only
         window.toggleShuffle = () => {
-            console.log('🍎 Bridge: toggleShuffle called');
-            if (originalToggleShuffle) {
-                originalToggleShuffle();
+            console.log('🍎 Bridge: toggleShuffle called (iOS only)');
+            if (this.iosPlayer) {
+                this.iosPlayer.toggleShuffle();
             }
-            this.iosPlayer.updateShuffleState();
         };
         
-        // Override toggleRepeat
+        // Override toggleRepeat - iOS only
         window.toggleRepeat = () => {
-            console.log('🍎 Bridge: toggleRepeat called');
-            if (originalToggleRepeat) {
-                originalToggleRepeat();
+            console.log('🍎 Bridge: toggleRepeat called (iOS only)');
+            if (this.iosPlayer) {
+                this.iosPlayer.toggleRepeat();
             }
-            this.iosPlayer.updateRepeatState();
         };
         
-        // Override seekTo
+        // Override seekTo - iOS only
         window.seekTo = (percentage) => {
-            console.log('🍎 Bridge: seekTo called', percentage);
-            if (originalSeekTo) {
-                originalSeekTo(percentage);
+            console.log('🍎 Bridge: seekTo called (iOS only)', percentage);
+            if (this.iosPlayer) {
+                this.iosPlayer.seekTo(percentage);
             }
-            this.iosPlayer.seekTo(percentage);
         };
         
-        // Override setVolume
+        // Override setVolume - iOS only
         window.setVolume = (volume) => {
-            console.log('🍎 Bridge: setVolume called', volume);
-            if (originalSetVolume) {
-                originalSetVolume(volume);
+            console.log('🍎 Bridge: setVolume called (iOS only)', volume);
+            if (this.iosPlayer) {
+                this.iosPlayer.setVolume(volume);
             }
-            this.iosPlayer.setVolume(volume);
+        };
+          // Override playTrack - iOS only
+        window.playTrack = (index) => {
+            console.log('🍎 Bridge: playTrack called (iOS only)', index);
+            this.loadTrack(index, true);
         };
     }
     

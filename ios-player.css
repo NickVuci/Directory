@@ -632,13 +632,74 @@
 @media screen and (orientation: portrait) {
     .ios-device #musicPlayer {
         display: none !important;
+        visibility: hidden !important;
     }
     
     .ios-device #mobileMusicPlayer {
         display: none !important;
+        visibility: hidden !important;
     }
     
     .ios-device #iosPlayer {
         display: block !important;
+        visibility: visible !important;
     }
+}
+
+/* Complete audio element hiding on iOS devices */
+.ios-device audio {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Disable all original player interactions on iOS */
+.ios-device #musicPlayer * {
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+.ios-device #mobileMusicPlayer * {
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Additional safety - hide any audio controls */
+.ios-device audio::-webkit-media-controls,
+.ios-device audio::-webkit-media-controls-panel {
+    display: none !important;
+    -webkit-appearance: none !important;
+}
+
+/* Complete audio element hiding on iOS devices */
+.ios-device audio {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Disable all original player interactions on iOS */
+.ios-device #musicPlayer * {
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+.ios-device #mobileMusicPlayer * {
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Additional safety - hide any audio controls */
+.ios-device audio::-webkit-media-controls,
+.ios-device audio::-webkit-media-controls-panel {
+    display: none !important;
+    -webkit-appearance: none !important;
 }
