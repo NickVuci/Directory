@@ -150,15 +150,15 @@ class iOSMusicPlayer {
         
         // Reset progress
         this.updateProgressDisplay(0, 0);
-    }
-      updateTrackInfo(trackData) {
+    }    updateTrackInfo(trackData) {
         const title = trackData.title || 'Unknown Track';
         const artist = trackData.artist || 'Unknown Artist';
+        const tuning = trackData.tuning || 'Unknown Tuning';
         const artwork = trackData.artwork || '';
         
-        // Update mini player
+        // Update mini player (show tuning as the subtitle, consistent with main site)
         this.miniTitle.textContent = title;
-        this.miniArtist.textContent = artist;
+        this.miniArtist.textContent = tuning;
         
         // Handle artwork
         if (artwork) {
@@ -168,9 +168,9 @@ class iOSMusicPlayer {
             this.miniArt.style.display = 'none';
         }
         
-        // Update full player
+        // Update full player (show artist and tuning)
         this.fullTitle.textContent = title;
-        this.fullArtist.textContent = artist;
+        this.fullArtist.textContent = `${artist} • ${tuning}`;
         
         if (artwork) {
             this.fullArt.src = artwork;
