@@ -1,39 +1,15 @@
 <!-- music.html -->
-<div class="section-hero">
+<div class="section-hero music-content">
     <div class="section-card fade-in">
         <h3>Music</h3>
-        <p>Choons</p>
+        <p>Welcome to my music collection. Below you'll find my compositions exploring microtonal tuning systems and xenharmonic music.</p>
         
-        <div class="music-library" id="musicLibrary">
-            <!-- Track cards will be dynamically generated here -->
-        </div>
+        <!-- Audio player will be inserted here by player-init.js -->
+        <div id="audio-player-container"></div>
         
         <div class="music-info">
-            <h4>Info</h4>
-            <p>stuff</p>
+            <h4>About My Music</h4>
+            <p>I compose music exploring different tuning systems and microtonal scales. My work focuses on creating harmonic spaces that go beyond the standard 12-tone equal temperament used in most Western music.</p>
         </div>
     </div>
 </div>
-
-<script>
-// Generate music library cards from tracks data
-function generateMusicLibrary() {
-    const musicLibrary = document.getElementById('musicLibrary');
-    if (!musicLibrary || !window.TRACKS) return;
-    
-    musicLibrary.innerHTML = window.TRACKS.map((track, index) => {
-        const fileExt = track.src.split('.').pop().toUpperCase();
-        return `
-            <div class="music-card card-hover-base" onclick="playTrack(${index})">
-                <h4>${track.title}</h4>
-                <p>${track.description || `A ${track.tuning} composition`}</p>
-                <div class="music-format">${fileExt}</div>
-                ${track.tuning ? `<div class="music-tuning">${track.tuning}</div>` : ''}
-            </div>
-        `;
-    }).join('');
-}
-
-// Generate the library when this content loads
-generateMusicLibrary();
-</script>
