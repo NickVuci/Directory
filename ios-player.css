@@ -583,3 +583,62 @@
         text-align: left;
     }
 }
+
+/* ==========================================
+   iOS DEVICE OVERRIDES
+   Force iOS player visibility at all screen sizes and orientations
+   ========================================== */
+
+/* iOS Device Detection - Override media queries */
+.ios-device #musicPlayer {
+    display: none !important;
+}
+
+.ios-device #mobileMusicPlayer {
+    display: none !important;
+}
+
+.ios-device #iosPlayer {
+    display: block !important;
+}
+
+/* Ensure iOS player is visible at ALL screen sizes */
+@media (min-width: 769px) {
+    .ios-device #musicPlayer {
+        display: none !important;
+    }
+    
+    .ios-device #iosPlayer {
+        display: block !important;
+    }
+}
+
+/* Landscape orientation specific rules */
+@media screen and (orientation: landscape) {
+    .ios-device #musicPlayer {
+        display: none !important;
+    }
+    
+    .ios-device #mobileMusicPlayer {
+        display: none !important;
+    }
+    
+    .ios-device #iosPlayer {
+        display: block !important;
+    }
+}
+
+/* Portrait orientation specific rules */
+@media screen and (orientation: portrait) {
+    .ios-device #musicPlayer {
+        display: none !important;
+    }
+    
+    .ios-device #mobileMusicPlayer {
+        display: none !important;
+    }
+    
+    .ios-device #iosPlayer {
+        display: block !important;
+    }
+}

@@ -226,12 +226,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.isIOSDevice) {
         console.log('🍎 Initializing iOS Bridge for main site');
         
+        // Ensure proper player visibility on orientation change
+        const ensurePlayerVisibility = () => {
+            const desktopPlayer = document.getElementById('musicPlayer');
+            const mobilePlayer = document.getElementById('mobileMusicPlayer');
+            const iosPlayer = document.getElementById('iosPlayer');
+            
+            if (desktopPlayer) {
+                desktopPlayer.style.display = 'none';
+                desktopPlayer.style.visibility = 'hidden';
+            }
+            if (mobilePlayer) {
+                mobilePlayer.style.display = 'none';
+                mobilePlayer.style.visibility = 'hidden';
+            }
+            if (iosPlayer) {
+                iosPlayer.style.display = 'block';
+                iosPlayer.style.visibility = 'visible';
+            }
+            
+            console.log('🍎 Player visibility enforced - orientation:', screen.orientation?.angle || 'unknown');
+        };
+        
+        // Listen for orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(ensurePlayerVisibility, 100); // Small delay for orientation to settle
+        });
+        
+        // Listen for resize events (fallback for orientation changes)
+        window.addEventListener('resize', () => {
+            setTimeout(ensurePlayerVisibility, 50);
+        });
+        
+        // Initial visibility enforcement
+        ensurePlayerVisibility();
+        
         // Wait a bit for all scripts to load
         setTimeout(() => {
             const bridge = new iOSBridge();
             bridge.init().then(() => {
                 console.log('🍎 iOS Bridge integration complete');
                 bridge.syncState();
+                // Ensure visibility again after bridge initialization
+                ensurePlayerVisibility();
             }).catch(error => {
                 console.error('🍎 iOS Bridge initialization failed:', error);
             });
