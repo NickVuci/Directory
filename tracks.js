@@ -21,11 +21,10 @@ const TRACKS = [
         src: "music/NV-20201021-24EDO-SoloPianoMiniature1.flac",
         album: null,
         year: 2020,
-        genre: "Xenharmonic",
-        tuning: "24-EDO",
+        genre: "Xenharmonic",        tuning: "24-EDO",
         duration: null, // Will be populated when loaded
         description: "A solo piano miniature composed in 24 equal divisions of the octave"
-    }
+    },
     // Future tracks will be added here with more metadata:
     // tags: ["experimental", "ambient", "classical"],
     // bpm: 120,

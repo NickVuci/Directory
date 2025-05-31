@@ -4,22 +4,37 @@
  * Only loads on iOS devices detected in index.html
  */
 
-class iOSBridge {
-    constructor() {
+class iOSBridge {    constructor() {
         this.iosPlayer = null;
         this.currentTrackIndex = 0;
         this.isShuffled = false;
         this.repeatMode = 'none'; // 'none', 'all', 'one'
-        this.tracks = window.TRACKS || [];
+        this.tracks = [];
         
-        console.log('🍎 iOS Bridge initialized with', this.tracks.length, 'tracks');
+        console.log('🍎 iOS Bridge initializing...');
     }
     
     async init() {
+        // Wait for tracks to be loaded
+        await this.waitForTracks();
         // Wait for iOS player to be ready
         await this.waitForIOSPlayer();
         this.setupIOSOnlyFunctions();
         this.enforcePlayerVisibility();
+        
+        // Load first track if available
+        if (this.tracks.length > 0) {
+            this.iosPlayer.loadTrackByIndex(0);
+        }
+    }
+    
+    async waitForTracks() {
+        // Wait for TRACKS to be available
+        while (!window.TRACKS || window.TRACKS.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        this.tracks = window.TRACKS;
+        console.log('🍎 iOS Bridge loaded', this.tracks.length, 'tracks');
     }
     
     async waitForIOSPlayer() {
@@ -46,12 +61,11 @@ class iOSBridge {
             console.log('🍎 Bridge: loadTrack called (iOS only)', index, autoplay);
             this.loadTrack(index, autoplay);
         };
-        
-        // Override togglePlayPause - iOS only
+          // Override togglePlayPause - iOS only
         window.togglePlayPause = () => {
             console.log('🍎 Bridge: togglePlayPause called (iOS only)');
             if (this.iosPlayer) {
-                this.iosPlayer.togglePlayback();
+                this.iosPlayer.togglePlayPause();
             }
         };
         
@@ -108,21 +122,20 @@ class iOSBridge {
             this.loadTrack(index, true);
         };
     }
-    
-    loadTrack(index, autoplay = false) {
+      loadTrack(index, autoplay = false) {
         if (!this.tracks || index < 0 || index >= this.tracks.length) {
             console.warn('🍎 Bridge: Invalid track index', index);
             return;
         }
-        
+
         const track = this.tracks[index];
         this.currentTrackIndex = index;
-        
+
         console.log('🍎 Bridge: Loading track', track.title);
-        
-        // Load track in iOS player (no path modification needed - we're on main site)
-        this.iosPlayer.loadTrack(track, autoplay);
-        
+
+        // Load track in iOS player using loadTrackByIndex
+        this.iosPlayer.loadTrackByIndex(index, autoplay);
+
         // Update global state
         window.currentTrackIndex = index;
     }

@@ -11,19 +11,30 @@ class iOSMusicPlayer {
         this.isPlaying = false;
         this.volume = 0.7;
         
-        // Get audio element (shared with main site)
+        // Track management
+        this.tracks = window.TRACKS || [];
+        this.currentTrackIndex = 0;
+        this.isShuffled = false;
+        this.repeatMode = 'none'; // 'none', 'all', 'one'
+          // Get audio element (shared with main site)
         this.audio = document.getElementById('audioPlayer');
+        if (!this.audio) {
+            console.warn('🍎 Audio element not found, creating one');
+            this.audio = document.createElement('audio');
+            this.audio.id = 'audioPlayer';
+            this.audio.preload = 'metadata';
+            document.body.appendChild(this.audio);
+        }
         
         // Get iOS player elements
         this.initializeElements();
         this.setupEventListeners();
         this.setupProgressHandling();
         
-        console.log('🍎 iOS Music Player initialized');
+        console.log('🍎 iOS Music Player initialized with', this.tracks.length, 'tracks');
     }
-    
-    initializeElements() {
-        // Mini player elements
+      initializeElements() {
+        // Mini player elements (required)
         this.miniPlayer = document.getElementById('iosMiniPlayer');
         this.miniArt = document.getElementById('iosMiniArt');
         this.miniTitle = document.getElementById('iosMiniTitle');
@@ -31,7 +42,12 @@ class iOSMusicPlayer {
         this.miniPlayBtn = document.getElementById('iosMiniPlayBtn');
         this.miniProgress = document.getElementById('iosMiniProgress');
         
-        // Full player elements
+        // Verify mini player elements exist
+        if (!this.miniPlayer || !this.miniTitle || !this.miniArtist || !this.miniPlayBtn) {
+            console.warn('🍎 Some mini player elements missing - functionality may be limited');
+        }
+        
+        // Full player elements (optional)
         this.fullPlayer = document.getElementById('iosFullPlayer');
         this.fullArt = document.getElementById('iosFullArt');
         this.fullTitle = document.getElementById('iosFullTitle');
@@ -45,30 +61,45 @@ class iOSMusicPlayer {
         this.volumeSlider = document.getElementById('iosVolumeSlider');
         this.shuffleBtn = document.getElementById('iosShuffleBtn');
         this.repeatBtn = document.getElementById('iosRepeatBtn');
-    }
-      setupEventListeners() {
+        
+        // Log what elements are available
+        const hasFullPlayer = this.fullPlayer && this.fullTitle && this.fullArtist;
+        console.log('🍎 iOS Player elements:', {
+            miniPlayer: !!this.miniPlayer,
+            fullPlayer: hasFullPlayer,
+            audio: !!this.audio
+        });
+    }    setupEventListeners() {
         // Audio element events
-        this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
-        this.audio.addEventListener('timeupdate', () => this.updateProgress());
-        this.audio.addEventListener('play', () => this.updatePlayState(true));
-        this.audio.addEventListener('pause', () => this.updatePlayState(false));
-        this.audio.addEventListener('ended', () => this.handleTrackEnd());
-        this.audio.addEventListener('error', (e) => this.handleError(e));
+        if (this.audio) {
+            this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
+            this.audio.addEventListener('timeupdate', () => this.updateProgress());
+            this.audio.addEventListener('play', () => this.updatePlayState(true));
+            this.audio.addEventListener('pause', () => this.updatePlayState(false));
+            this.audio.addEventListener('ended', () => this.handleTrackEnd());
+            this.audio.addEventListener('error', (e) => this.handleError(e));
+        }
         
         // Volume control
-        this.volumeSlider.addEventListener('input', (e) => {
-            this.setVolume(e.target.value);
-        });
+        if (this.volumeSlider) {
+            this.volumeSlider.addEventListener('input', (e) => {
+                this.setVolume(e.target.value);
+            });
+        }
         
         // Prevent mini player expansion when tapping controls
-        this.miniPlayBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
+        if (this.miniPlayBtn) {
+            this.miniPlayBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
         
         // Mini player click to expand
-        this.miniPlayer.addEventListener('click', () => {
-            this.expand();
-        });
+        if (this.miniPlayer) {
+            this.miniPlayer.addEventListener('click', () => {
+                this.expand();
+            });
+        }
     }
     
     setupProgressHandling() {
@@ -156,26 +187,30 @@ class iOSMusicPlayer {
         const artwork = trackData.artwork || '';
         
         // Update mini player (show tuning as the subtitle, consistent with main site)
-        this.miniTitle.textContent = title;
-        this.miniArtist.textContent = tuning;
+        if (this.miniTitle) this.miniTitle.textContent = title;
+        if (this.miniArtist) this.miniArtist.textContent = tuning;
         
         // Handle artwork
-        if (artwork) {
-            this.miniArt.src = artwork;
-            this.miniArt.style.display = 'block';
-        } else {
-            this.miniArt.style.display = 'none';
+        if (this.miniArt) {
+            if (artwork) {
+                this.miniArt.src = artwork;
+                this.miniArt.style.display = 'block';
+            } else {
+                this.miniArt.style.display = 'none';
+            }
         }
         
         // Update full player (show only tuning, no artist name since it's your website)
-        this.fullTitle.textContent = title;
-        this.fullArtist.textContent = tuning;
+        if (this.fullTitle) this.fullTitle.textContent = title;
+        if (this.fullArtist) this.fullArtist.textContent = tuning;
         
-        if (artwork) {
-            this.fullArt.src = artwork;
-            this.fullArt.style.display = 'block';
-        } else {
-            this.fullArt.style.display = 'none';
+        if (this.fullArt) {
+            if (artwork) {
+                this.fullArt.src = artwork;
+                this.fullArt.style.display = 'block';
+            } else {
+                this.fullArt.style.display = 'none';
+            }
         }
     }
       togglePlayPause() {
@@ -255,6 +290,80 @@ class iOSMusicPlayer {
         // Could implement: Add to playlist, Share, etc.
     }
     
+    // Track navigation methods
+    nextTrack() {
+        if (this.tracks.length === 0) return;
+        
+        if (this.isShuffled) {
+            // Random track
+            this.currentTrackIndex = Math.floor(Math.random() * this.tracks.length);
+        } else {
+            // Sequential track
+            this.currentTrackIndex = (this.currentTrackIndex + 1) % this.tracks.length;
+        }
+        
+        const nextTrack = this.tracks[this.currentTrackIndex];
+        this.loadTrack(nextTrack);
+        
+        console.log('🍎 Now playing:', nextTrack.title);
+    }
+    
+    previousTrack() {
+        if (this.tracks.length === 0) return;
+        
+        // Sequential previous track
+        this.currentTrackIndex = (this.currentTrackIndex - 1 + this.tracks.length) % this.tracks.length;
+        
+        const prevTrack = this.tracks[this.currentTrackIndex];
+        this.loadTrack(prevTrack);
+        
+        console.log('🍎 Now playing:', prevTrack.title);
+    }
+    
+    // Load track by index from tracks array
+    loadTrackByIndex(index, autoplay = false) {
+        if (!this.tracks || index < 0 || index >= this.tracks.length) {
+            console.warn('🍎 Invalid track index', index);
+            return;
+        }
+        
+        this.currentTrackIndex = index;
+        const track = this.tracks[index];
+        this.loadTrack(track);
+        
+        if (autoplay) {
+            // Wait for track to load then play
+            this.audio.addEventListener('canplay', () => {
+                this.play();
+            }, { once: true });
+        }
+    }
+    
+    // Shuffle functionality
+    toggleShuffle() {
+        this.isShuffled = !this.isShuffled;
+        this.updateShuffleState(this.isShuffled);
+        console.log('🍎 Shuffle:', this.isShuffled ? 'ON' : 'OFF');
+    }
+    
+    // Repeat functionality
+    toggleRepeat() {
+        const modes = ['none', 'all', 'one'];
+        const currentIndex = modes.indexOf(this.repeatMode);
+        this.repeatMode = modes[(currentIndex + 1) % modes.length];
+        this.updateRepeatState(this.repeatMode);
+        console.log('🍎 Repeat mode:', this.repeatMode);
+    }
+      // Seek functionality
+    seekTo(percentage) {
+        if (!this.audio.duration) return;
+        
+        const newTime = (percentage / 100) * this.audio.duration;
+        this.audio.currentTime = newTime;
+        this.updateProgressDisplay(newTime, this.audio.duration);
+        console.log('🍎 Seeked to:', percentage + '%');
+    }
+
     // Internal update methods
     updateDuration() {
         const duration = this.audio.duration;
@@ -271,44 +380,67 @@ class iOSMusicPlayer {
         
         this.updateProgressDisplay(currentTime, duration);
     }
-    
-    updateProgressDisplay(currentTime, duration) {
+      updateProgressDisplay(currentTime, duration) {
         // Update time labels
-        this.currentTimeLabel.textContent = this.formatTime(currentTime);
+        if (this.currentTimeLabel) {
+            this.currentTimeLabel.textContent = this.formatTime(currentTime);
+        }
+        if (this.durationLabel) {
+            this.durationLabel.textContent = this.formatTime(duration || 0);
+        }
         
         if (isFinite(duration) && duration > 0) {
             // Update progress bars
             const percent = (currentTime / duration) * 100;
             
             // Mini player progress
-            this.miniProgress.style.width = percent + '%';
+            if (this.miniProgress) {
+                this.miniProgress.style.width = percent + '%';
+            }
             
             // Full player progress
-            this.progressFill.style.width = percent + '%';
-            this.progressThumb.style.left = percent + '%';
+            if (this.progressFill) {
+                this.progressFill.style.width = percent + '%';
+            }
+            if (this.progressThumb) {
+                this.progressThumb.style.left = percent + '%';
+            }
         }
     }
-    
-    updatePlayState(playing) {
+      updatePlayState(playing) {
         this.isPlaying = playing;
         
         // Update play/pause buttons
         const playIcon = playing ? '⏸' : '▶';
         
-        this.miniPlayBtn.querySelector('.ios-icon').textContent = playIcon;
-        this.mainPlayBtn.querySelector('.ios-icon').textContent = playIcon;
+        if (this.miniPlayBtn) {
+            const iconElement = this.miniPlayBtn.querySelector('.ios-icon');
+            if (iconElement) iconElement.textContent = playIcon;
+        }
+        
+        if (this.mainPlayBtn) {
+            const iconElement = this.mainPlayBtn.querySelector('.ios-icon');
+            if (iconElement) iconElement.textContent = playIcon;
+        }
         
         console.log('🍎 Play state updated:', playing ? 'Playing' : 'Paused');
     }
-      handleTrackEnd() {
-        console.log('🍎 Track ended');
+      
+    handleTrackEnd() {
+        console.log('🍎 Track ended, repeat mode:', this.repeatMode);
         this.updatePlayState(false);
         
-        // Use the integration handler for proper repeat/shuffle logic
-        if (typeof handleTrackEnd === 'function') {
-            handleTrackEnd();
-        } else if (typeof nextTrack === 'function') {
-            nextTrack();
+        if (this.repeatMode === 'one') {
+            // Repeat current track
+            this.audio.currentTime = 0;
+            this.play();
+        } else if (this.repeatMode === 'all') {
+            // Play next track
+            this.nextTrack();
+            this.play();
+        } else {
+            // No repeat - just go to next track but don't auto-play
+            this.nextTrack();
         }
     }
     
@@ -326,7 +458,7 @@ class iOSMusicPlayer {
     }
     
     updateRepeatState(repeatMode) {
-        // repeatMode: 'none', 'one', 'all'
+        // repeatMode: 'none', 'all', 'one'
         this.repeatBtn.classList.toggle('active', repeatMode !== 'none');
         
         const repeatIcon = repeatMode === 'one' ? '🔂' : '🔁';
@@ -347,12 +479,19 @@ class iOSMusicPlayer {
 let iosPlayer;
 
 document.addEventListener('DOMContentLoaded', () => {
-    iosPlayer = new iOSMusicPlayer();
-    
-    // Set initial volume
-    iosPlayer.setVolume(70);
-    
-    console.log('🍎 iOS Music Player ready');
+    // Wait for TRACKS to be available
+    if (window.TRACKS && window.TRACKS.length > 0) {
+        iosPlayer = new iOSMusicPlayer();
+        iosPlayer.setVolume(70);
+        console.log('🍎 iOS Music Player ready with', window.TRACKS.length, 'tracks');
+    } else {
+        // Wait a bit for tracks to load
+        setTimeout(() => {
+            iosPlayer = new iOSMusicPlayer();
+            iosPlayer.setVolume(70);
+            console.log('🍎 iOS Music Player ready (delayed load)');
+        }, 100);
+    }
 });
 
 // Integration functions for main site compatibility

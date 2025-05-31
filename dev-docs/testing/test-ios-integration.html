@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Player Integration Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #222; color: #fff; }
+        .test-section { margin: 20px 0; padding: 15px; background: #333; border-radius: 5px; }
+        .test-button { background: #007AFF; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; }
+        .test-button:hover { background: #0056CC; }
+        .status { background: #444; padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0; }
+        .pass { color: #4CAF50; }
+        .fail { color: #F44336; }
+        .info { color: #2196F3; }
+    </style>
+    
+    <!-- Simulate iOS device -->
+    <script>
+        window.isIOSDevice = true;
+        document.documentElement.classList.add('ios-device');
+        console.log('🍎 Simulating iOS device for testing');
+    </script>
+    
+    <!-- Load iOS styles -->
+    <link rel="stylesheet" href="ios-player.css">
+</head>
+<body>
+    <h1>🍎 iOS Player Integration Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Controls</h3>
+        <button class="test-button" onclick="testTracksLoaded()">Test Tracks Loaded</button>
+        <button class="test-button" onclick="testIOSPlayerReady()">Test iOS Player Ready</button>
+        <button class="test-button" onclick="testLoadFirstTrack()">Load First Track</button>
+        <button class="test-button" onclick="testPlayPause()">Toggle Play/Pause</button>
+        <button class="test-button" onclick="testNextTrack()">Next Track</button>
+        <button class="test-button" onclick="testPreviousTrack()">Previous Track</button>
+        <button class="test-button" onclick="testShuffle()">Toggle Shuffle</button>
+        <button class="test-button" onclick="testRepeat()">Toggle Repeat</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Status Log</h3>
+        <div id="statusLog" class="status">Ready for testing...</div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Integration Status</h3>
+        <div id="integrationStatus" class="status">Checking...</div>
+    </div>
+    
+    <!-- iOS Player HTML -->
+    <div id="iosPlayer" class="ios-music-player" style="display: block;">
+        <!-- Mini Player -->
+        <div class="ios-mini-player" id="iosMiniPlayer">
+            <div class="ios-mini-content">
+                <div class="ios-mini-art">
+                    <img id="iosMiniArt" src="" alt="Album Art" class="ios-mini-art-img">
+                    <div class="ios-mini-art-placeholder">♪</div>
+                </div>
+                <div class="ios-mini-info">
+                    <div class="ios-mini-title" id="iosMiniTitle">Select a track</div>
+                    <div class="ios-mini-artist" id="iosMiniArtist">No tuning</div>
+                </div>
+                <div class="ios-mini-controls">
+                    <button class="ios-mini-btn ios-play-pause" id="iosMiniPlayBtn" onclick="togglePlayPause()">
+                        <span class="ios-icon">▶</span>
+                    </button>
+                    <button class="ios-mini-btn ios-next" onclick="nextTrack()">
+                        <span class="ios-icon">⏭</span>
+                    </button>
+                </div>
+            </div>
+            <div class="ios-mini-progress">
+                <div class="ios-mini-progress-fill" id="iosMiniProgress"></div>
+            </div>
+        </div>
+        
+        <!-- Full Player -->
+        <div class="ios-full-player" id="iosFullPlayer">
+            <div class="ios-full-backdrop"></div>
+            <div class="ios-full-content">
+                <div class="ios-full-header">
+                    <button class="ios-collapse-btn">
+                        <span class="ios-chevron-down">⌄</span>
+                    </button>
+                    <div class="ios-full-title">Now Playing</div>
+                    <button class="ios-options-btn">
+                        <span class="ios-dots">⋯</span>
+                    </button>
+                </div>
+                
+                <div class="ios-full-body">
+                    <div class="ios-artwork-container">
+                        <img id="iosFullArt" src="" alt="Album Art" class="ios-full-artwork">
+                        <div class="ios-artwork-placeholder">♪</div>
+                    </div>
+                    
+                    <div class="ios-track-details">
+                        <div class="ios-track-title" id="iosFullTitle">Select a track</div>
+                        <div class="ios-track-artist" id="iosFullArtist">No tuning</div>
+                    </div>
+                    
+                    <div class="ios-progress-section">
+                        <div class="ios-progress-container">
+                            <div class="ios-progress-track" id="iosProgressTrack">
+                                <div class="ios-progress-fill" id="iosProgressFill"></div>
+                                <div class="ios-progress-thumb" id="iosProgressThumb"></div>
+                            </div>
+                        </div>
+                        <div class="ios-time-labels">
+                            <span id="iosCurrentTime">0:00</span>
+                            <span id="iosDuration">0:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ios-main-controls">
+                        <button class="ios-control-btn ios-shuffle" onclick="toggleShuffle()" id="iosShuffleBtn">
+                            <span class="ios-icon">🔀</span>
+                        </button>
+                        <button class="ios-control-btn ios-previous" onclick="previousTrack()">
+                            <span class="ios-icon">⏮</span>
+                        </button>
+                        <button class="ios-control-btn ios-play-main" id="iosMainPlayBtn" onclick="togglePlayPause()">
+                            <span class="ios-icon">▶</span>
+                        </button>
+                        <button class="ios-control-btn ios-next" onclick="nextTrack()">
+                            <span class="ios-icon">⏭</span>
+                        </button>
+                        <button class="ios-control-btn ios-repeat" onclick="toggleRepeat()" id="iosRepeatBtn">
+                            <span class="ios-icon">🔁</span>
+                        </button>
+                    </div>
+                    
+                    <div class="ios-volume-section">
+                        <div class="ios-volume-container">
+                            <span class="ios-volume-min">🔈</span>
+                            <input type="range" class="ios-volume-slider" id="iosVolumeSlider" 
+                                   min="0" max="100" value="70">
+                            <span class="ios-volume-max">🔊</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shared audio element -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+    
+    <!-- Load scripts in correct order -->
+    <script src="tracks.js"></script>
+    <script src="ios-player.js"></script>
+    <script src="ios-bridge-main.js"></script>
+    
+    <script>
+        let statusLog = [];
+        
+        function logStatus(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const statusLine = `[${timestamp}] ${message}`;
+            statusLog.push(statusLine);
+            
+            document.getElementById('statusLog').innerHTML = statusLog.slice(-10).join('<br>');
+            console.log(message);
+        }
+        
+        function testTracksLoaded() {
+            if (window.TRACKS && window.TRACKS.length > 0) {
+                logStatus(`✅ TRACKS loaded: ${window.TRACKS.length} tracks`, 'pass');
+                logStatus(`First track: ${window.TRACKS[0].title} - ${window.TRACKS[0].tuning}`, 'info');
+            } else {
+                logStatus('❌ TRACKS not loaded or empty', 'fail');
+            }
+        }
+        
+        function testIOSPlayerReady() {
+            if (window.iosPlayer) {
+                logStatus('✅ iOS Player instance available', 'pass');
+                logStatus(`Player has ${window.iosPlayer.tracks.length} tracks loaded`, 'info');
+            } else {
+                logStatus('❌ iOS Player not available', 'fail');
+            }
+        }
+        
+        function testLoadFirstTrack() {
+            if (window.iosPlayer && window.TRACKS && window.TRACKS.length > 0) {
+                window.iosPlayer.loadTrackByIndex(0);
+                logStatus(`✅ Loaded first track: ${window.TRACKS[0].title}`, 'pass');
+            } else {
+                logStatus('❌ Cannot load track - player or tracks not available', 'fail');
+            }
+        }
+        
+        function testPlayPause() {
+            if (typeof togglePlayPause === 'function') {
+                togglePlayPause();
+                logStatus('✅ togglePlayPause() called', 'pass');
+            } else {
+                logStatus('❌ togglePlayPause() function not available', 'fail');
+            }
+        }
+        
+        function testNextTrack() {
+            if (typeof nextTrack === 'function') {
+                nextTrack();
+                logStatus('✅ nextTrack() called', 'pass');
+            } else {
+                logStatus('❌ nextTrack() function not available', 'fail');
+            }
+        }
+        
+        function testPreviousTrack() {
+            if (typeof previousTrack === 'function') {
+                previousTrack();
+                logStatus('✅ previousTrack() called', 'pass');
+            } else {
+                logStatus('❌ previousTrack() function not available', 'fail');
+            }
+        }
+        
+        function testShuffle() {
+            if (typeof toggleShuffle === 'function') {
+                toggleShuffle();
+                logStatus('✅ toggleShuffle() called', 'pass');
+            } else {
+                logStatus('❌ toggleShuffle() function not available', 'fail');
+            }
+        }
+        
+        function testRepeat() {
+            if (typeof toggleRepeat === 'function') {
+                toggleRepeat();
+                logStatus('✅ toggleRepeat() called', 'pass');
+            } else {
+                logStatus('❌ toggleRepeat() function not available', 'fail');
+            }
+        }
+        
+        // Monitor integration status
+        function checkIntegration() {
+            let status = [];
+            
+            if (window.TRACKS) status.push(`✅ TRACKS (${window.TRACKS.length})`);
+            else status.push('❌ TRACKS missing');
+            
+            if (window.iosPlayer) status.push('✅ iosPlayer');
+            else status.push('❌ iosPlayer missing');
+            
+            if (typeof togglePlayPause === 'function') status.push('✅ togglePlayPause');
+            else status.push('❌ togglePlayPause missing');
+            
+            if (typeof nextTrack === 'function') status.push('✅ nextTrack');
+            else status.push('❌ nextTrack missing');
+            
+            if (typeof previousTrack === 'function') status.push('✅ previousTrack');
+            else status.push('❌ previousTrack missing');
+            
+            document.getElementById('integrationStatus').innerHTML = status.join(' | ');
+        }
+        
+        // Check status periodically
+        setInterval(checkIntegration, 1000);
+        
+        // Initial checks
+        setTimeout(() => {
+            logStatus('🍎 Starting integration tests...');
+            testTracksLoaded();
+            testIOSPlayerReady();
+        }, 1000);
+    </script>
+</body>
+</html>
