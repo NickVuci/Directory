@@ -495,8 +495,8 @@
     height: 4px;
     border-radius: 2px;
     background: var(--ios-separator);
-    outline: none;
-    -webkit-appearance: none;
+    outline: none;    -webkit-appearance: none;
+    appearance: none;
     cursor: pointer;
 }
 
@@ -600,6 +600,11 @@
 
 .ios-device #iosPlayer {
     display: block !important;
+}
+
+.ios-device .footer {
+    display: none !important;
+    pointer-events: none !important;
 }
 
 /* Ensure iOS player is visible at ALL screen sizes */

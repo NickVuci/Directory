@@ -152,7 +152,6 @@ class iOSMusicPlayer {
         this.updateProgressDisplay(0, 0);
     }    updateTrackInfo(trackData) {
         const title = trackData.title || 'Unknown Track';
-        const artist = trackData.artist || 'Unknown Artist';
         const tuning = trackData.tuning || 'Unknown Tuning';
         const artwork = trackData.artwork || '';
         
@@ -168,9 +167,9 @@ class iOSMusicPlayer {
             this.miniArt.style.display = 'none';
         }
         
-        // Update full player (show artist and tuning)
+        // Update full player (show only tuning, no artist name since it's your website)
         this.fullTitle.textContent = title;
-        this.fullArtist.textContent = `${artist} • ${tuning}`;
+        this.fullArtist.textContent = tuning;
         
         if (artwork) {
             this.fullArt.src = artwork;
