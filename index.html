@@ -5,19 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Nick Vuci - Xenharmonic Musician</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- iOS Device Detection and Redirect -->
+      <!-- iOS Device Detection -->
     <script>
-        // Redirect iOS devices to mobile-optimized version
-        (function() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const isMobilePath = window.location.pathname.includes('/mobile');
-            
-            if (isIOS && !isMobilePath) {
-                console.log('🍎 iOS device detected, redirecting to mobile version');
-                window.location.href = '/mobile/';
-            }
-        })();
+        // Detect iOS devices and set flag for conditional player loading
+        window.isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (window.isIOSDevice) {
+            console.log('🍎 iOS device detected, will load iOS-optimized player');
+            document.documentElement.classList.add('ios-device');
+        }
+    </script>
+      <!-- Conditionally load iOS player styles -->
+    <script>
+        if (window.isIOSDevice) {
+            const iosStyles = document.createElement('link');
+            iosStyles.rel = 'stylesheet';
+            iosStyles.href = 'ios-player.css';
+            document.head.appendChild(iosStyles);
+        }
     </script>
 </head>
 <body>
@@ -68,6 +72,103 @@
         <audio id="audioPlayer" preload="metadata"></audio>
     </div>
     
+    <!-- iOS-Optimized Music Player (conditionally loaded) -->
+    <div id="iosPlayer" class="ios-music-player" style="display: none;">
+        <!-- Mini Player -->
+        <div class="ios-mini-player" id="iosMiniPlayer" onclick="iosPlayer.expand()">
+            <div class="ios-mini-content">
+                <div class="ios-mini-art">
+                    <img id="iosMiniArt" src="" alt="Album Art" class="ios-mini-art-img">
+                    <div class="ios-mini-art-placeholder">♪</div>
+                </div>
+                <div class="ios-mini-info">
+                    <div class="ios-mini-title" id="iosMiniTitle">Select a track</div>
+                    <div class="ios-mini-artist" id="iosMiniArtist">No artist</div>
+                </div>
+                <div class="ios-mini-controls" onclick="event.stopPropagation()">
+                    <button class="ios-mini-btn ios-play-pause" id="iosMiniPlayBtn" onclick="togglePlayPause()">
+                        <span class="ios-icon">▶</span>
+                    </button>
+                    <button class="ios-mini-btn ios-next" onclick="nextTrack()">
+                        <span class="ios-icon">⏭</span>
+                    </button>
+                </div>
+            </div>
+            <div class="ios-mini-progress">
+                <div class="ios-mini-progress-fill" id="iosMiniProgress"></div>
+            </div>
+        </div>
+        
+        <!-- Full Player -->
+        <div class="ios-full-player" id="iosFullPlayer">
+            <div class="ios-full-backdrop" onclick="iosPlayer.collapse()"></div>
+            <div class="ios-full-content">
+                <div class="ios-full-header">
+                    <button class="ios-collapse-btn" onclick="iosPlayer.collapse()">
+                        <span class="ios-chevron-down">⌄</span>
+                    </button>
+                    <div class="ios-full-title">Now Playing</div>
+                    <button class="ios-options-btn" onclick="iosPlayer.showOptions()">
+                        <span class="ios-dots">⋯</span>
+                    </button>
+                </div>
+                
+                <div class="ios-full-body">
+                    <div class="ios-artwork-container">
+                        <img id="iosFullArt" src="" alt="Album Art" class="ios-full-artwork">
+                        <div class="ios-artwork-placeholder">♪</div>
+                    </div>
+                    
+                    <div class="ios-track-details">
+                        <div class="ios-track-title" id="iosFullTitle">Select a track</div>
+                        <div class="ios-track-artist" id="iosFullArtist">No artist</div>
+                    </div>
+                    
+                    <div class="ios-progress-section">
+                        <div class="ios-progress-container">
+                            <div class="ios-progress-track" id="iosProgressTrack">
+                                <div class="ios-progress-fill" id="iosProgressFill"></div>
+                                <div class="ios-progress-thumb" id="iosProgressThumb"></div>
+                            </div>
+                        </div>
+                        <div class="ios-time-labels">
+                            <span id="iosCurrentTime">0:00</span>
+                            <span id="iosDuration">0:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ios-main-controls">
+                        <button class="ios-control-btn ios-shuffle" onclick="toggleShuffle()" id="iosShuffleBtn">
+                            <span class="ios-icon">🔀</span>
+                        </button>
+                        <button class="ios-control-btn ios-previous" onclick="previousTrack()">
+                            <span class="ios-icon">⏮</span>
+                        </button>
+                        <button class="ios-control-btn ios-play-main" id="iosMainPlayBtn" onclick="togglePlayPause()">
+                            <span class="ios-icon">▶</span>
+                        </button>
+                        <button class="ios-control-btn ios-next" onclick="nextTrack()">
+                            <span class="ios-icon">⏭</span>
+                        </button>
+                        <button class="ios-control-btn ios-repeat" onclick="toggleRepeat()" id="iosRepeatBtn">
+                            <span class="ios-icon">🔁</span>
+                        </button>
+                    </div>
+                    
+                    <div class="ios-volume-section">
+                        <div class="ios-volume-container">
+                            <span class="ios-volume-min">🔈</span>
+                            <input type="range" class="ios-volume-slider" id="iosVolumeSlider" 
+                                   min="0" max="100" value="70" 
+                                   oninput="iosPlayer.setVolume(this.value)">
+                            <span class="ios-volume-max">🔊</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Footer -->    <footer class="footer">
         <!-- Desktop copyright (hidden on mobile) -->
         <p>&copy; 2024 Nick Vuci. All rights reserved.</p>
@@ -92,5 +193,32 @@
     </footer>    <script src="tracks.js"></script>
     <script type="module" src="music-player-modular-v2.js"></script>
     <script src="main.js"></script>
+      <!-- Conditionally load iOS player scripts -->
+    <script>
+        if (window.isIOSDevice) {
+            // Load iOS player scripts
+            const iosPlayerScript = document.createElement('script');
+            iosPlayerScript.src = 'ios-player.js';
+            document.head.appendChild(iosPlayerScript);
+            
+            const iosBridgeScript = document.createElement('script');
+            iosBridgeScript.src = 'ios-bridge-main.js';
+            document.head.appendChild(iosBridgeScript);
+            
+            // Hide regular players and show iOS player when scripts load
+            iosPlayerScript.onload = function() {
+                // Hide regular desktop and mobile players
+                const desktopPlayer = document.getElementById('musicPlayer');
+                const mobilePlayer = document.getElementById('mobileMusicPlayer');
+                const iosPlayer = document.getElementById('iosPlayer');
+                
+                if (desktopPlayer) desktopPlayer.style.display = 'none';
+                if (mobilePlayer) mobilePlayer.style.display = 'none';
+                if (iosPlayer) iosPlayer.style.display = 'block';
+                
+                console.log('🍎 iOS player loaded and activated');
+            };
+        }
+    </script>
 </body>
 </html>
