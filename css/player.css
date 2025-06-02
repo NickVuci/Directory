@@ -1,16 +1,18 @@
 /**
- * Audio Player Styles
+ * Audio Player Styles - Golden Theme Integration
  */
 
-/* Player Container */
+/* Player Container - Enhanced with header's golden aesthetic */
 .audio-player {
-    background: var(--darker-bg);
-    border: 1px solid var(--border-accent);
-    border-radius: var(--radius-md);
-    padding: 0.75rem;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--spacing-md));
+    border: 2px solid var(--border-accent);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
     max-width: 100%;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-light);
+    position: relative;
 }
 
 /* Footer Player */
@@ -20,9 +22,9 @@
     margin: 0 auto;
 }
 
-/* Player Header with Track Info */
+/* Player Header with Track Info - Enhanced with golden styling */
 .player-header {
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .track-info {
@@ -32,63 +34,74 @@
 .track-title {
     font-size: var(--font-size-lg);
     color: var(--primary-gold);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .track-details {
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-md);
 }
 
-/* Player Controls */
+/* Player Controls - Golden button styling */
 .player-controls {
     display: flex;
     justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
 }
 
 .control-btn {
-    background: transparent;
-    border: 1px solid var(--border-accent);
-    color: var(--text-light);
+    background: var(--button-bg);
+    border: var(--button-border);
+    color: var(--button-color);
     width: 3rem;
     height: 3rem;
-    border-radius: 50%;
+    border-radius: var(--button-radius);
     font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(var(--spacing-xs));
 }
 
 .control-btn:hover {
-    background: var(--primary-gold);
-    color: var(--dark-bg);
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-light);
 }
 
 .play-pause-btn {
     width: 3.5rem;
     height: 3.5rem;
     font-size: 1.4rem;
+    box-shadow: var(--shadow-light);
 }
 
-/* Progress Bar */
+.play-pause-btn:hover {
+    box-shadow: var(--shadow-medium);
+}
+
+/* Progress Bar - Enhanced with golden styling and component variables */
 .progress-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-md);
 }
 
 .time-display {
     font-size: var(--font-size-xs);
     color: var(--text-secondary);
     min-width: 3rem;
+    font-weight: 500;
 }
 
 .current-time {
@@ -105,95 +118,115 @@
 }
 
 .progress-bar {
+    appearance: none;
     -webkit-appearance: none;
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 8px;
+    border-radius: var(--slider-track-radius);
+    background: var(--slider-track-bg);
     outline: none;
     cursor: pointer;
+    transition: background var(--transition-normal);
 }
 
-/* Progress Bar Thumb */
+.progress-bar:hover {
+    background: rgba(168, 218, 220, 0.4);
+}
+
+/* Progress Bar Thumb - Using design system variables */
 .progress-bar::-webkit-slider-thumb {
+    appearance: none;
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--primary-gold);
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    border-radius: var(--radius-circle);
+    background: var(--slider-thumb-color);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .progress-bar::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--primary-gold);
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    border-radius: var(--radius-circle);
+    background: var(--slider-thumb-color);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
     border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .progress-bar::-webkit-slider-thumb:hover,
 .progress-bar::-moz-range-thumb:hover {
-    transform: scale(1.2);
+    transform: scale(1.3);
+    box-shadow: 0 4px 8px rgba(233, 196, 106, 0.4);
 }
 
 /* Progress Bar Track */
 .progress-bar::-webkit-slider-runnable-track {
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 8px;
+    border-radius: var(--slider-track-radius);
+    background: var(--slider-track-bg);
 }
 
 .progress-bar::-moz-range-track {
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 8px;
+    border-radius: var(--slider-track-radius);
+    background: var(--slider-track-bg);
 }
 
-/* Playlist Styling */
+/* Playlist Styling - Enhanced with golden card aesthetic */
 .playlist-container {
-    background: var(--darker-bg);
-    border: 1px solid var(--border-accent);
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    margin: 1rem auto;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--spacing-md));
+    border: 2px solid var(--border-accent);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin: var(--spacing-xl) auto;
     max-width: 100%;
+    box-shadow: var(--shadow-medium);
 }
 
 .playlist-heading {
     color: var(--primary-gold);
-    font-size: var(--font-size-lg);
-    margin-bottom: 1rem;
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-lg);
     text-align: center;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .playlist-items {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-md);
 }
 
 .track-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-sm);
+    padding: var(--spacing-lg);
+    background: var(--card-bg);
+    border: var(--card-border);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(var(--spacing-xs));
 }
 
 .track-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(4px);
+    background: var(--card-hover-bg);
+    color: var(--card-hover-color);
+    transform: var(--card-transform);
+    box-shadow: var(--card-shadow);
 }
 
 .track-item.active {
-    background: rgba(233, 196, 106, 0.2);
-    border-left: 3px solid var(--primary-gold);
+    background: var(--primary-gold);
+    color: var(--dark-bg);
+    border-left: 4px solid var(--accent-orange);
+    box-shadow: var(--shadow-light);
 }
 
 .track-item-info {
@@ -211,65 +244,70 @@
     color: var(--text-secondary);
 }
 
-/* Footer Modifications */
-.footer {
+/* Footer Player Styling - Enhanced with golden header aesthetic */
+.footer-player {
     display: flex;
     flex-direction: column;
-    padding: 1rem 0.5rem;
-    background: var(--darker-bg);
+    padding: var(--spacing-lg) var(--spacing-md);
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--spacing-md));
     min-height: var(--footer-height);
     position: relative;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-medium);
+    border-top: 2px solid var(--border-accent);
 }
 
-.footer .copyright {
-    margin-top: 0.75rem;
+.footer-player .copyright {
+    margin-top: var(--spacing-lg);
     font-size: var(--font-size-xs);
     color: var(--text-secondary);
     text-align: center;
 }
 
-.footer .copyright p {
+.footer-player .copyright p {
     margin-bottom: 0;
 }
 
-/* Playlist Toggle Button */
+/* Playlist Toggle Button - Golden styling */
 .playlist-toggle-btn {
     position: absolute;
     top: -1.5rem;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--darker-bg);
-    color: var(--text-light);
-    border: 1px solid var(--border-accent);
+    background: var(--button-bg);
+    color: var(--button-color);
+    border: var(--button-border);
     border-bottom: none;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    padding: 0.25rem 1rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--spacing-xs) var(--spacing-lg);
     font-size: var(--font-size-xs);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
     z-index: 10;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-light);
+    backdrop-filter: blur(var(--spacing-xs));
 }
 
 .playlist-toggle-btn:hover,
 .playlist-toggle-btn.active {
-    background: var(--primary-gold);
-    color: var(--dark-bg);
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+    transform: translateX(-50%) scale(1.05);
 }
 
-/* Persistent Playlist */
+/* Persistent Playlist - Enhanced styling */
 .playlist-container {
     position: fixed;
     bottom: var(--footer-height);
     left: 0;
     right: 0;
-    background: var(--darker-bg);
-    border-top: 1px solid var(--border-accent);
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--spacing-lg));
+    border-top: 2px solid var(--border-accent);
     max-height: 50vh;
     overflow-y: auto;
     z-index: 100;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-heavy);
     display: none;
 }
 
@@ -277,23 +315,26 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
+    padding: var(--spacing-md) var(--spacing-lg);
     border-bottom: 1px solid var(--border-accent);
     position: sticky;
     top: 0;
-    background: var(--darker-bg);
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--spacing-md));
     z-index: 101;
 }
 
 .playlist-heading {
     margin: 0;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
+    color: var(--primary-gold);
+    font-weight: 600;
 }
 
 .playlist-close-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-light);
+    background: var(--button-bg);
+    border: var(--button-border);
+    color: var(--button-color);
     font-size: 1.5rem;
     cursor: pointer;
     display: flex;
@@ -301,32 +342,34 @@
     justify-content: center;
     width: 2rem;
     height: 2rem;
-    border-radius: 50%;
-    transition: all 0.2s ease;
+    border-radius: var(--button-radius);
+    transition: all var(--transition-normal);
 }
 
 .playlist-close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--primary-gold);
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+    transform: scale(1.1);
 }
 
-/* Compact Player Controls for Footer */
-.footer .player-controls {
-    margin-bottom: 0.5rem;
+/* Compact Player Controls for Footer - Enhanced spacing */
+.footer-player .player-controls {
+    margin-bottom: var(--spacing-md);
 }
 
-.footer .track-info {
-    margin-bottom: 0.5rem;
+.footer-player .track-info {
+    margin-bottom: var(--spacing-md);
 }
 
-.footer .progress-container {
-    margin-bottom: 0.25rem;
+.footer-player .progress-container {
+    margin-bottom: var(--spacing-sm);
 }
 
-/* Responsive Adjustments */
+/* Responsive Adjustments - Using design system variables */
 @media (max-width: 600px) {
     .audio-player {
-        padding: 0.8rem;
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
     }
     
     .control-btn {
@@ -344,11 +387,15 @@
     }
     
     .track-item {
-        padding: 0.5rem;
+        padding: var(--spacing-md);
+    }
+    
+    .playlist-container {
+        padding: var(--spacing-lg);
     }
 }
 
-/* iOS-Friendly Touch Targets */
+/* iOS-Friendly Touch Targets - Enhanced for accessibility */
 @media (pointer: coarse) {
     .control-btn {
         min-width: 3rem;
@@ -361,38 +408,38 @@
     }
     
     .progress-bar {
-        height: 8px;
+        height: 10px;
     }
     
     .progress-bar::-webkit-slider-thumb {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
     }
     
     .progress-bar::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
     }
     
     .track-item {
-        padding: 0.75rem;
+        padding: var(--spacing-lg);
         min-height: 3.5rem; /* Better touch target size */
     }
 }
 
-/* Responsive adjustments for footer player */
+/* Responsive adjustments for footer player - Enhanced mobile experience */
 @media (max-width: 768px) {
-    .footer {
-        padding: 0.5rem;
+    .footer-player {
+        padding: var(--spacing-md);
     }
     
-    .footer .control-btn {
+    .footer-player .control-btn {
         width: 2.25rem;
         height: 2.25rem;
         font-size: 1rem;
     }
     
-    .footer .play-pause-btn {
+    .footer-player .play-pause-btn {
         width: 2.75rem;
         height: 2.75rem;
         font-size: 1.2rem;
@@ -401,5 +448,9 @@
     .playlist-container {
         bottom: var(--mobile-footer-height);
         max-height: 60vh;
+    }
+    
+    .playlist-toggle-btn {
+        padding: var(--spacing-xs) var(--spacing-md);
     }
 }
