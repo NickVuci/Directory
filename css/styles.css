@@ -186,14 +186,24 @@
     scrollbar-color: rgba(233, 196, 106, 0.6) rgba(30, 31, 38, 0.3);
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Lato', sans-serif;
     background: linear-gradient(135deg, #1e1f26, #283c63);
     color: #f0f0f0;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 
+        "header"
+        "main"
+        "footer";
 }
 
 /* ==========================================
@@ -202,10 +212,7 @@ body {
 
 /* Header styling */
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    grid-area: header;
     width: 100%;
     background: var(--bg-overlay);
     backdrop-filter: blur(var(--spacing-md));
@@ -249,6 +256,7 @@ body {
     max-inline-size: var(--content-max-width);
     padding: var(--content-padding);
     margin-inline: auto;
+    margin-block: var(--spacing-xl); /* Add vertical margin for proper spacing */
     
     /* Enhanced visual properties */
     background: transparent;
@@ -259,13 +267,12 @@ body {
 
 /* Scrollable content container */
 .main-content {
-    flex: 1;
+    grid-area: main;
     overflow-y: auto;
-    padding-top: var(--header-height); /* Space for fixed header */
-    padding-bottom: var(--footer-height); /* Space for fixed footer */
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 0; /* Required for proper scrolling in grid layouts */
 }
 
 /* Hero Section for About, Music, and Tools */
@@ -429,15 +436,13 @@ a:hover {
 
 /* Footer styling */
 .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    grid-area: footer;
     width: 100%;
     text-align: center;
     padding: var(--spacing-xl);
     background: var(--bg-overlay);
-    backdrop-filter: blur(var(--spacing-md));    color: var(--text-secondary);
+    backdrop-filter: blur(var(--spacing-md));
+    color: var(--text-secondary);
     z-index: var(--z-header);
     border-top: 2px solid var(--border-accent);
     animation: fadeIn 1.5s var(--easing-smooth);
@@ -453,11 +458,14 @@ a:hover {
    ========================================== */
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    /* Mobile body layout - flex container with proper viewport handling */
+@media (max-width: 768px) {    /* Mobile body layout - grid container with proper viewport handling */
     body {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas: 
+            "header"
+            "main"
+            "footer";
         /* Use dynamic viewport height that accounts for iOS browser UI */
         height: 100dvh; /* dvh = dynamic viewport height */
         min-height: 100vh; /* Fallback for older browsers */
@@ -467,14 +475,10 @@ a:hover {
         padding-bottom: env(safe-area-inset-bottom);
     }    
     .header {
-        position: fixed; /* Keep header fixed to prevent overlap */
-        top: env(safe-area-inset-top); /* Respect iOS safe area */
-        left: 0;
-        right: 0;
-        width: 100%;
+        grid-area: header;
+        padding: var(--spacing-lg) 0 var(--spacing-sm); /* Reduced padding for mobile */
         background: var(--bg-overlay);
         backdrop-filter: blur(var(--spacing-md));
-        padding: var(--spacing-lg) 0 var(--spacing-sm); /* Further reduced padding for more space */
         text-align: center;
         color: var(--primary-gold);
         border-bottom: 2px solid var(--border-accent);
@@ -500,13 +504,10 @@ a:hover {
         flex: 1;
         min-inline-size: 0; /* Logical property */
         /* btn-unified class handles transitions */
-    }
-
-    .main-content {
-        flex: 1; /* Take up remaining space between header and footer */
+    }    .main-content {
+        grid-area: main;
         overflow-y: auto;
-        padding-top: 170px; /* Extra buffer to ensure no overlap */
-        padding-bottom: 0;        display: flex;
+        display: flex;
         flex-direction: column;
         align-items: center;
         margin-block-start: 0; /* Logical property */
@@ -520,22 +521,16 @@ a:hover {
 }
     /* ==========================================
        MOBILE MUSIC PLAYER
-       ========================================== */
-
-    /* Mobile Player Footer Container */
+       ========================================== */    /* Mobile Player Footer Container */
     .footer {
-        position: relative; /* Change from fixed to relative for flex layout */
-        bottom: auto;
-        left: auto;
-        right: auto;
+        grid-area: footer;
         width: 100%;
         padding: 0;
         background: var(--bg-overlay);
         backdrop-filter: blur(var(--spacing-lg));
         border-top: 2px solid var(--border-accent);
         z-index: var(--z-player);
-        min-height: var(--mobile-footer-height); /* Further reduced height for very compact layout */
-        flex-shrink: 0; /* Prevent footer from shrinking */
+        min-height: var(--mobile-footer-height); /* Compact layout for mobile */
         /* Ensure footer sticks to bottom even with iOS dynamic UI */
         padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
     }
