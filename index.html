@@ -2,7 +2,7 @@
 <html lang="en">
 <head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">    <title>Nick Vuci - Xenharmonic Musician</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <!-- Header with title, subtitle, and navigation buttons -->
@@ -10,7 +10,8 @@
         <h1>Nick Vuci</h1>
         <h2>Xenharmonic Musician</h2>
 
-        <!-- Navigation buttons directly inside the header -->        <nav class="nav-buttons">
+        <!-- Navigation buttons directly inside the header -->        
+         <nav class="nav-buttons">
             <button class="card-hover-base" onclick="showContent('about')">About</button>
             <button class="card-hover-base" onclick="showContent('music')">Music</button>
             <button class="card-hover-base" onclick="showContent('tools')">Tools</button>
@@ -21,11 +22,13 @@
     <!-- Content area for sections -->
     <main class="main-content">
         <section id="content1" class="content"></section>
-        <section id="content2" class="content" style="display: none;"></section>    </main>
+        <section id="content2" class="content" style="display: none;"></section>    
+    </main>
       <!-- Footer with Audio Player -->    
     <footer class="footer">
         <!-- Audio player will be inserted here by player-init.js -->
-        <p>&copy; 2024 Nick Vuci. All rights reserved.</p></footer>
+        <p>&copy; 2024 Nick Vuci. All rights reserved.</p>
+    </footer>
     
     <!-- Core JavaScript -->
     <script src="main.js"></script>
