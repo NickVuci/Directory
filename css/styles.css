@@ -267,8 +267,7 @@ body {
 /* Hero Section for About, Music, and Tools */
 .section-hero {
     position: relative;
-    background: (#283c63),
-                url('path-to-background-image.jpg') center/cover no-repeat;
+    background: var(--darker-bg);
     padding: var(--spacing-3xl) var(--spacing-xl);
     border-radius: var(--radius-lg);
     color: var(--text-light);
@@ -283,7 +282,7 @@ body {
 
 /* Section Cards */
 .section-card {
-    background: (#283c63); /* Matches main background */
+    background: var(--darker-bg);
     border-radius: var(--radius-lg);
     padding: var(--spacing-xl);    box-shadow: var(--shadow-light);
     text-align: start; /* Modern logical equivalent of 'left' */
@@ -321,29 +320,19 @@ body {
 }
 
 /* Navigation Cards (Button styling) */
-/* Navigation buttons with enhanced modern selectors and animations */
+/* Navigation buttons with clean unified animations */
 .nav-buttons button {
     padding-block: var(--spacing-md); /* Logical property */
     padding-inline: var(--spacing-xl); /* Logical property */
     font-size: var(--font-size-base);
-    color: var(--primary-gold);
-    background: var(--card-bg);
-    border: var(--card-border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: background-color var(--transition-normal), 
-                color var(--transition-normal), 
-                transform var(--transition-normal) var(--easing-elastic);
+    border-radius: var(--radius-md); /* Preserve the square corners for nav buttons */
 }
 
-/* Modern selector for active and hover states */
-.nav-buttons button:is(.active, :hover) {
-    background: var(--primary-gold);
-    color: var(--dark-bg);
-}
-
+/* Modern selector for active state */
 .nav-buttons button.active {
-    transform: scale(1.05);
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+    /* No transform scale to match the unified button style */
 }
 
 /* Music format and tuning badges with logical properties */
@@ -472,7 +461,8 @@ a:hover {
         /* Add safe area padding for iOS notch/home indicator */
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
-    }    .header {
+    }    
+    .header {
         position: fixed; /* Keep header fixed to prevent overlap */
         top: env(safe-area-inset-top); /* Respect iOS safe area */
         left: 0;
@@ -498,14 +488,14 @@ a:hover {
     }    .nav-buttons {
         gap: var(--spacing-sm);
         flex-wrap: nowrap;
-    }
-      /* Mobile navigation with logical properties */
+    }      /* Mobile navigation with logical properties */
     .nav-buttons button {
         padding-block: var(--spacing-sm); /* Logical property */
         padding-inline: var(--spacing-md); /* Logical property */
         font-size: var(--font-size-sm);
         flex: 1;
         min-inline-size: 0; /* Logical property */
+        /* btn-unified class handles transitions */
     }
 
     .main-content {
@@ -523,7 +513,7 @@ a:hover {
         inline-size: 95%; /* Logical property */
         padding: var(--spacing-xl);
     }
-
+}
     /* ==========================================
        MOBILE MUSIC PLAYER
        ========================================== */
@@ -656,7 +646,9 @@ a:hover {
         background: transparent;
         border: none;
         cursor: pointer;
-    }    /* Mobile Player Progress Bar Enhanced States */
+    }    
+    
+    /* Mobile Player Progress Bar Enhanced States */
     .mobile-progress-bar.active {
         height: var(--spacing-sm); /* More noticeable feedback */
         background: rgba(168, 218, 220, 0.5);
@@ -669,7 +661,9 @@ a:hover {
         height: 22px;
         background: var(--accent-orange);
         box-shadow: 0 0 var(--spacing-sm) rgba(244, 162, 97, 0.7);
-    }    .mobile-progress-bar.playing {
+    }    
+    
+    .mobile-progress-bar.playing {
         background: rgba(233, 196, 106, 0.4);
         animation: pulse 2s infinite var(--easing-smooth);
         width: 100%; /* Maintain full width during playing state */
@@ -734,31 +728,7 @@ a:hover {
     .mobile-progress-container:hover .mobile-progress-hint,
     .mobile-progress-bar.active + .mobile-progress-hint {
         opacity: 1;
-    }    /* Mobile Player Volume Control (Legacy - Currently Hidden) */
-    .mobile-volume-control {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-        margin-left: auto;
-        min-width: 80px;
-    }
-
-    .mobile-volume-icon {
-        font-size: var(--font-size-xs);
-        color: var(--text-secondary);
-        user-select: none;
-    }
-
-    .mobile-volume-slider {
-        width: 60px;
-        height: var(--spacing-xs);
-    }    /* Mobile Player Footer Text Override */
-    /* Hide copyright text on mobile since player replaces it */
-    .footer p {
-        display: none;
-    }
-}
-
+    }    
 /* ==========================================
    AUDIO PLAYER STYLES
    ========================================== */
@@ -820,9 +790,7 @@ a:hover {
 }
 
 .control-btn {
-    background: var(--button-bg);
-    border: var(--button-border);
-    color: var(--button-color);
+    /* Inherit all btn-unified properties */
     width: 3rem;
     height: 3rem;
     border-radius: var(--button-radius);
@@ -830,13 +798,6 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-}
-
-.control-btn:hover {
-    background: var(--button-hover-bg);
-    color: var(--button-hover-color);
 }
 
 .play-pause-btn {
@@ -921,67 +882,7 @@ a:hover {
     background: var(--slider-track-bg);
 }
 
-/* Playlist Styling - Clean minimal aesthetic */
-.playlist-container {
-    background: var(--bg-overlay);
-    backdrop-filter: blur(var(--spacing-md));
-    border: none;
-    border-radius: var(--radius-md);
-    padding: var(--spacing-xl);
-    margin: var(--spacing-xl) auto;
-    max-width: 100%;
-}
-
-.playlist-heading {
-    color: var(--primary-gold);
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-lg);
-    text-align: center;
-    font-weight: 600;
-}
-
-.playlist-items {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-}
-
-.track-item {
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-lg);
-    background: var(--card-bg);
-    border: var(--card-border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-}
-
-.track-item:hover {
-    background: var(--card-hover-bg);
-    color: var(--card-hover-color);
-}
-
-.track-item.active {
-    background: var(--primary-gold);
-    color: var(--dark-bg);
-    border-left: 4px solid var(--accent-orange);
-}
-
-.track-item-info {
-    flex: 1;
-}
-
-.track-item-title {
-    font-weight: 500;
-    color: var(--text-light);
-    margin-bottom: 0.25rem;
-}
-
-.track-item-details {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-}
+/* Playlist Styling Removed */
 
 /* Footer Player Styling - Clean aesthetic matching header */
 .footer-player {
@@ -1006,84 +907,7 @@ a:hover {
     margin-bottom: 0;
 }
 
-/* Playlist Toggle Button - Clean minimal styling */
-.playlist-toggle-btn {
-    position: absolute;
-    top: -1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--button-bg);
-    color: var(--button-color);
-    border: var(--button-border);
-    border-bottom: none;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    padding: var(--spacing-xs) var(--spacing-lg);
-    font-size: var(--font-size-xs);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    z-index: 10;
-}
-
-.playlist-toggle-btn:hover,
-.playlist-toggle-btn.active {
-    background: var(--button-hover-bg);
-    color: var(--button-hover-color);
-}
-
-/* Persistent Playlist - Clean minimal styling */
-.playlist-container {
-    position: fixed;
-    bottom: var(--footer-height);
-    left: 0;
-    right: 0;
-    background: var(--bg-overlay);
-    backdrop-filter: blur(var(--spacing-md));
-    border-top: 2px solid var(--border-accent);
-    max-height: 50vh;
-    overflow-y: auto;
-    z-index: 100;
-    display: none;
-}
-
-.playlist-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-bottom: 1px solid var(--border-accent);
-    position: sticky;
-    top: 0;
-    background: var(--bg-overlay);
-    backdrop-filter: blur(var(--spacing-md));
-    z-index: 101;
-}
-
-.playlist-heading {
-    margin: 0;
-    font-size: var(--font-size-lg);
-    color: var(--primary-gold);
-    font-weight: 600;
-}
-
-.playlist-close-btn {
-    background: var(--button-bg);
-    border: var(--button-border);
-    color: var(--button-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: var(--button-radius);
-    transition: all var(--transition-normal);
-}
-
-.playlist-close-btn:hover {
-    background: var(--button-hover-bg);
-    color: var(--button-hover-color);
-}
+/* Playlist Toggle Button and Persistent Playlist Removed */
 
 /* Compact Player Controls for Footer - Enhanced spacing */
 .footer-player .player-controls {
@@ -1114,14 +938,8 @@ a:hover {
         width: 3rem;
     height: 3rem;
     }
-    
-    .track-item {
-        padding: var(--spacing-md);
-    }
-    
-    .playlist-container {
-        padding: var(--spacing-lg);
-    }
+      /* Track item styles removed */
+      /* Playlist container styles removed */
 }
 
 /* iOS-Friendly Touch Targets - Enhanced for accessibility */
@@ -1149,10 +967,7 @@ a:hover {
         width: 18px;
         height: 18px;
     }
-      .track-item {
-        padding: var(--spacing-lg);
-        min-height: 3.5rem; /* Better touch target size */
-    }
+    /* Track item styles removed */
 }
 
 /* Audio Player Footer Responsive adjustments - Enhanced mobile experience */
@@ -1172,13 +987,113 @@ a:hover {
         height: 2.75rem;
         font-size: 1.2rem;
     }
-    
-    .playlist-container {
-        bottom: var(--mobile-footer-height);
-        max-height: 60vh;
+      /* Playlist styles removed */
+}
+
+/* ==========================================
+   VOLUME CONTROL (DESKTOP ONLY)
+   ========================================== */
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    pointer-events: auto;
+    margin-top: var(--spacing-md);
+}
+
+.volume-icon {
+    /* Inherit btn-unified properties */
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    user-select: none;
+    width: var(--spacing-2xl);
+    height: var(--spacing-2xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volume-slider-container {
+    flex: 1;
+}
+
+.volume-slider {
+    width: 100%;
+    height: var(--spacing-xs);
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--slider-track-bg);
+    border-radius: var(--slider-track-radius);
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    border-radius: 50%;
+    background: var(--slider-thumb-color);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    border-radius: 50%;
+    background: var(--slider-thumb-color);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: none;
+}
+
+.volume-slider::-webkit-slider-thumb:hover,
+.volume-slider::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+    background: var(--accent-orange);
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+    height: var(--spacing-xs);
+    border-radius: var(--slider-track-radius);
+    background: var(--slider-track-bg);
+}
+
+.volume-slider:active {
+    outline: none;
+}
+
+/* Hide volume control on mobile */
+@media (max-width: var(--mobile-breakpoint)) {
+    .volume-control {
+        display: none;
     }
+}
+
+/* ==========================================
+   UNIFIED BUTTON STYLES
+   ========================================== */
+
+.btn-unified {
+    /* Base styles */
+    background: var(--button-bg);
+    color: var(--button-color);
+    border: var(--button-border);
+    border-radius: var(--button-radius, var(--radius-lg));
+    cursor: pointer;
     
-    .playlist-toggle-btn {
-        padding: var(--spacing-xs) var(--spacing-md);
-    }
+    /* Clean transitions - no bouncy effects */
+    transition: all var(--transition-normal);
+}
+
+.btn-unified:hover {
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+}
+
+.btn-unified:active {
+    opacity: 0.9;
 }

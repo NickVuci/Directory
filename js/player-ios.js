@@ -229,17 +229,7 @@ class iOSAudioPlayer {
             input[type="range"]::-webkit-slider-thumb {
                 -webkit-appearance: none;
             }
-            
-            /* iOS-specific playlist adjustments */
-            @supports (-webkit-touch-callout: none) {
-                .playlist-container {
-                    -webkit-overflow-scrolling: touch;
-                }
-                
-                .track-item {
-                    padding: 12px;
-                }
-            }
+              /* iOS-specific playlist adjustments removed */
         `;
         document.head.appendChild(stylesheet);
     }

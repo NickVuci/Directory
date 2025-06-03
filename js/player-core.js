@@ -3,13 +3,14 @@
  * Foundation player that works across platforms
  */
 
-class AudioPlayerCore {
-    constructor() {
+class AudioPlayerCore {    constructor() {
         this.currentTrack = null;
         this.isPlaying = false;
         this.tracks = [];
         this.initialized = false;
         this.currentTrackIndex = 0;
+        this.previousVolume = 0.7; // Store previous volume level for mute/unmute
+        this.isMuted = false;
         
         // DOM elements - will be set in init()
         this.playerContainer = null;
@@ -22,6 +23,8 @@ class AudioPlayerCore {
         this.durationDisplay = null;
         this.trackTitleElement = null;
         this.trackInfoElement = null;
+        this.volumeSlider = null;
+        this.volumeIcon = null;
         
         // Bind methods for event listeners
         this.togglePlay = this.togglePlay.bind(this);
@@ -31,6 +34,8 @@ class AudioPlayerCore {
         this.playPreviousTrack = this.playPreviousTrack.bind(this);
         this.loadTrack = this.loadTrack.bind(this);
         this.audioEnded = this.audioEnded.bind(this);
+        this.setVolume = this.setVolume.bind(this);
+        this.toggleMute = this.toggleMute.bind(this);
     }
     
     /**
@@ -76,19 +81,24 @@ class AudioPlayerCore {
                         <div class="track-details">No track selected</div>
                     </div>
                 </div>
-                
-                <div class="player-controls">
-                    <button class="control-btn prev-btn" aria-label="Previous track">⏮</button>
-                    <button class="control-btn play-pause-btn" aria-label="Play or pause">▶</button>
-                    <button class="control-btn next-btn" aria-label="Next track">⏭</button>
+                  <div class="player-controls">
+                    <button class="control-btn btn-unified prev-btn" aria-label="Previous track">⏮</button>
+                    <button class="control-btn btn-unified play-pause-btn" aria-label="Play or pause">▶</button>
+                    <button class="control-btn btn-unified next-btn" aria-label="Next track">⏭</button>
                 </div>
-                
-                <div class="progress-container">
+                  <div class="progress-container">
                     <span class="time-display current-time">0:00</span>
                     <div class="progress-bar-container">
                         <input type="range" class="progress-bar" min="0" max="100" value="0" step="0.1">
                     </div>
                     <span class="time-display duration">0:00</span>
+                </div>
+                
+                <div class="volume-control">
+                    <button class="volume-icon btn-unified" aria-label="Mute">🔊</button>
+                    <div class="volume-slider-container">
+                        <input type="range" class="volume-slider" min="0" max="100" value="70" step="1">
+                    </div>
                 </div>
                 
                 <audio class="audio-element"></audio>
@@ -97,8 +107,7 @@ class AudioPlayerCore {
         
         this.playerContainer.innerHTML = playerHTML;
     }
-    
-    /**
+      /**
      * Set up references to DOM elements
      */
     setupDOMReferences() {
@@ -118,9 +127,12 @@ class AudioPlayerCore {
         // Track info elements
         this.trackTitleElement = this.playerContainer.querySelector('.track-title');
         this.trackInfoElement = this.playerContainer.querySelector('.track-details');
+        
+        // Volume control elements
+        this.volumeSlider = this.playerContainer.querySelector('.volume-slider');
+        this.volumeIcon = this.playerContainer.querySelector('.volume-icon');
     }
-    
-    /**
+      /**
      * Add event listeners to player elements
      */
     addEventListeners() {
@@ -134,6 +146,10 @@ class AudioPlayerCore {
         this.prevBtn.addEventListener('click', this.playPreviousTrack);
         this.nextBtn.addEventListener('click', this.playNextTrack);
         
+        // Volume control
+        this.volumeSlider.addEventListener('input', this.setVolume);
+        this.volumeIcon.addEventListener('click', this.toggleMute);
+        
         // Audio element events
         this.audioElement.addEventListener('timeupdate', this.updateProgress);
         this.audioElement.addEventListener('ended', this.audioEnded);
@@ -143,8 +159,7 @@ class AudioPlayerCore {
             this.durationDisplay.textContent = this.formatTime(this.audioElement.duration);
         });
     }
-    
-    /**
+      /**
      * Load tracks data from tracks.js
      */
     loadTracksData() {
@@ -152,13 +167,24 @@ class AudioPlayerCore {
         if (window.tracksData && Array.isArray(window.tracksData.tracks)) {
             this.tracks = window.tracksData.tracks;
             console.log(`Loaded ${this.tracks.length} tracks`);
+            
+            // Set initial volume from config if available
+            if (window.tracksData.defaultVolume) {
+                const initialVolume = Math.round(window.tracksData.defaultVolume * 100);
+                this.audioElement.volume = window.tracksData.defaultVolume;
+                if (this.volumeSlider) {
+                    this.volumeSlider.value = initialVolume;
+                    this.updateVolumeIcon(initialVolume);
+                }
+                this.previousVolume = initialVolume;
+            }
         } else {
             console.warn('No tracks data found. Make sure tracks.js is loaded.');
             
             // Set up some demo tracks as fallback
             this.tracks = [
                 {
-                    title: "Softer (16-EDO)",
+                    title: "Softer for J",
                     artist: "Nick Vuci",
                     tuning: "16-tone equal temperament",
                     file: "music/NickVuci-20220211-16edo-Softer.mp3"
@@ -303,7 +329,7 @@ class AudioPlayerCore {
         // Update track info display
         this.trackTitleElement.textContent = this.currentTrack.title;
         this.trackInfoElement.textContent = 
-            `${this.currentTrack.artist} • ${this.currentTrack.tuning || 'No tuning info'}`;
+            `${this.currentTrack.tuning || 'No tuning info'}`;
         
         // Reset progress and time displays
         this.progressBar.value = 0;
@@ -327,6 +353,68 @@ class AudioPlayerCore {
         const minutes = Math.floor(timeInSeconds / 60);
         const seconds = Math.floor(timeInSeconds % 60);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+    
+    /**
+     * Set volume based on slider input
+     */
+    setVolume() {
+        const value = this.volumeSlider.value;
+        this.audioElement.volume = value / 100;
+        
+        // Update icon based on volume level
+        this.updateVolumeIcon(value);
+        
+        // Store current volume for mute toggle
+        if (value > 0) {
+            this.previousVolume = value;
+            this.isMuted = false;
+        } else {
+            this.isMuted = true;
+        }
+    }
+    
+    /**
+     * Toggle mute/unmute
+     */
+    toggleMute() {
+        if (this.isMuted) {
+            // Unmute - restore previous volume
+            this.volumeSlider.value = this.previousVolume;
+            this.audioElement.volume = this.previousVolume / 100;
+            this.isMuted = false;
+            this.volumeIcon.textContent = '🔊';
+            this.volumeIcon.setAttribute('aria-label', 'Mute');
+        } else {
+            // Mute - set volume to 0
+            this.previousVolume = this.volumeSlider.value;
+            this.volumeSlider.value = 0;
+            this.audioElement.volume = 0;
+            this.isMuted = true;
+            this.volumeIcon.textContent = '🔇';
+            this.volumeIcon.setAttribute('aria-label', 'Unmute');
+        }
+    }
+    
+    /**
+     * Update volume icon based on volume level
+     * @param {number} value - Volume level (0-100)
+     */
+    updateVolumeIcon(value) {
+        // Change icon based on volume level
+        if (value == 0) {
+            this.volumeIcon.textContent = '🔇'; // Muted
+            this.volumeIcon.setAttribute('aria-label', 'Unmute');
+            this.isMuted = true;
+        } else if (value < 50) {
+            this.volumeIcon.textContent = '🔉'; // Medium-low volume
+            this.volumeIcon.setAttribute('aria-label', 'Mute');
+            this.isMuted = false;
+        } else {
+            this.volumeIcon.textContent = '🔊'; // High volume
+            this.volumeIcon.setAttribute('aria-label', 'Mute');
+            this.isMuted = false;
+        }
     }
 }
 
