@@ -14,7 +14,7 @@
     --darker-bg: #283c63;
     --text-light: #f0f0f0;
     --text-secondary: #a8dadc;
-    --bg-overlay: rgba(30, 31, 38, 0.95);
+    --bg-overlay: #1e1f26;
     --border-accent: rgba(233, 196, 106, 0.3);
       /* ==========================================
        TYPOGRAPHY SCALE - Enhanced with Modern CSS Functions
@@ -892,8 +892,7 @@ a:hover {
     background: var(--bg-overlay);
     backdrop-filter: blur(var(--spacing-md));
     min-height: var(--footer-height);
-    position: relative;
-    border-top: 2px solid var(--border-accent);
+    position: relative;;
 }
 
 .footer-player .copyright {
