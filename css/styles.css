@@ -19,6 +19,9 @@
       /* ==========================================
        TYPOGRAPHY SCALE - Enhanced with Modern CSS Functions
        ========================================== */
+       
+    --font-size-3xs: clamp(0.45rem, 0.5em, 0.55rem);    /* Responsive 8px @ 16px base */
+    --font-size-2xs: clamp(0.5rem, 0.6em, 0.65rem);     /* Responsive 9.6px @ 16px base */
     --font-size-xs: clamp(0.6rem, 0.7em, 0.75rem);      /* Responsive 11.2px @ 16px base */
     --font-size-sm: clamp(0.7rem, 0.8em, 0.85rem);      /* Responsive 12.8px @ 16px base */
     --font-size-base: 1em;                              /* 16px base - no change for stability */
@@ -39,7 +42,7 @@
     --spacing-2xl: 30px;
     --spacing-3xl: 40px;
       /* Layout Spacing - Enhanced with Modern CSS Functions */
-    --header-height: clamp(160px, 180px, 200px);        /* Responsive header height */
+    --header-height: clamp(120px, 150px, 180px);        /* Responsive header height */
     --footer-height: clamp(70px, 80px, 90px);           /* Responsive footer height */
     --mobile-footer-height: clamp(60px, 65px, 70px);    /* Responsive mobile footer */
     --mobile-breakpoint: 768px;
@@ -94,6 +97,7 @@
     --button-hover-bg: var(--primary-gold);
     --button-hover-color: var(--dark-bg);
     --button-radius: var(--radius-circle);
+
       /* Card Components */
     --card-bg: rgba(233, 196, 106, 0.2);
     --card-border: 1px solid var(--primary-gold);
@@ -896,8 +900,8 @@ a:hover {
 }
 
 .footer-player .copyright {
-    margin-top: var(--spacing-lg);
-    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-3xs);
     color: var(--text-secondary);
     text-align: center;
 }
