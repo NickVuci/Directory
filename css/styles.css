@@ -1094,3 +1094,117 @@ a:hover {
 .btn-unified:active {
     opacity: 0.9;
 }
+
+/* ==========================================
+   iOS PLAYER INTEGRATION
+   ========================================== */
+
+/* Body modifications when iOS player is active */
+.ios-mode {
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Hide original player when iOS mode is active */
+.ios-mode .audio-player,
+.ios-mode #musicPlayer {
+    display: none !important;
+}
+
+/* Footer copyright for iOS player */
+.footer-copyright {
+    text-align: center;
+    padding: var(--spacing-md) 0;
+    background: rgba(30, 31, 38, 0.8);
+    border-top: 1px solid var(--border-accent);
+}
+
+.footer-copyright p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    margin: 0;
+    opacity: 0.8;
+}
+
+/* Basic fallback player styling */
+.basic-audio-player {
+    padding: var(--spacing-lg);
+    text-align: center;
+    background: var(--dark-bg);
+    border-top: 1px solid var(--border-accent);
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.basic-player-message p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin: var(--spacing-xs) 0;
+    line-height: 1.4;
+}
+
+/* Ensure proper spacing when iOS player is active */
+.ios-mode .main-content {
+    padding-bottom: calc(var(--spacing-xl) + 100px);
+}
+
+/* Safe area adjustments for iOS devices */
+@supports (padding: max(0px)) {
+    .ios-mode {
+        padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
+    }
+}
+
+/* ==========================================
+   iOS PLAYER RESPONSIVE ADJUSTMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .ios-mode .main-content {
+        padding-bottom: calc(var(--spacing-lg) + 90px);
+    }
+}
+
+@media (max-width: 480px) {
+    .ios-mode {
+        padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    }
+    
+    .ios-mode .main-content {
+        padding-bottom: calc(var(--spacing-md) + 80px);
+    }
+}
+
+/* ==========================================
+   LOADING STATES FOR IOS PLAYER
+   ========================================== */
+
+.ios-player-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    background: var(--dark-bg);
+    border-top: 1px solid var(--border-accent);
+}
+
+.ios-player-loading::after {
+    content: '';
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-accent);
+    border-top: 2px solid var(--primary-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

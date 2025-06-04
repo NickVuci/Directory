@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>iOS Player Test - Nick Vuci</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/ios-player.css">
+    <style>
+        body {
+            padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+        }
+        .test-header {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            padding: var(--spacing-xl);
+            text-align: center;
+            border-bottom: 1px solid var(--border-accent);
+        }
+        .test-content {
+            padding: var(--spacing-2xl);
+            background: var(--darker-bg);
+            min-height: 70vh;
+            color: var(--text-light);
+        }
+        .test-controls {
+            background: var(--dark-bg);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-accent);
+            text-align: center;
+        }
+        .test-btn {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 var(--spacing-sm);
+            transition: all var(--transition-fast);
+        }
+        .test-btn:hover {
+            background: var(--accent-orange);
+            transform: translateY(-1px);
+        }
+        .status {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: rgba(233, 196, 106, 0.1);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-gold);
+        }
+    </style>
+</head>
+<body class="ios-mode">
+    <div class="test-header">
+        <h1>🍎 iOS Player Test</h1>
+        <p>Testing the new iOS-optimized music player</p>
+    </div>
+    
+    <div class="test-controls">
+        <button class="test-btn" onclick="forceIOSMode()">Force iOS Mode</button>
+        <button class="test-btn" onclick="testExpand()">Test Expand</button>
+        <button class="test-btn" onclick="testCollapse()">Test Collapse</button>
+        <button class="test-btn" onclick="showStatus()">Show Status</button>
+        
+        <div class="status" id="status" style="display: none;">
+            <h3>🔍 Player Status</h3>
+            <div id="statusContent"></div>
+        </div>
+    </div>
+    
+    <div class="test-content">
+        <h2>🎵 Xenharmonic Music Player</h2>
+        <p>This is a test page for the new iOS-optimized music player. The player should appear at the bottom of the screen with:</p>
+        
+        <ul>
+            <li><strong>Mini Player</strong> - Always visible at bottom with track info and play button</li>
+            <li><strong>Expandable Interface</strong> - Tap mini player to expand to full screen</li>
+            <li><strong>Touch Gestures</strong> - Swipe up/down to expand/collapse</li>
+            <li><strong>Native iOS Feel</strong> - Smooth animations and iOS-style controls</li>
+            <li><strong>Brand Colors</strong> - Uses your gold/teal/orange color scheme</li>
+        </ul>
+        
+        <h3>🎼 Available Tracks</h3>
+        <ol>
+            <li><strong>Softer for J</strong> - 16-tone equal temperament (2022)</li>
+            <li><strong>Quarter-Tone Piano Miniature 1</strong> - 24-tone equal temperament (2020)</li>
+        </ol>
+        
+        <h3>🎮 Test Instructions</h3>
+        <ol>
+            <li>Look for the mini player at the bottom of the screen</li>
+            <li>Click the play button to start playback</li>
+            <li>Tap anywhere on the mini player (except play button) to expand</li>
+            <li>In full player, use controls for next/previous, shuffle, repeat</li>
+            <li>Drag down or tap collapse button to return to mini player</li>
+        </ol>
+        
+        <p><em>Note: This test page forces iOS mode for testing on any device.</em></p>
+    </div>
+    
+    <!-- Footer with iOS Player -->
+    <footer class="footer">
+        <!-- iOS player will be inserted here -->
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="js/tracks.js"></script>
+    <script src="js/player-ios-core.js"></script>
+    <script>
+        // Force iOS mode for testing
+        localStorage.setItem('forceIOSPlayer', 'true');
+        
+        // Test functions
+        function forceIOSMode() {
+            localStorage.setItem('forceIOSPlayer', 'true');
+            location.reload();
+        }
+        
+        function testExpand() {
+            if (window.iosPlayerInit && window.iosPlayerInit.getPlayer()) {
+                const player = window.iosPlayerInit.getPlayer();
+                if (player.expandPlayer) {
+                    player.expandPlayer();
+                }
+            }
+        }
+        
+        function testCollapse() {
+            if (window.iosPlayerInit && window.iosPlayerInit.getPlayer()) {
+                const player = window.iosPlayerInit.getPlayer();
+                if (player.collapsePlayer) {
+                    player.collapsePlayer();
+                }
+            }
+        }
+        
+        function showStatus() {
+            const statusDiv = document.getElementById('status');
+            const contentDiv = document.getElementById('statusContent');
+            
+            let status = '<ul>';
+            status += `<li>iOS Mode: ${document.body.classList.contains('ios-mode') ? '✅' : '❌'}</li>`;
+            status += `<li>Player Init: ${window.iosPlayerInit ? '✅' : '❌'}</li>`;
+            status += `<li>Player Ready: ${window.iosPlayerInit && window.iosPlayerInit.isPlayerReady() ? '✅' : '❌'}</li>`;
+            status += `<li>Tracks Loaded: ${window.tracksData && window.tracksData.tracks ? window.tracksData.tracks.length : 0}</li>`;
+            status += `<li>Device Type: ${navigator.userAgent.includes('iPhone') ? 'iPhone' : navigator.userAgent.includes('iPad') ? 'iPad' : 'Other'}</li>`;
+            status += '</ul>';
+            
+            contentDiv.innerHTML = status;
+            statusDiv.style.display = statusDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Initialize player
+        class TestIOSPlayerInit {
+            constructor() {
+                this.isInitialized = false;
+                this.player = null;
+            }
+            
+            async init() {
+                if (this.isInitialized) return;
+                
+                try {
+                    // Wait for DOM
+                    if (document.readyState === 'loading') {
+                        await new Promise(resolve => {
+                            document.addEventListener('DOMContentLoaded', resolve);
+                        });
+                    }
+                    
+                    const footerElement = document.querySelector('.footer');
+                    if (!footerElement) {
+                        console.error('🍎 Footer element not found');
+                        return;
+                    }
+                    
+                    // Initialize iOS player
+                    if (typeof window.iOSMusicPlayerCore === 'undefined') {
+                        throw new Error('iOS Player Core not found');
+                    }
+                    
+                    this.player = new window.iOSMusicPlayerCore();
+                    await this.player.init(footerElement);
+                    
+                    this.isInitialized = true;
+                    console.log('🍎 Test player ready');
+                    
+                } catch (error) {
+                    console.error('🍎 Test player failed:', error);
+                }
+            }
+            
+            getPlayer() {
+                return this.player;
+            }
+            
+            isPlayerReady() {
+                return this.isInitialized && this.player !== null;
+            }
+        }
+        
+        // Initialize test player
+        window.iosPlayerInit = new TestIOSPlayerInit();
+        window.iosPlayerInit.init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+/**
+ * iOS-Optimized Music Player Styles
+ * Uses existing brand color scheme with iOS-native design patterns
+ */
+
+/* iOS Player Container */
+.ios-music-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-player);
+    pointer-events: auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+}
+
+/* ==========================================
+   MINI PLAYER (Always Visible)
+   ========================================== */
+
+.ios-mini-player {
+    background: rgba(30, 31, 38, 0.95); /* --dark-bg with transparency */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-accent);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    padding-bottom: calc(var(--spacing-sm) + env(safe-area-inset-bottom, 0px));
+    cursor: pointer;
+    transition: all var(--transition-fast) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.ios-mini-player:active {
+    transform: scale(0.98);
+    background: rgba(30, 31, 38, 0.98);
+}
+
+.ios-mini-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    min-height: 56px;
+    position: relative;
+}
+
+.ios-mini-art {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--darker-bg);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-accent);
+}
+
+.ios-mini-art-placeholder {
+    font-size: var(--font-size-xl);
+    color: var(--primary-gold);
+    font-weight: 300;
+}
+
+.ios-mini-info {
+    flex: 1;
+    min-width: 0; /* For text truncation */
+    padding-right: var(--spacing-md);
+}
+
+.ios-mini-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.ios-mini-artist {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ios-mini-play-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-circle);
+    background: var(--primary-gold);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+    box-shadow: var(--shadow-light);
+}
+
+.ios-mini-play-btn:hover {
+    background: var(--accent-orange);
+    transform: scale(1.05);
+}
+
+.ios-mini-play-btn:active {
+    transform: scale(0.95);
+}
+
+.ios-play-icon {
+    font-size: 16px;
+    color: var(--dark-bg);
+    font-weight: bold;
+    margin-left: 2px; /* Optical alignment for play icon */
+}
+
+.ios-mini-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--slider-track-bg);
+    overflow: hidden;
+}
+
+.ios-mini-progress-fill {
+    height: 100%;
+    background: var(--primary-gold);
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* ==========================================
+   FULL PLAYER (Expandable Overlay)
+   ========================================== */
+
+.ios-full-player {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    display: none;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.ios-full-player.expanding {
+    display: block;
+    transform: translateY(0);
+}
+
+.ios-full-player.collapsing {
+    transform: translateY(100%);
+}
+
+.ios-full-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--dark-bg);
+    opacity: 0.98;
+}
+
+.ios-full-content {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: env(safe-area-inset-top, 20px) var(--spacing-xl) env(safe-area-inset-bottom, 20px);
+    color: var(--text-light);
+    overflow: hidden;
+}
+
+/* Header with collapse controls */
+.ios-full-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-lg) 0;
+    position: relative;
+}
+
+.ios-collapse-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--text-secondary);
+    border-radius: 2px;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.6;
+}
+
+.ios-collapse-btn {
+    background: none;
+    border: none;
+    color: var(--primary-gold);
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-circle);
+    transition: all var(--transition-fast);
+    position: absolute;
+    right: 0;
+    top: var(--spacing-md);
+}
+
+.ios-collapse-btn:hover {
+    background: rgba(233, 196, 106, 0.1);
+}
+
+/* Album Art */
+.ios-full-art-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2xl) 0;
+}
+
+.ios-full-art {
+    width: min(320px, 80vw);
+    height: min(320px, 80vw);
+    border-radius: var(--radius-xl);
+    background: var(--darker-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border-accent);
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+    overflow: hidden;
+}
+
+.ios-full-art-placeholder {
+    font-size: 4rem;
+    color: var(--primary-gold);
+    font-weight: 300;
+}
+
+/* Track Info */
+.ios-full-info {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+}
+
+.ios-full-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.2;
+}
+
+.ios-full-artist {
+    font-size: var(--font-size-lg);
+    color: var(--primary-gold);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+}
+
+.ios-full-details {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Progress Control */
+.ios-full-progress-container {
+    padding: var(--spacing-xl) 0;
+}
+
+.ios-full-progress-bar {
+    position: relative;
+    height: 4px;
+    background: var(--slider-track-bg);
+    border-radius: 2px;
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+}
+
+.ios-full-progress-track {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.ios-full-progress-fill {
+    height: 100%;
+    background: var(--primary-gold);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+.ios-full-progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 12px;
+    height: 12px;
+    background: var(--primary-gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: left 0.1s ease;
+}
+
+.ios-full-time-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ios-current-time,
+.ios-duration {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Playback Controls */
+.ios-full-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    max-width: 320px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.ios-control-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-circle);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.ios-control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.ios-control-btn:active {
+    transform: scale(0.95);
+}
+
+.ios-control-btn.active {
+    color: var(--primary-gold);
+}
+
+.ios-shuffle-btn,
+.ios-repeat-btn {
+    font-size: var(--font-size-lg);
+}
+
+.ios-prev-btn,
+.ios-next-btn {
+    font-size: var(--font-size-xl);
+}
+
+.ios-play-btn-large {
+    width: 64px;
+    height: 64px;
+    background: var(--primary-gold);
+    color: var(--dark-bg);
+    border-radius: var(--radius-circle);
+    box-shadow: var(--shadow-medium);
+}
+
+.ios-play-btn-large:hover {
+    background: var(--accent-orange);
+    transform: scale(1.05);
+}
+
+.ios-play-icon-large {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 2px; /* Optical alignment */
+}
+
+/* Volume Control */
+.ios-volume-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) 0;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.ios-volume-icon-min,
+.ios-volume-icon-max {
+    color: var(--text-secondary);
+    font-size: var(--font-size-md);
+    flex-shrink: 0;
+}
+
+.ios-volume-slider-container {
+    flex: 1;
+    position: relative;
+}
+
+.ios-volume-slider {
+    width: 100%;
+    height: 4px;
+    background: var(--slider-track-bg);
+    border-radius: 2px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.ios-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--primary-gold);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: all var(--transition-fast);
+}
+
+.ios-volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.ios-volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: var(--primary-gold);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+/* Tablet and larger screens */
+@media (min-width: 768px) {
+    .ios-full-art {
+        width: min(400px, 70vw);
+        height: min(400px, 70vw);
+    }
+    
+    .ios-full-title {
+        font-size: var(--font-size-3xl);
+    }
+    
+    .ios-full-controls {
+        max-width: 400px;
+        padding: var(--spacing-2xl) var(--spacing-xl);
+    }
+    
+    .ios-play-btn-large {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .ios-play-icon-large {
+        font-size: 32px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    .ios-mini-content {
+        gap: var(--spacing-sm);
+    }
+    
+    .ios-mini-art {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .ios-mini-play-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .ios-full-art {
+        width: min(280px, 75vw);
+        height: min(280px, 75vw);
+    }
+    
+    .ios-full-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .ios-full-controls {
+        padding: var(--spacing-lg) var(--spacing-sm);
+    }
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .ios-mini-player,
+    .ios-full-player,
+    .ios-control-btn,
+    .ios-mini-play-btn,
+    .ios-collapse-btn {
+        transition: none;
+    }
+    
+    .ios-mini-player:active,
+    .ios-control-btn:active,
+    .ios-mini-play-btn:active {
+        transform: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .ios-mini-player {
+        border-top: 2px solid var(--primary-gold);
+    }
+    
+    .ios-mini-art,
+    .ios-full-art {
+        border: 2px solid var(--primary-gold);
+    }
+    
+    .ios-control-btn:focus,
+    .ios-mini-play-btn:focus,
+    .ios-collapse-btn:focus {
+        outline: 2px solid var(--primary-gold);
+        outline-offset: 2px;
+    }
+}
+
+/* ==========================================
+   LANDSCAPE MODE OPTIMIZATIONS
+   ========================================== */
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .ios-full-content {
+        padding: var(--spacing-md) var(--spacing-xl);
+    }
+    
+    .ios-full-header {
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .ios-full-art-container {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .ios-full-art {
+        width: min(240px, 40vh);
+        height: min(240px, 40vh);
+    }
+    
+    .ios-full-info {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .ios-full-progress-container {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .ios-full-controls {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    .ios-volume-container {
+        padding: var(--spacing-sm) 0;
+    }
+}
+
+/* ==========================================
+   DARK MODE SUPPORT
+   ========================================== */
+
+@media (prefers-color-scheme: light) {
+    /* iOS player always uses dark theme to match brand */
+    /* No light mode overrides needed */
+}
+
+/* ==========================================
+   SAFE AREA SUPPORT
+   ========================================== */
+
+/* Ensure proper spacing on devices with notches */
+.ios-mini-player {
+    padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
+}
+
+.ios-full-content {
+    padding-left: max(var(--spacing-xl), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-xl), env(safe-area-inset-right));
+}
+
+/* ==========================================
+   LOADING STATES
+   ========================================== */
+
+.ios-loading .ios-mini-art-placeholder,
+.ios-loading .ios-full-art-placeholder {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ==========================================
+   FOCUS STATES FOR ACCESSIBILITY
+   ========================================== */
+
+.ios-mini-play-btn:focus,
+.ios-control-btn:focus,
+.ios-collapse-btn:focus,
+.ios-volume-slider:focus {
+    outline: 2px solid var(--primary-gold);
+    outline-offset: 2px;
+}
+
+.ios-mini-player:focus {
+    outline: 2px solid var(--primary-gold);
+    outline-offset: -2px;
+}
+
+/* ==========================================
+   TOUCH FEEDBACK
+   ========================================== */
+
+.ios-touch-feedback {
+    position: relative;
+    overflow: hidden;
+}
+
+.ios-touch-feedback::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(233, 196, 106, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.ios-touch-feedback.active::after {
+    width: 200px;
+    height: 200px;
+}

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Player Test - Nick Vuci</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            padding-bottom: 160px;
+        }
+        .test-header {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            padding: var(--spacing-xl);
+            text-align: center;
+            border-bottom: 1px solid var(--border-accent);
+        }
+        .test-controls {
+            background: var(--darker-bg);
+            padding: var(--spacing-lg);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            border-bottom: 1px solid var(--border-accent);
+        }
+        .test-btn {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            border: none;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .test-btn:hover {
+            background: var(--accent-orange);
+            transform: translateY(-1px);
+        }
+        .test-btn.danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .test-btn.success {
+            background: #27ae60;
+            color: white;
+        }
+        .status-panel {
+            background: var(--dark-bg);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-gold);
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        .status-item {
+            background: rgba(233, 196, 106, 0.1);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+        }
+        .status-item h4 {
+            color: var(--primary-gold);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+        .log-panel {
+            background: var(--darker-bg);
+            margin: var(--spacing-md);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .log-header {
+            background: var(--dark-bg);
+            padding: var(--spacing-md);
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        .log-content {
+            padding: var(--spacing-md);
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        .log-entry {
+            margin-bottom: var(--spacing-xs);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+        }
+        .log-info { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+        .log-success { background: rgba(39, 174, 96, 0.1); color: #27ae60; }
+        .log-warning { background: rgba(243, 156, 18, 0.1); color: #f39c12; }
+        .log-error { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>🎵 Comprehensive Player Test</h1>
+        <p>Test both iOS and Original players with device simulation</p>
+    </div>
+
+    <div class="test-controls">
+        <button class="test-btn" onclick="testOriginalPlayer()">Test Original Player</button>
+        <button class="test-btn" onclick="testIOSPlayer()">Test iOS Player</button>
+        <button class="test-btn" onclick="simulateIOSDevice()">Simulate iOS Device</button>
+        <button class="test-btn" onclick="simulateNonIOSDevice()">Simulate Non-iOS Device</button>
+        <button class="test-btn success" onclick="refreshStatus()">Refresh Status</button>
+        <button class="test-btn danger" onclick="resetAll()">Reset All</button>
+    </div>
+
+    <div class="status-panel">
+        <h3>🔍 Current Status</h3>
+        <div class="status-grid" id="statusGrid">
+            <!-- Status items will be populated here -->
+        </div>
+    </div>
+
+    <div class="log-panel">
+        <div class="log-header">📋 Test Log</div>
+        <div class="log-content" id="logContent">
+            <!-- Log entries will appear here -->
+        </div>
+    </div>
+
+    <!-- Footer with Player -->
+    <footer class="footer">
+        <!-- Player will be inserted here -->
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/tracks.js"></script>
+    <script src="js/player-core.js"></script>
+    <script src="js/player-init.js"></script>
+    <script src="js/player-ios-core.js"></script>
+    <script src="js/player-ios-init.js"></script>
+
+    <script>
+        // Test management
+        let originalConsoleLog = console.log;
+        let originalConsoleError = console.error;
+        let originalConsoleWarn = console.warn;
+
+        // Override console methods to capture logs
+        function setupLogging() {
+            console.log = function(...args) {
+                addLogEntry('info', args.join(' '));
+                originalConsoleLog.apply(console, args);
+            };
+
+            console.error = function(...args) {
+                addLogEntry('error', args.join(' '));
+                originalConsoleError.apply(console, args);
+            };
+
+            console.warn = function(...args) {
+                addLogEntry('warning', args.join(' '));
+                originalConsoleWarn.apply(console, args);
+            };
+        }
+
+        function addLogEntry(type, message) {
+            const logContent = document.getElementById('logContent');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContent.appendChild(entry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        function refreshStatus() {
+            const statusGrid = document.getElementById('statusGrid');
+            
+            const status = {
+                'Device Detection': {
+                    'User Agent': navigator.userAgent,
+                    'iOS Detection': detectIOSForTest() ? '✅ iOS' : '❌ Non-iOS',
+                    'Force iOS': localStorage.getItem('forceIOSPlayer') === 'true' ? '✅ Enabled' : '❌ Disabled'
+                },
+                'Player Status': {
+                    'iOS Mode': document.body.classList.contains('ios-mode') ? '✅ Active' : '❌ Inactive',
+                    'Original Player': window.audioPlayer ? '✅ Loaded' : '❌ Not Loaded',
+                    'iOS Player Init': window.iosPlayerInit ? '✅ Available' : '❌ Not Available',
+                    'iOS Player Ready': (window.iosPlayerInit && window.iosPlayerInit.isPlayerReady && window.iosPlayerInit.isPlayerReady()) ? '✅ Ready' : '❌ Not Ready'
+                },
+                'DOM Elements': {
+                    'Audio Element': document.querySelector('audio') ? '✅ Found' : '❌ Missing',
+                    'iOS Player': document.querySelector('.ios-music-player') ? '✅ Found' : '❌ Missing',
+                    'Original Player': document.querySelector('.audio-player') ? '✅ Found' : '❌ Missing',
+                    'Footer': document.querySelector('.footer') ? '✅ Found' : '❌ Missing'
+                },
+                'Data & Assets': {
+                    'Tracks Data': window.tracksData && window.tracksData.tracks ? `✅ ${window.tracksData.tracks.length} tracks` : '❌ Missing',
+                    'Player Core': typeof AudioPlayerCore !== 'undefined' ? '✅ Loaded' : '❌ Missing',
+                    'iOS Core': typeof window.iOSMusicPlayerCore !== 'undefined' ? '✅ Loaded' : '❌ Missing',
+                    'CSS Loaded': document.querySelector('link[href*="styles.css"]') ? '✅ Loaded' : '❌ Missing'
+                }
+            };
+
+            statusGrid.innerHTML = '';
+            
+            Object.entries(status).forEach(([category, items]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'status-item';
+                
+                let html = `<h4>${category}</h4><ul>`;
+                Object.entries(items).forEach(([key, value]) => {
+                    html += `<li><strong>${key}:</strong> ${value}</li>`;
+                });
+                html += '</ul>';
+                
+                categoryDiv.innerHTML = html;
+                statusGrid.appendChild(categoryDiv);
+            });
+        }
+
+        function detectIOSForTest() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent) || localStorage.getItem('forceIOSPlayer') === 'true';
+        }
+
+        function testOriginalPlayer() {
+            addLogEntry('info', '🧪 Testing Original Player...');
+            
+            // Force original player mode
+            localStorage.removeItem('forceIOSPlayer');
+            document.body.classList.remove('ios-mode');
+            
+            // Clear footer
+            const footer = document.querySelector('.footer');
+            footer.innerHTML = '';
+            
+            // Initialize original player manually
+            setTimeout(() => {
+                if (typeof AudioPlayerCore !== 'undefined') {
+                    const playerContainer = document.createElement('div');
+                    playerContainer.id = 'audio-player-container';
+                    playerContainer.className = 'footer-player';
+                    
+                    footer.appendChild(playerContainer);
+                    
+                    const player = new AudioPlayerCore();
+                    player.init(playerContainer);
+                    
+                    // Add copyright
+                    const copyrightContainer = document.createElement('div');
+                    copyrightContainer.className = 'copyright';
+                    copyrightContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} Nick Vuci. All rights reserved.</p>`;
+                    playerContainer.appendChild(copyrightContainer);
+                    
+                    window.audioPlayer = player;
+                    addLogEntry('success', '✅ Original player initialized successfully');
+                } else {
+                    addLogEntry('error', '❌ AudioPlayerCore not found');
+                }
+                refreshStatus();
+            }, 100);
+        }
+
+        function testIOSPlayer() {
+            addLogEntry('info', '🧪 Testing iOS Player...');
+            
+            // Force iOS player mode
+            localStorage.setItem('forceIOSPlayer', 'true');
+            
+            // Clear footer
+            const footer = document.querySelector('.footer');
+            footer.innerHTML = '';
+            
+            // Initialize iOS player manually
+            setTimeout(() => {
+                if (window.iosPlayerInit) {
+                    window.iosPlayerInit.isIOSDevice = true; // Force iOS detection
+                    window.iosPlayerInit.init().then(() => {
+                        addLogEntry('success', '✅ iOS player initialized successfully');
+                        refreshStatus();
+                    }).catch(error => {
+                        addLogEntry('error', `❌ iOS player initialization failed: ${error.message}`);
+                        refreshStatus();
+                    });
+                } else {
+                    addLogEntry('error', '❌ iOS player init not found');
+                    refreshStatus();
+                }
+            }, 100);
+        }
+
+        function simulateIOSDevice() {
+            addLogEntry('info', '📱 Simulating iOS device...');
+            localStorage.setItem('forceIOSPlayer', 'true');
+            location.reload();
+        }
+
+        function simulateNonIOSDevice() {
+            addLogEntry('info', '💻 Simulating non-iOS device...');
+            localStorage.removeItem('forceIOSPlayer');
+            location.reload();
+        }
+
+        function resetAll() {
+            addLogEntry('info', '🔄 Resetting all settings...');
+            localStorage.clear();
+            location.reload();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupLogging();
+            addLogEntry('info', '🚀 Test page loaded');
+            setTimeout(refreshStatus, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Original Player Test - Nick Vuci</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            padding-bottom: 120px;
+        }
+        .test-header {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            padding: var(--spacing-xl);
+            text-align: center;
+            border-bottom: 1px solid var(--border-accent);
+        }
+        .test-content {
+            padding: var(--spacing-2xl);
+            background: var(--darker-bg);
+            min-height: 70vh;
+            color: var(--text-light);
+        }
+        .test-controls {
+            background: var(--dark-bg);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-accent);
+            text-align: center;
+        }
+        .test-btn {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 var(--spacing-sm);
+            transition: all var(--transition-fast);
+        }
+        .test-btn:hover {
+            background: var(--accent-orange);
+            transform: translateY(-1px);
+        }
+        .status {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: rgba(233, 196, 106, 0.1);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>🎵 Original Player Test</h1>
+        <p>Testing the original audio player (non-iOS mode)</p>
+    </div>
+    
+    <div class="test-controls">
+        <button class="test-btn" onclick="forceOriginalMode()">Force Original Mode</button>
+        <button class="test-btn" onclick="testPlayback()">Test Playback</button>
+        <button class="test-btn" onclick="showStatus()">Show Status</button>
+        
+        <div class="status" id="status" style="display: none;">
+            <h3>🔍 Player Status</h3>
+            <div id="statusContent"></div>
+        </div>
+    </div>
+    
+    <div class="test-content">
+        <h2>🎵 Original Audio Player</h2>
+        <p>This page tests the original audio player that should appear on non-iOS devices. The player should appear at the bottom with:</p>
+        
+        <ul>
+            <li><strong>Traditional Controls</strong> - Standard play/pause, previous/next buttons</li>
+            <li><strong>Progress Bar</strong> - Click to seek to specific time</li>
+            <li><strong>Volume Control</strong> - Slider for volume adjustment</li>
+            <li><strong>Track Information</strong> - Display current track details</li>
+            <li><strong>Brand Styling</strong> - Uses your gold/teal/orange color scheme</li>
+        </ul>
+        
+        <h3>🎼 Available Tracks</h3>
+        <ol>
+            <li><strong>Softer for J</strong> - 16-tone equal temperament (2022)</li>
+            <li><strong>Quarter-Tone Piano Miniature 1</strong> - 24-tone equal temperament (2020)</li>
+        </ol>
+        
+        <h3>🎮 Test Instructions</h3>
+        <ol>
+            <li>Look for the original player at the bottom of the screen</li>
+            <li>Click the play button to start playback</li>
+            <li>Use previous/next buttons to navigate tracks</li>
+            <li>Test volume control and progress bar</li>
+            <li>Verify track information updates correctly</li>
+        </ol>
+        
+        <p><em>Note: This test page forces original mode by disabling iOS player detection.</em></p>
+    </div>
+    
+    <!-- Footer with Original Player -->
+    <footer class="footer">
+        <!-- Original player will be inserted here -->
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="js/tracks.js"></script>
+    <script src="js/player-core.js"></script>
+    <script>
+        // Force original mode by preventing iOS detection
+        localStorage.removeItem('forceIOSPlayer');
+        
+        // Override iOS detection to always return false
+        if (window.iOSPlayerInit) {
+            window.iOSPlayerInit.isIOSDevice = false;
+        }
+        
+        // Test functions
+        function forceOriginalMode() {
+            localStorage.removeItem('forceIOSPlayer');
+            location.reload();
+        }
+        
+        function testPlayback() {
+            if (window.audioPlayer && window.audioPlayer.togglePlay) {
+                window.audioPlayer.togglePlay();
+            } else {
+                console.log('Player not found or not ready');
+            }
+        }
+        
+        function showStatus() {
+            const statusDiv = document.getElementById('status');
+            const contentDiv = document.getElementById('statusContent');
+            
+            let status = '<ul>';
+            status += `<li>iOS Mode: ${document.body.classList.contains('ios-mode') ? '✅' : '❌'}</li>`;
+            status += `<li>Original Player: ${window.audioPlayer ? '✅' : '❌'}</li>`;
+            status += `<li>Audio Element: ${document.querySelector('audio') ? '✅' : '❌'}</li>`;
+            status += `<li>Tracks Loaded: ${window.tracksData && window.tracksData.tracks ? window.tracksData.tracks.length : 0}</li>`;
+            status += `<li>iOS Player Present: ${document.querySelector('.ios-music-player') ? '✅' : '❌'}</li>`;
+            status += '</ul>';
+            
+            contentDiv.innerHTML = status;
+            statusDiv.style.display = statusDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Initialize original player manually
+        function initializeOriginalPlayer() {
+            console.log('🎵 Manually initializing original player...');
+            
+            const footer = document.querySelector('.footer');
+            if (!footer) {
+                console.error('No footer found');
+                return;
+            }
+            
+            // Create player container
+            const playerContainer = document.createElement('div');
+            playerContainer.id = 'audio-player-container';
+            playerContainer.className = 'footer-player';
+            
+            // Clear footer and add container
+            footer.innerHTML = '';
+            footer.appendChild(playerContainer);
+            
+            // Create and initialize player
+            if (typeof AudioPlayerCore !== 'undefined') {
+                const player = new AudioPlayerCore();
+                player.init(playerContainer);
+                
+                // Add copyright
+                const copyrightContainer = document.createElement('div');
+                copyrightContainer.className = 'copyright';
+                copyrightContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} Nick Vuci. All rights reserved.</p>`;
+                playerContainer.appendChild(copyrightContainer);
+                
+                // Add to window for global access
+                window.audioPlayer = player;
+                
+                console.log('🎵 Original player initialized successfully');
+            } else {
+                console.error('AudioPlayerCore not found');
+            }
+        }
+        
+        // Wait for DOM and initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait a bit to ensure no iOS player interferes
+            setTimeout(initializeOriginalPlayer, 200);
+        });
+    </script>
+</body>
+</html>
