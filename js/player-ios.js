@@ -198,11 +198,16 @@ class iOSAudioPlayer {
             });
         }
     }
-    
-    /**
+      /**
      * Optimize appearance for iOS
      */
     optimizeIOSAppearance() {
+        // Hide volume controls on iOS as they're redundant (iOS uses system volume)
+        const volumeControl = document.querySelector('.volume-control');
+        if (volumeControl) {
+            volumeControl.style.display = 'none';
+        }
+        
         // Add iOS-specific styles
         const stylesheet = document.createElement('style');
         stylesheet.textContent = `
@@ -229,7 +234,11 @@ class iOSAudioPlayer {
             input[type="range"]::-webkit-slider-thumb {
                 -webkit-appearance: none;
             }
-              /* iOS-specific playlist adjustments removed */
+            
+            /* Hide volume control on iOS devices */
+            .ios-optimized .volume-control {
+                display: none !important;
+            }
         `;
         document.head.appendChild(stylesheet);
     }
