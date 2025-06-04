@@ -8,11 +8,11 @@ window.tracksData = {
     tracks: [
         {
             id: "01",
-            title: "Softer (16-EDO)",
+            title: "Softer for J",
             artist: "Nick Vuci",
             file: "music/NickVuci-20220211-16edo-Softer.mp3",
             year: "2022",
-            genre: "Xenharmonic",
+            genre: "Modern Piano",
             tuning: "16-tone equal temperament",
             album: null,
             duration: null, // Will be populated when loaded
@@ -24,9 +24,9 @@ window.tracksData = {
             artist: "Nick Vuci", 
             file: "music/NV-20201021-24EDO-SoloPianoMiniature1.flac",
             year: "2020",
-            genre: "Xenharmonic",
+            genre: "Classical Piano",
             tuning: "24-tone equal temperament",
-            album: null,
+            album: "Quarter-Tone Piano Miniatures",
             duration: null, // Will be populated when loaded
             description: "A solo piano miniature composed in 24 equal divisions of the octave"
         }

@@ -146,16 +146,9 @@ class iOSAudioPlayer {
         if ('mediaSession' in navigator && this.basePlayer.currentTrack) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: this.basePlayer.currentTrack.title,
-                artist: this.basePlayer.currentTrack.artist,
-                album: this.basePlayer.currentTrack.tuning || 'Xenharmonic Music',
-                artwork: [
-                    { src: 'images/player-artwork-96.png', sizes: '96x96', type: 'image/png' },
-                    { src: 'images/player-artwork-128.png', sizes: '128x128', type: 'image/png' },
-                    { src: 'images/player-artwork-192.png', sizes: '192x192', type: 'image/png' },
-                    { src: 'images/player-artwork-256.png', sizes: '256x256', type: 'image/png' },
-                    { src: 'images/player-artwork-384.png', sizes: '384x384', type: 'image/png' },
-                    { src: 'images/player-artwork-512.png', sizes: '512x512', type: 'image/png' },
-                ]
+                album: this.basePlayer.currentTrack.album,
+                tuning: this.basePlayer.currentTrack.tuning,
+
             });
         }
     }

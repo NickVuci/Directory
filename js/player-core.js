@@ -328,8 +328,8 @@ class AudioPlayerCore {    constructor() {
         
         // Update track info display
         this.trackTitleElement.textContent = this.currentTrack.title;
-        this.trackInfoElement.textContent = 
-            `${this.currentTrack.tuning || 'No tuning info'}`;
+        this.trackInfoElement.textContent = this.currentTrack.album;
+        this.trackInfoElement.textContent = this.currentTrack.tuning;
         
         // Reset progress and time displays
         this.progressBar.value = 0;
