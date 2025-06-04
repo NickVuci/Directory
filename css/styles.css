@@ -42,7 +42,7 @@
     --spacing-2xl: 30px;
     --spacing-3xl: 40px;
       /* Layout Spacing - Enhanced with Modern CSS Functions */
-    --header-height: clamp(120px, 150px, 180px);        /* Responsive header height */
+    --header-height: clamp(100px, 120px, 150px);        /* Responsive header height */
     --footer-height: clamp(70px, 80px, 90px);           /* Responsive footer height */
     --mobile-footer-height: clamp(60px, 65px, 70px);    /* Responsive mobile footer */
     --mobile-breakpoint: 768px;
@@ -890,7 +890,6 @@ a:hover {
     padding: var(--spacing-lg) var(--spacing-md);
     background: var(--bg-overlay);
     backdrop-filter: blur(var(--spacing-md));
-    min-height: var(--footer-height);
     position: relative;;
 }
 
