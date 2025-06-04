@@ -213,7 +213,7 @@ class AudioPlayerCore {    constructor() {
             this.audioElement.play()
                 .then(() => {
                     this.isPlaying = true;
-                    this.playPauseBtn.textContent = '⏸';
+                    this.playPauseBtn.textContent = '❚❚';
                     this.playPauseBtn.setAttribute('aria-label', 'Pause');
                 })
                 .catch(error => {

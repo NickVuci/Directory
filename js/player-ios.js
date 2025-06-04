@@ -10,6 +10,13 @@ class iOSAudioPlayer {
         
         if (this.isIOS) {
             console.log('🍎 iOS detected, applying optimizations');
+            
+            // Store reference to the play/pause button before any modifications
+            const playPauseBtn = document.querySelector('.play-pause-btn');
+            if (playPauseBtn && !this.basePlayer.playPauseBtn) {
+                this.basePlayer.playPauseBtn = playPauseBtn;
+            }
+            
             this.applyIOSOptimizations();
         }
     }
@@ -25,8 +32,7 @@ class iOSAudioPlayer {
         
         return isIOS;
     }
-    
-    /**
+      /**
      * Apply iOS-specific optimizations
      */
     applyIOSOptimizations() {
@@ -48,8 +54,10 @@ class iOSAudioPlayer {
         
         // Optimize appearance for iOS
         this.optimizeIOSAppearance();
-    }
-      /**
+        
+        // Ensure play/pause button state is correct initially
+        this.syncPlayPauseButton();
+    }/**
      * Enhance touch targets for better iOS experience
      */
     enhanceTouchTargets() {
@@ -63,6 +71,11 @@ class iOSAudioPlayer {
             
             // Ensure proper default styling is applied
             button.style.transition = 'all var(--transition-fast)';
+            
+            // Store reference to play/pause button if found
+            if (button.classList.contains('play-pause-btn') && !this.basePlayer.playPauseBtn) {
+                this.basePlayer.playPauseBtn = button;
+            }
         });
         
         // Add touch-friendly progress bar
@@ -78,9 +91,28 @@ class iOSAudioPlayer {
         const mobileButtons = document.querySelectorAll('.mobile-control-btn');
         mobileButtons.forEach(button => {
             button.classList.add('ios-touch-target');
+            
+            // If this is a mobile play/pause button
+            if (button.classList.contains('mobile-play-pause-btn') && !this.basePlayer.mobilePlayPauseBtn) {
+                this.basePlayer.mobilePlayPauseBtn = button;
+                
+                // Add event listener for mobile play/pause button
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    button.classList.add('ios-button-active');
+                    this.basePlayer.togglePlay();
+                });
+                
+                button.addEventListener('touchend', () => {
+                    button.classList.remove('ios-button-active');
+                });
+                
+                button.addEventListener('touchcancel', () => {
+                    button.classList.remove('ios-button-active');
+                });
+            }
         });
-    }
-      /**
+    }/**
      * Add iOS-specific touch event listeners
      */
     addTouchListeners() {
@@ -97,8 +129,12 @@ class iOSAudioPlayer {
                 e.preventDefault(); // Prevent double-tap zoom
                 newButton.classList.add('ios-button-active');
                 
-                // Handle play/pause button specifically
+                // Handle button actions
                 if (newButton.classList.contains('play-pause-btn')) {
+                    // Store reference to play/pause button if it's the first time
+                    if (!this.basePlayer.playPauseBtn || this.basePlayer.playPauseBtn !== newButton) {
+                        this.basePlayer.playPauseBtn = newButton;
+                    }
                     this.basePlayer.togglePlay();
                 } else if (newButton.classList.contains('prev-btn')) {
                     this.basePlayer.playPreviousTrack();
@@ -187,8 +223,7 @@ class iOSAudioPlayer {
             });
         }
     }
-    
-    /**
+      /**
      * Handle iOS-specific audio behaviors
      */
     handleIOSAudioBehaviors() {
@@ -203,11 +238,18 @@ class iOSAudioPlayer {
             document.documentElement.removeEventListener('touchstart', this);
         }, { once: true });
         
-        // Handle iOS audio focus - pause when audio focus is lost
+        // Find and store reference to play/pause button if not already stored
+        if (!this.basePlayer.playPauseBtn) {
+            this.basePlayer.playPauseBtn = document.querySelector('.play-pause-btn');
+        }
+          // Handle iOS audio focus - pause when audio focus is lost
         this.basePlayer.audioElement.addEventListener('pause', () => {
-            this.basePlayer.isPlaying = false;
-            this.basePlayer.playPauseBtn.textContent = '▶';
-            this.basePlayer.playPauseBtn.setAttribute('aria-label', 'Play');
+            this.syncPlayPauseButton();
+        });
+        
+        // Handle audio play event to update button 
+        this.basePlayer.audioElement.addEventListener('play', () => {
+            this.syncPlayPauseButton();
         });
         
         // Optimize seeking for iOS
@@ -297,6 +339,29 @@ class iOSAudioPlayer {
             }
         `;
         document.head.appendChild(stylesheet);
+    }
+    
+    /**
+     * Synchronize play/pause button state with audio playback state
+     * This ensures the button displays the correct icon
+     */
+    syncPlayPauseButton() {
+        if (!this.basePlayer || !this.basePlayer.audioElement) return;
+        
+        const isPlaying = !this.basePlayer.audioElement.paused;
+        this.basePlayer.isPlaying = isPlaying;
+        
+        // Update main player button if it exists
+        if (this.basePlayer.playPauseBtn) {
+            this.basePlayer.playPauseBtn.textContent = isPlaying ? '❚❚' : '▶';
+            this.basePlayer.playPauseBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+        }
+        
+        // Update mobile player button if it exists
+        if (this.basePlayer.mobilePlayPauseBtn) {
+            this.basePlayer.mobilePlayPauseBtn.textContent = isPlaying ? '❚❚' : '▶';
+            this.basePlayer.mobilePlayPauseBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+        }
     }
 }
 
