@@ -49,8 +49,7 @@ class iOSAudioPlayer {
         // Optimize appearance for iOS
         this.optimizeIOSAppearance();
     }
-    
-    /**
+      /**
      * Enhance touch targets for better iOS experience
      */
     enhanceTouchTargets() {
@@ -58,6 +57,12 @@ class iOSAudioPlayer {
         const buttons = document.querySelectorAll('.control-btn');
         buttons.forEach(button => {
             button.classList.add('ios-touch-target');
+            
+            // Remove any remaining active states that might be stuck
+            button.classList.remove('active', 'ios-button-active');
+            
+            // Ensure proper default styling is applied
+            button.style.transition = 'all var(--transition-fast)';
         });
         
         // Add touch-friendly progress bar
@@ -66,27 +71,52 @@ class iOSAudioPlayer {
             progressBar.classList.add('ios-progress');
         }
         
-        // Add touch event listeners (if needed)
+        // Add touch event listeners for control buttons
         this.addTouchListeners();
+        
+        // Handle mobile player controls if they exist
+        const mobileButtons = document.querySelectorAll('.mobile-control-btn');
+        mobileButtons.forEach(button => {
+            button.classList.add('ios-touch-target');
+        });
     }
-    
-    /**
+      /**
      * Add iOS-specific touch event listeners
      */
     addTouchListeners() {
-        // Add touch-specific event handling if needed
-        const playPauseBtn = document.querySelector('.play-pause-btn');
-        if (playPauseBtn) {
-            // Remove any existing listeners
-            const newPlayPauseBtn = playPauseBtn.cloneNode(true);
-            playPauseBtn.parentNode.replaceChild(newPlayPauseBtn, playPauseBtn);
+        // Add touch-specific event handling for all control buttons
+        const allControlButtons = document.querySelectorAll('.control-btn');
+        
+        allControlButtons.forEach(button => {
+            // Clone and replace to remove any existing listeners
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
             
-            // Add touch listener
-            newPlayPauseBtn.addEventListener('touchstart', (e) => {
+            // Add active class on touch start
+            newButton.addEventListener('touchstart', (e) => {
                 e.preventDefault(); // Prevent double-tap zoom
-                this.basePlayer.togglePlay();
+                newButton.classList.add('ios-button-active');
+                
+                // Handle play/pause button specifically
+                if (newButton.classList.contains('play-pause-btn')) {
+                    this.basePlayer.togglePlay();
+                } else if (newButton.classList.contains('prev-btn')) {
+                    this.basePlayer.playPreviousTrack();
+                } else if (newButton.classList.contains('next-btn')) {
+                    this.basePlayer.playNextTrack();
+                }
             });
-        }
+            
+            // Remove active class on touch end
+            newButton.addEventListener('touchend', () => {
+                newButton.classList.remove('ios-button-active');
+            });
+            
+            // Remove active class if touch is moved outside the button
+            newButton.addEventListener('touchcancel', () => {
+                newButton.classList.remove('ios-button-active');
+            });
+        });
         
         // Optimize progress bar for touch
         const progressBar = document.querySelector('.progress-bar');
@@ -98,6 +128,11 @@ class iOSAudioPlayer {
             
             progressBar.addEventListener('touchend', () => {
                 // Remove active state class
+                progressBar.classList.remove('ios-active');
+            });
+            
+            progressBar.addEventListener('touchcancel', () => {
+                // Remove active state class on touch cancel as well
                 progressBar.classList.remove('ios-active');
             });
         }
@@ -200,8 +235,7 @@ class iOSAudioPlayer {
         if (volumeControl) {
             volumeControl.style.display = 'none';
         }
-        
-        // Add iOS-specific styles
+          // Add iOS-specific styles
         const stylesheet = document.createElement('style');
         stylesheet.textContent = `
             .ios-optimized {
@@ -212,10 +246,39 @@ class iOSAudioPlayer {
             .ios-touch-target {
                 min-width: 44px;
                 min-height: 44px;
+                -webkit-touch-callout: none; /* Disable callout on long press */
+                -webkit-user-select: none;   /* Disable text selection */
+                user-select: none;           /* Disable text selection */
+            }
+            
+            /* Explicit active state styling for iOS */
+            .ios-button-active {
+                background: var(--button-hover-bg) !important;
+                color: var(--button-hover-color) !important;
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+            
+            /* Reset all hover states on iOS since they can "stick" */
+            .ios-device .control-btn:hover {
+                background: var(--button-bg);
+                color: var(--button-color);
+            }
+            
+            /* Only apply hover effects when not on a touch device */
+            @media (hover: hover) {
+                .ios-device .control-btn:hover {
+                    background: var(--button-hover-bg);
+                    color: var(--button-hover-color);
+                }
             }
             
             .ios-progress {
                 height: 8px;
+            }
+            
+            .ios-active {
+                height: 12px !important;
             }
             
             .ios-progress::-webkit-slider-thumb {
