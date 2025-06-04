@@ -216,7 +216,7 @@ body {
     width: 100%;
     background: var(--bg-overlay);
     backdrop-filter: blur(var(--spacing-md));
-    padding: var(--spacing-3xl) 0 var(--spacing-2xl);
+    padding: clamp(var(--spacing-sm), 2vw, var(--spacing-xl)) 0;
     text-align: center;
     color: var(--primary-gold);
     z-index: var(--z-header);
@@ -225,13 +225,13 @@ body {
 
 /* Title and subtitle styling */
 .header h1 {
-    font-size: var(--font-size-3xl);
-    margin-bottom: var(--spacing-md);
+    font-size: clamp(1.6em, 4vw, var(--font-size-2xl));
+    margin-bottom: var(--spacing-xs);
 }
 .header h2 {
-    font-size: var(--font-size-xl);
+    font-size: clamp(var(--font-size-base), 2vw, var(--font-size-lg));
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-2xl); /* Space between subtitle and buttons */
+    margin-bottom: clamp(var(--spacing-md), 3vw, var(--spacing-lg)); /* Space between subtitle and buttons */
 }
 
 /* ==========================================
@@ -240,9 +240,13 @@ body {
 
 /* Navigation buttons container */
 .nav-buttons {
-    display: flex;           /* Use flexbox for button layout */
-    justify-content: center;  /* Center the buttons */
-    gap: var(--spacing-xl);                /* Space between buttons */
+    container-type: inline-size;
+    container-name: nav-buttons;
+    display: flex;
+    justify-content: center;
+    gap: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
+    padding-inline: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
+    
 }
 
 /* ==========================================
@@ -333,10 +337,11 @@ body {
 /* Navigation Cards (Button styling) */
 /* Navigation buttons with clean unified animations */
 .nav-buttons button {
-    padding-block: var(--spacing-md); /* Logical property */
-    padding-inline: var(--spacing-xl); /* Logical property */
-    font-size: var(--font-size-base);
-    border-radius: var(--radius-md); /* Preserve the square corners for nav buttons */
+    padding-block: clamp(var(--spacing-sm), 1.5vw, var(--spacing-md));
+    padding-inline: clamp(var(--spacing-md), 2vw, var(--spacing-xl));
+    font-size: clamp(var(--font-size-sm), 1.5vw, var(--font-size-base));
+    border-radius: var(--radius-md);
+    width: clamp(80px, 15vw, 120px);
 }
 
 /* Modern selector for active state */
@@ -493,18 +498,25 @@ a:hover {
     .header h2 {
         font-size: var(--font-size-base); /* Reduced from 1.2em for more space */
         margin-bottom: var(--spacing-lg); /* Reduced margin */
-    }    .nav-buttons {
-        gap: var(--spacing-sm);
-        flex-wrap: nowrap;
-    }      /* Mobile navigation with logical properties */
+    }    
+
     .nav-buttons button {
-        padding-block: var(--spacing-sm); /* Logical property */
-        padding-inline: var(--spacing-md); /* Logical property */
+        /* Only switch to flex layout when total width is less than container */
+        @container nav-buttons (width < 400px) {
+            flex: 1;
+            width: auto;
+            min-inline-size: 0;
+        }
+    } 
+    
+    /* Mobile navigation with logical properties */
+    .nav-buttons button {
+        padding-block: var(--spacing-sm);
+        padding-inline: var(--spacing-md);
         font-size: var(--font-size-sm);
-        flex: 1;
-        min-inline-size: 0; /* Logical property */
-        /* btn-unified class handles transitions */
-    }    .main-content {
+    }    
+    
+    .main-content {
         grid-area: main;
         overflow-y: auto;
         display: flex;
