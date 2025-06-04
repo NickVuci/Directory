@@ -80,11 +80,10 @@ class AudioPlayerCore {    constructor() {
                         <div class="track-title">Select a track</div>
                         <div class="track-details">No track selected</div>
                     </div>
-                </div>
-                  <div class="player-controls">
-                    <button class="control-btn btn-unified prev-btn" aria-label="Previous track">⏮</button>
+                </div>                <div class="player-controls">
+                    <button class="control-btn btn-unified prev-btn" aria-label="Previous track">«</button>
                     <button class="control-btn btn-unified play-pause-btn" aria-label="Play or pause">▶</button>
-                    <button class="control-btn btn-unified next-btn" aria-label="Next track">⏭</button>
+                    <button class="control-btn btn-unified next-btn" aria-label="Next track">»</button>
                 </div>
                   <div class="progress-container">
                     <span class="time-display current-time">0:00</span>
@@ -208,12 +207,11 @@ class AudioPlayerCore {    constructor() {
         if (!this.currentTrack) {
             this.loadTrack(0);
         }
-        
-        if (this.audioElement.paused) {
+          if (this.audioElement.paused) {
             this.audioElement.play()
                 .then(() => {
                     this.isPlaying = true;
-                    this.playPauseBtn.textContent = '❚❚';
+                    this.playPauseBtn.textContent = '❙❙';
                     this.playPauseBtn.setAttribute('aria-label', 'Pause');
                 })
                 .catch(error => {
