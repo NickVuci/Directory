@@ -17,17 +17,26 @@ class PlaylistDataManager {
 
     /**
      * Initialize tracks from the global tracksData
-     */
-    initializeFromTracksData() {
+     */    initializeFromTracksData() {
+        console.log('Initializing from tracks data...');
+        console.log('window.tracksData:', window.tracksData);
+        
         if (window.tracksData && window.tracksData.tracks) {
+            console.log('Found tracks data with', window.tracksData.tracks.length, 'tracks');
+            
             window.tracksData.tracks.forEach(track => {
+                console.log('Processing track:', track);
                 if (this.validateTrack(track)) {
                     this.tracks.set(track.id, this.sanitizeTrack(track));
+                    console.log('Track added:', track.id);
                 } else {
                     console.warn('Invalid track data:', track);
                 }
             });
+        } else {
+            console.error('No tracks data found in window.tracksData!');
         }
+        
         console.log(`Initialized ${this.tracks.size} tracks`);
     }
 
@@ -124,6 +133,12 @@ class PlaylistDataManager {
      * Generate filter categories from track data
      */
     generateFilterCategories() {
+        console.log('Generating filter categories...');
+        
+        // Clear existing filters and recreate
+        this.filters = new Map();
+        
+        // Create temporary filter sets
         const filters = {
             genre: new Set(),
             tuning: new Set(),
@@ -136,33 +151,68 @@ class PlaylistDataManager {
             key: new Set()
         };
         
+        console.log('Initial filters structure:', filters);
+        console.log('Number of tracks to process:', this.tracks.size);
+        
         // Collect all unique values from tracks
-        this.tracks.forEach(track => {
+        this.tracks.forEach((track, trackId) => {
+            console.log(`Processing track: ${trackId}`, track);
+            
             // Array fields
-            if (track.genre) track.genre.forEach(g => filters.genre.add(g));
-            if (track.mood) track.mood.forEach(m => filters.mood.add(m));
-            if (track.tags) track.tags.forEach(t => filters.tags.add(t));
-            if (track.instruments) track.instruments.forEach(i => filters.instruments.add(i));
+            if (track.genre) {
+                console.log(`Genre for ${trackId}:`, track.genre);
+                track.genre.forEach(g => filters.genre.add(g));
+            }
+            if (track.mood) {
+                console.log(`Mood for ${trackId}:`, track.mood);
+                track.mood.forEach(m => filters.mood.add(m));
+            }
+            if (track.tags) {
+                console.log(`Tags for ${trackId}:`, track.tags);
+                track.tags.forEach(t => filters.tags.add(t));
+            }
+            if (track.instruments) {
+                console.log(`Instruments for ${trackId}:`, track.instruments);
+                track.instruments.forEach(i => filters.instruments.add(i));
+            }
             
             // String fields
-            if (track.tuning) filters.tuning.add(track.tuning);
-            if (track.artist) filters.artist.add(track.artist);
-            if (track.album) filters.album.add(track.album);
-            if (track.key) filters.key.add(track.key);
-            if (track.year) filters.year.add(track.year);
+            if (track.tuning) {
+                console.log(`Tuning for ${trackId}:`, track.tuning);
+                filters.tuning.add(track.tuning);
+            }
+            if (track.artist) {
+                console.log(`Artist for ${trackId}:`, track.artist);
+                filters.artist.add(track.artist);
+            }
+            if (track.album) {
+                console.log(`Album for ${trackId}:`, track.album);
+                filters.album.add(track.album);
+            }
+            if (track.key) {
+                console.log(`Key for ${trackId}:`, track.key);
+                filters.key.add(track.key);
+            }
+            if (track.year) {
+                console.log(`Year for ${trackId}:`, track.year);
+                filters.year.add(String(track.year)); // Convert to string for consistency
+            }
         });
+        
+        console.log('Collected filter values:', filters);
         
         // Convert Sets to sorted Arrays and store in Map
         Object.entries(filters).forEach(([category, values]) => {
             const sortedValues = Array.from(values).sort((a, b) => {
                 // Special sorting for years (numeric)
-                if (category === 'year') return b - a; // Newest first
-                return a.localeCompare(b);
+                if (category === 'year') return Number(b) - Number(a); // Newest first
+                return String(a).localeCompare(String(b));
             });
             this.filters.set(category, sortedValues);
+            console.log(`Added filter category ${category} with ${sortedValues.length} values`);
         });
         
-        console.log('Generated filter categories:', Object.fromEntries(this.filters));
+        console.log('Generated filter categories completed, filters:', Object.fromEntries(this.filters));
     }
 
     /**
