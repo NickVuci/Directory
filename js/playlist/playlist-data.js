@@ -408,6 +408,9 @@ class PlaylistDataManager {
 }
 
 // Create global instance
+// Export class and instance to window for browser usage
+window.PlaylistDataManager = PlaylistDataManager;
+window.PlaylistData = PlaylistDataManager; // Alias for convenience
 window.playlistData = new PlaylistDataManager();
 
 // Export for module usage

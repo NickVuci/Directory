@@ -282,4 +282,6 @@ class PlaylistVirtualScroll {
 }
 
 // Export
+// Export to window for browser usage
 window.PlaylistVirtualScroll = PlaylistVirtualScroll;
+window.VirtualScrollManager = PlaylistVirtualScroll; // Alias for backward compatibility

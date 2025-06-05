@@ -461,6 +461,9 @@ window.addEventListener('beforeunload', () => {
     window.playlistStorage.endSession();
 });
 
+// Export to window for browser usage
+window.PlaylistStorage = PlaylistStorage;
+
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = PlaylistStorage;

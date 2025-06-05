@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist UI Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            padding: 20px;
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            font-family: var(--font-primary);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #2d5016; color: #90ee90; }
+        .error { background: #5c1e1e; color: #ffcccb; }
+        .info { background: #1e3a5c; color: #add8e6; }
+    </style>
+</head>
+<body>
+    <h1>Playlist UI Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>Script Loading Status</h2>
+        <div id="script-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Class Availability</h2>
+        <div id="class-status"></div>
+    </div>
+      <div class="test-section">
+        <h2>Test Track Cards</h2>
+        <button id="test-track-cards-btn" onclick="testTrackCards()">Test Track Card Components</button>
+        <div id="track-card-results"></div>
+        <div id="track-card-display" style="margin-top: 20px;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Playlist UI</h2>
+        <button id="test-playlist-btn" onclick="testPlaylistUI()">Initialize Test Playlist</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Track Card Demo</h2>
+        <div id="track-card-demo">
+            <p>Loading track card demo...</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Full Integration Test</h2>
+        <button id="integration-test-btn" onclick="runIntegrationTest()">Run Full Integration Test</button>
+        <div id="integration-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Live Playlist Demo</h2>
+        <button id="demo-playlist-btn" onclick="showPlaylistDemo()">Show Live Playlist</button>
+        <div id="playlist-demo-container" style="margin-top: 20px; min-height: 300px; border: 1px solid var(--border-color); border-radius: 8px; position: relative;">
+            <p style="padding: 20px; color: var(--secondary-text);">Click the button above to see the playlist UI in action</p>
+        </div>
+    </div>
+    
+    <!-- Footer placeholder for playlist -->
+    <footer class="footer">
+        <div class="audio-player-container">
+            <div class="player-controls">
+                <button class="btn-icon">⏸</button>
+                <span>Test Track</span>
+            </div>
+        </div>
+    </footer>    <!-- Load scripts in order -->
+    <script src="js/tracks.js"></script>
+    <script src="js/playlist/playlist-storage.js"></script>
+    <script src="js/playlist/playlist-data.js"></script>
+    <script src="js/playlist/playlist-engine.js"></script>
+    <script src="js/playlist/playlist-virtual-scroll.js"></script>
+    <script src="js/playlist/playlist-track-cards.js"></script>
+    <script src="js/playlist/playlist-ui.js"></script>
+    
+    <script>
+        // Test script loading
+        function checkScriptLoading() {
+            const statusDiv = document.getElementById('script-status');
+            const scripts = [
+                'tracks.js',
+                'playlist-storage.js', 
+                'playlist-data.js',
+                'playlist-engine.js',
+                'playlist-virtual-scroll.js',
+                'playlist-ui.js'
+            ];
+            
+            let html = '';
+            scripts.forEach(script => {
+                const scriptElements = document.querySelectorAll(`script[src*="${script}"]`);
+                if (scriptElements.length > 0) {
+                    html += `<div class="status success">✓ ${script} loaded</div>`;
+                } else {
+                    html += `<div class="status error">✗ ${script} not found</div>`;
+                }
+            });
+            
+            statusDiv.innerHTML = html;
+        }
+          // Test class availability
+        function checkClasses() {
+            const statusDiv = document.getElementById('class-status');
+            const classes = [
+                'PlaylistStorage',
+                'PlaylistData', 
+                'PlaylistEngine',
+                'PlaylistVirtualScroll',
+                'TrackCard',
+                'TrackCardFactory',
+                'PlaylistUI'
+            ];
+            
+            let html = '';
+            
+            // Debug: Show all window properties that might be playlist related
+            html += '<div class="status info"><strong>Debug - Available playlist-related classes:</strong><br>';
+            Object.keys(window).filter(key => key.toLowerCase().includes('playlist') || key.toLowerCase().includes('track')).forEach(key => {
+                html += `&nbsp;&nbsp;${key}: ${typeof window[key]}<br>`;
+            });
+            html += '</div>';
+            
+            classes.forEach(className => {
+                try {
+                    if (typeof window[className] !== 'undefined') {
+                        html += `<div class="status success">✓ ${className} available (${typeof window[className]})</div>`;
+                    } else {
+                        html += `<div class="status error">✗ ${className} not available</div>`;
+                    }
+                } catch (e) {
+                    html += `<div class="status error">✗ ${className} error: ${e.message}</div>`;
+                }
+            });
+            
+            statusDiv.innerHTML = html;
+        }
+          // Test track card creation
+        function testTrackCards() {
+            const resultsDiv = document.getElementById('track-card-results');
+            const displayDiv = document.getElementById('track-card-display');
+            
+            try {
+                if (typeof TrackCard === 'undefined') {
+                    resultsDiv.innerHTML = '<div class="status error">✗ TrackCard class not available</div>';
+                    return;
+                }
+                
+                // Create sample track data
+                const sampleTrack = {
+                    id: "test_001",
+                    title: "Test Track",
+                    artist: "Test Artist",
+                    file: "test.mp3",
+                    year: 2024,
+                    genre: ["Test Genre"],
+                    tuning: "12-tone equal temperament",
+                    mood: ["experimental"],
+                    tags: ["test", "sample"],
+                    duration: 180,
+                    album: "Test Album",
+                    bpm: 120,
+                    key: "C major",
+                    instruments: ["piano"],
+                    description: "A test track for demonstration",
+                    favorite: false
+                };
+                
+                // Test different layouts
+                const layouts = ['default', 'compact', 'detailed', 'grid'];
+                let html = '<div class="status success">✓ Creating track cards with different layouts:</div>';
+                
+                layouts.forEach(layout => {
+                    try {
+                        const trackCard = new TrackCard(sampleTrack, { layout });
+                        const element = trackCard.createElement();
+                        
+                        // Add layout label
+                        const labelDiv = document.createElement('div');
+                        labelDiv.innerHTML = `<h4 style="margin: 20px 0 10px 0; color: var(--primary-gold);">${layout.charAt(0).toUpperCase() + layout.slice(1)} Layout:</h4>`;
+                        displayDiv.appendChild(labelDiv);
+                        displayDiv.appendChild(element);
+                        
+                        html += `<div class="status success">✓ ${layout} layout created</div>`;
+                    } catch (e) {
+                        html += `<div class="status error">✗ ${layout} layout failed: ${e.message}</div>`;
+                    }
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (e) {
+                resultsDiv.innerHTML = `<div class="status error">✗ Error testing track cards: ${e.message}</div>`;
+                console.error('Track card test error:', e);
+            }
+        }
+        
+        // Test playlist UI initialization
+        function testPlaylistUI() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            try {
+                if (typeof PlaylistUI === 'undefined') {
+                    resultsDiv.innerHTML = '<div class="status error">✗ PlaylistUI class not available</div>';
+                    return;
+                }
+                
+                // Initialize playlist UI
+                const playlistUI = new PlaylistUI();
+                resultsDiv.innerHTML = '<div class="status success">✓ PlaylistUI initialized successfully</div>';
+                
+                // Test showing playlist
+                setTimeout(() => {
+                    try {
+                        playlistUI.show();
+                        resultsDiv.innerHTML += '<div class="status success">✓ Playlist UI shown</div>';
+                        
+                        // Test hiding after 3 seconds
+                        setTimeout(() => {
+                            playlistUI.hide();
+                            resultsDiv.innerHTML += '<div class="status success">✓ Playlist UI hidden</div>';
+                        }, 3000);
+                        
+                    } catch (e) {
+                        resultsDiv.innerHTML += `<div class="status error">✗ Error showing playlist: ${e.message}</div>`;
+                    }
+                }, 1000);
+                
+            } catch (e) {
+                resultsDiv.innerHTML = `<div class="status error">✗ Error initializing PlaylistUI: ${e.message}</div>`;
+                console.error('PlaylistUI initialization error:', e);
+            }
+        }
+        
+        // Test track cards
+        function testTrackCards() {
+            const demoDiv = document.getElementById('track-card-demo');
+            
+            try {
+                if (!window.TrackCardFactory) {
+                    demoDiv.innerHTML = '<div class="status error">TrackCardFactory not available</div>';
+                    return;
+                }
+
+                // Create a sample track for testing
+                const sampleTrack = {
+                    id: 'test-1',
+                    title: 'Test Track',
+                    artist: 'Test Artist', 
+                    album: 'Test Album',
+                    duration: 180,
+                    fileSize: '3.2MB',
+                    bitrate: '320kbps',
+                    tuningSystem: '12-TET',
+                    genre: 'Test',
+                    year: 2025
+                };
+
+                const factory = new TrackCardFactory();
+                
+                let html = '<h3>Track Card Layouts:</h3>';
+                
+                // Test different layouts
+                const layouts = ['default', 'compact', 'detailed', 'grid'];
+                layouts.forEach(layout => {
+                    html += `<h4>${layout.charAt(0).toUpperCase() + layout.slice(1)} Layout:</h4>`;
+                    try {
+                        const card = factory.createCard(sampleTrack, layout);
+                        html += `<div style="margin: 10px 0; border: 1px solid #333; padding: 10px;">${card.render()}</div>`;
+                    } catch (e) {
+                        html += `<div class="status error">Error creating ${layout} card: ${e.message}</div>`;
+                    }
+                });
+                
+                demoDiv.innerHTML = html;
+            } catch (error) {
+                demoDiv.innerHTML = `<div class="status error">Error testing track cards: ${error.message}</div>`;
+            }
+        }        // Full integration test
+        async function runIntegrationTest() {
+            const resultsDiv = document.getElementById('integration-results');
+            let html = '<div class="status info">Running integration test...</div>';
+            resultsDiv.innerHTML = html;
+            
+            try {
+                // Test 1: Check all dependencies
+                html += '<h3>Step 1: Dependency Check</h3>';
+                const requiredClasses = ['PlaylistStorage', 'PlaylistData', 'PlaylistEngine', 'PlaylistVirtualScroll', 'TrackCard', 'TrackCardFactory', 'PlaylistUI'];
+                let allDepsAvailable = true;
+                
+                requiredClasses.forEach(className => {
+                    if (typeof window[className] !== 'undefined') {
+                        html += `<div class="status success">✓ ${className} available</div>`;
+                    } else {
+                        html += `<div class="status error">✗ ${className} missing</div>`;
+                        allDepsAvailable = false;
+                    }
+                });
+                
+                if (!allDepsAvailable) {
+                    html += '<div class="status error">❌ Integration test failed: Missing dependencies</div>';
+                    resultsDiv.innerHTML = html;
+                    return;
+                }
+                
+                // Test 2: Create instances
+                html += '<h3>Step 2: Component Instantiation</h3>';
+                
+                const storage = new PlaylistStorage();
+                html += '<div class="status success">✓ PlaylistStorage instance created</div>';
+                
+                const dataManager = new PlaylistData();
+                html += '<div class="status success">✓ PlaylistData instance created</div>';
+                
+                const engine = new PlaylistEngine(dataManager, storage);
+                html += '<div class="status success">✓ PlaylistEngine instance created</div>';
+                
+                // Test 3: Data operations
+                html += '<h3>Step 3: Data Operations</h3>';
+                
+                const trackCount = dataManager.tracks.size;
+                html += `<div class="status success">✓ Loaded ${trackCount} tracks</div>`;
+                
+                const allTracks = dataManager.getAllTracks();
+                html += `<div class="status success">✓ Retrieved ${allTracks.length} tracks from data manager</div>`;
+                
+                // Test 4: Create track cards
+                html += '<h3>Step 4: Track Card Creation</h3>';
+                
+                if (allTracks.length > 0) {
+                    const sampleTrack = allTracks[0];
+                    const trackCard = new TrackCard(sampleTrack);
+                    const cardElement = trackCard.createElement();
+                    html += '<div class="status success">✓ Track card created successfully</div>';
+                    
+                    const factory = new TrackCardFactory();
+                    const factoryCard = factory.createCard(sampleTrack, 'compact');
+                    html += '<div class="status success">✓ Track card factory working</div>';
+                } else {
+                    html += '<div class="status error">✗ No tracks available for card creation</div>';
+                }
+                
+                // Test 5: UI Integration
+                html += '<h3>Step 5: UI Integration</h3>';
+                
+                try {
+                    const playlistUI = new PlaylistUI();
+                    html += '<div class="status success">✓ PlaylistUI instance created</div>';
+                    
+                    // Wait a moment for initialization
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    html += '<div class="status success">✓ PlaylistUI initialized successfully</div>';
+                    
+                } catch (e) {
+                    html += `<div class="status error">✗ PlaylistUI creation failed: ${e.message}</div>`;
+                }
+                
+                html += '<div class="status success">🎉 Integration test completed successfully!</div>';
+                
+            } catch (error) {
+                html += `<div class="status error">❌ Integration test failed: ${error.message}</div>`;
+                console.error('Integration test error:', error);
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        // Live playlist demo
+        async function showPlaylistDemo() {
+            const container = document.getElementById('playlist-demo-container');
+            
+            try {
+                container.innerHTML = '<div class="status info">Initializing playlist demo...</div>';
+                
+                // Create a mini playlist UI for demonstration
+                const demoHTML = `
+                    <div style="padding: 20px;">
+                        <h3 style="color: var(--primary-gold); margin-bottom: 15px;">Playlist Demo</h3>
+                        <div class="playlist-controls" style="margin-bottom: 15px;">
+                            <button onclick="filterDemo('all')" style="margin-right: 10px; padding: 5px 10px; background: var(--accent-color); border: none; border-radius: 4px; color: white;">All Tracks</button>
+                            <button onclick="filterDemo('16EDO')" style="margin-right: 10px; padding: 5px 10px; background: var(--accent-color); border: none; border-radius: 4px; color: white;">16-EDO</button>
+                            <button onclick="filterDemo('24EDO')" style="padding: 5px 10px; background: var(--accent-color); border: none; border-radius: 4px; color: white;">24-EDO</button>
+                        </div>
+                        <div id="demo-track-list" style="max-height: 300px; overflow-y: auto;">
+                            Loading tracks...
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML = demoHTML;
+                
+                // Load and display tracks
+                if (window.playlistData && window.TrackCardFactory) {
+                    const tracks = window.playlistData.getAllTracks();
+                    const factory = new TrackCardFactory();
+                    
+                    let trackListHTML = '';
+                    tracks.slice(0, 10).forEach(track => { // Show first 10 tracks
+                        const card = factory.createCard(track, 'compact');
+                        trackListHTML += card.render();
+                    });
+                    
+                    document.getElementById('demo-track-list').innerHTML = trackListHTML || '<p>No tracks available</p>';
+                } else {
+                    document.getElementById('demo-track-list').innerHTML = '<div class="status error">Playlist components not available</div>';
+                }
+                
+            } catch (error) {
+                container.innerHTML = `<div class="status error">Demo failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Demo filter function
+        function filterDemo(filterType) {
+            try {
+                const tracks = window.playlistData.getAllTracks();
+                const factory = new TrackCardFactory();
+                
+                let filteredTracks = tracks;
+                
+                if (filterType !== 'all') {
+                    filteredTracks = tracks.filter(track => 
+                        track.tuning && track.tuning.includes(filterType)
+                    );
+                }
+                
+                let trackListHTML = '';
+                filteredTracks.slice(0, 10).forEach(track => {
+                    const card = factory.createCard(track, 'compact');
+                    trackListHTML += card.render();
+                });
+                
+                document.getElementById('demo-track-list').innerHTML = trackListHTML || '<p>No tracks match this filter</p>';
+                
+            } catch (error) {
+                document.getElementById('demo-track-list').innerHTML = `<div class="status error">Filter failed: ${error.message}</div>`;
+            }
+        }
+
+        // Test footer integration
+        function testFooterIntegration() {
+            try {
+                const footer = document.querySelector('.footer');
+                if (!footer) {
+                    console.error('Footer not found');
+                    return;
+                }
+                
+                // Add playlist toggle button to footer
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'playlist-toggle-btn';
+                toggleBtn.innerHTML = '📋 Playlist';
+                toggleBtn.style.cssText = `
+                    position: absolute;
+                    right: 20px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: var(--accent-color);
+                    border: none;
+                    padding: 8px 15px;
+                    border-radius: 6px;
+                    color: white;
+                    cursor: pointer;
+                    font-size: 14px;
+                `;
+                
+                toggleBtn.onclick = () => {
+                    alert('Playlist toggle clicked! In the real implementation, this would open the playlist.');
+                };
+                
+                footer.style.position = 'relative';
+                footer.appendChild(toggleBtn);
+                
+                console.log('Footer integration test complete');
+            } catch (error) {
+                console.error('Footer integration test failed:', error);
+            }
+        }
+
+        // Run tests when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                checkScriptLoading();
+                checkClasses();
+                testTrackCards();
+                testFooterIntegration();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

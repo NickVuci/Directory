@@ -56,12 +56,105 @@ function initializeAudioPlayer() {
     copyrightContainer.className = 'copyright';
     copyrightContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} Nick Vuci. All rights reserved.</p>`;
     playerContainer.appendChild(copyrightContainer);
-    
-    // Add player to window for global access
+      // Add player to window for global access
     window.audioPlayer = player;
+    
+    // Initialize playlist UI after a short delay to ensure player is ready
+    setTimeout(() => {
+        initializePlaylistUI();
+    }, 100);
     
     // Select a random track on initialization if tracks are available
     selectRandomTrack(player);
+}
+
+/**
+ * Initialize the playlist UI system
+ */
+function initializePlaylistUI() {
+    console.log('Initializing playlist UI...');
+      // Check if all required playlist components are loaded
+    if (!window.PlaylistData || 
+        !window.PlaylistEngine || 
+        !window.PlaylistVirtualScroll || 
+        !window.PlaylistStorage ||
+        !window.PlaylistUI) {
+        console.warn('Playlist components not yet loaded, retrying...');
+        setTimeout(initializePlaylistUI, 200);
+        return;
+    }
+    
+    try {
+        // Create and initialize playlist UI
+        window.playlistUI = new PlaylistUI();
+        console.log('Playlist UI initialized successfully');
+        
+        // Setup playlist events for the audio player
+        setupPlaylistPlayerIntegration();
+        
+    } catch (error) {
+        console.error('Failed to initialize playlist UI:', error);
+    }
+}
+
+/**
+ * Setup integration between playlist and audio player
+ */
+function setupPlaylistPlayerIntegration() {
+    const player = window.audioPlayer;
+    if (!player) return;
+    
+    // Listen for playlist events
+    document.addEventListener('playlist:playTrack', (event) => {
+        const { track, index, playlist } = event.detail;
+        
+        // Load track into player
+        if (track.file) {
+            // Assuming the player has a method to load by file path
+            // This will need to be adapted based on the actual player API
+            console.log('Loading track from playlist:', track.title);
+            
+            // Find track index in player's track array
+            const playerTrackIndex = player.tracks.findIndex(t => t.file === track.file);
+            if (playerTrackIndex !== -1) {
+                player.loadTrack(playerTrackIndex);
+            }
+        }
+    });
+    
+    document.addEventListener('playlist:playAll', (event) => {
+        const { tracks, shuffle } = event.detail;
+        
+        if (tracks.length > 0) {
+            // Load first track and create queue
+            console.log(`Playing ${tracks.length} tracks${shuffle ? ' (shuffled)' : ''}`);
+            
+            let tracksToPlay = [...tracks];
+            if (shuffle) {
+                tracksToPlay = shuffleArray(tracksToPlay);
+            }
+            
+            // Load first track
+            const firstTrack = tracksToPlay[0];
+            const playerTrackIndex = player.tracks.findIndex(t => t.file === firstTrack.file);
+            if (playerTrackIndex !== -1) {
+                player.loadTrack(playerTrackIndex);
+                // TODO: Set up queue with remaining tracks
+            }
+        }
+    });
+}
+
+/**
+ * Utility function to shuffle an array
+ */
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
 }
 
 /* Playlist functionality removed */

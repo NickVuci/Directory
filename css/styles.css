@@ -56,22 +56,23 @@
     --radius-lg: 10px;
     --radius-xl: 15px;
     --radius-circle: 50%;
-    
-    /* ==========================================
+      /* ==========================================
        Z-INDEX SCALE
        ========================================== */
     --z-base: 1;
     --z-dropdown: 100;
     --z-header: 999;
     --z-player: 1000;
+    --z-playlist: 1100;
     --z-modal: 9999;
-    
-    /* ==========================================
+      /* ==========================================
        ANIMATION & TRANSITIONS
        ========================================== */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     
     /* ==========================================
        SHADOWS
