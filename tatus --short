@@ -1,0 +1,119 @@
+[1mdiff --git a/js/tracks.js b/js/tracks.js[m
+[1mindex d17950b..107e1fa 100644[m
+[1m--- a/js/tracks.js[m
+[1m+++ b/js/tracks.js[m
+[36m@@ -1,45 +1,93 @@[m
+ /**[m
+  * Track data for the audio player[m
+[31m- * Enhanced with additional metadata fields[m
+[32m+[m[32m * Enhanced with comprehensive metadata for playlist features[m
+[32m+[m[32m * Version: 2.0 - Full playlist support with auto-generated filters[m
+  */[m
+ [m
+ window.tracksData = {[m
+[31m-    // Track information with extended metadata[m
+[32m+[m[32m    // Track information with comprehensive metadata[m
+     tracks: [[m
+         {[m
+[31m-            id: "01",[m
+[32m+[m[32m            id: "track_001",[m
+             title: "Softer for J",[m
+             artist: "Nick Vuci",[m
+             file: "music/NickVuci-20220211-16edo-Softer.mp3",[m
+[31m-            year: "2022",[m
+[31m-            genre: "Modern Piano",[m
+[32m+[m[32m            year: 2022,[m
+[32m+[m[32m            genre: ["Modern Piano", "Experimental"],[m
+             tuning: "16-tone equal temperament",[m
+[31m-            album: null,[m
+[32m+[m[32m            mood: ["contemplative", "experimental"],[m
+[32m+[m[32m            tags: ["microtonal", "piano", "ambient"],[m
+             duration: null, // Will be populated when loaded[m
+[31m-            description: "A softer piece composed in 16 equal divisions of the octave"[m
+[32m+[m[32m            album: "Microtonal Explorations",[m
+[32m+[m[32m            bpm: 80,[m
+[32m+[m[32m            key: "C (16-EDO)",[m
+[32m+[m[32m            instruments: ["piano", "synthesizer"],[m
+[32m+[m[32m            description: "A softer piece composed in 16 equal divisions of the octave",[m
+[32m+[m[32m            dateAdded: "2022-02-11",[m
+[32m+[m[32m            playCount: 0,[m
+[32m+[m[32m            lastPlayed: null,[m
+[32m+[m[32m            favorite: false,[m
+[32m+[m[32m            waveformData: null, // For future waveform visualization[m
+[32m+[m[32m            analysisData: null  // For future music theory analysis[m
+         },[m
+         {[m
+[31m-            id: "02",[m
+[32m+[m[32m            id: "track_002",[m
+             title: "Quarter-Tone Piano Miniature 1",[m
+             artist: "Nick Vuci", [m
+             file: "music/NV-20201021-24EDO-SoloPianoMiniature1.flac",[m
+[31m-            year: "2020",[m
+[31m-            genre: "Classical Piano",[m
+[32m+[m[32m            year: 2020,[m
+[32m+[m[32m            genre: ["Classical Piano", "Minimalist"],[m
+             tuning: "24-tone equal temperament",[m
+[31m-            album: "Quarter-Tone Piano Miniatures",[m
+[32m+[m[32m            mood: ["meditative", "peaceful"],[m
+[32m+[m[32m            tags: ["microtonal", "piano", "classical", "miniature"],[m
+             duration: null, // Will be populated when loaded[m
+[31m-            description: "A solo piano miniature composed in 24 equal divisions of the octave"[m
+[32m+[m[32m            album: "Quarter-Tone Piano Miniatures",[m
+[32m+[m[32m            bpm: 72,[m
+[32m+[m[32m            key: "A minor (24-EDO)",[m
+[32m+[m[32m            instruments: ["piano"],[m
+[32m+[m[32m            description: "A solo piano miniature composed in 24 equal divisions of the octave",[m
+[32m+[m[32m            dateAdded: "2020-10-21",[m
+[32m+[m[32m            playCount: 0,[m
+[32m+[m[32m            lastPlayed: null,[m
+[32m+[m[32m            favorite: false,[m
+[32m+[m[32m            waveformData: null,[m
+[32m+[m[32m            analysisData: null[m
+         }[m
+[31m-        // Future tracks can be added here with additional metadata:[m
+[31m-        // tags: ["experimental", "ambient", "classical"],[m
+[31m-        // bpm: 120,[m
+[31m-        // key: "C major (in 24-EDO)",[m
+[31m-        // instruments: ["piano", "synthesizer"],[m
+[31m-        // mood: "contemplative",[m
+[31m-    ],[m
+[31m-    [m
+[32m+[m[32m    ],[m[41m    [m
+[32m+[m[32m    // Metadata schema for track validation[m
+[32m+[m[32m    trackSchema: {[m
+[32m+[m[32m        required: ['id', 'title', 'artist', 'file'],[m
+[32m+[m[32m        optional: ['year', 'genre', 'tuning', 'mood', 'tags', 'duration', 'album', 'bpm', 'key', 'instruments', 'description', 'dateAdded', 'playCount', 'lastPlayed', 'favorite', 'waveformData', 'analysisData'],[m
+[32m+[m[32m        types: {[m
+[32m+[m[32m            id: 'string',[m
+[32m+[m[32m            title: 'string',[m
+[32m+[m[32m            artist: 'string',[m
+[32m+[m[32m            file: 'string',[m
+[32m+[m[32m            year: 'number',[m
+[32m+[m[32m            genre: 'array',[m
+[32m+[m[32m            tuning: 'string',[m
+[32m+[m[32m            mood: 'array',[m
+[32m+[m[32m            tags: 'array',[m
+[32m+[m[32m            duration: ['number', 'null'],[m
+[32m+[m[32m            album: ['string', 'null'],[m
+[32m+[m[32m            bpm: ['number', 'null'],[m
+[32m+[m[32m            key: ['string', 'null'],[m
+[32m+[m[32m            instruments: 'array',[m
+[32m+[m[32m            description: 'string',[m
+[32m+[m[32m            dateAdded: 'string',[m
+[32m+[m[32m            playCount: 'number',[m
+[32m+[m[32m            lastPlayed: ['string', 'null'],[m
+[32m+[m[32m            favorite: 'boolean',[m
+[32m+[m[32m            waveformData: ['object', 'null'],[m
+[32m+[m[32m            analysisData: ['object', 'null'][m
+[32m+[m[32m        }[m
+[32m+[m[32m    },[m
+[32m+[m
+     // Default settings[m
+     defaultVolume: 0.7,[m
+     defaultPlaybackRate: 1.0,[m
+[31m-    rememberLastTrack: true[m
+[32m+[m[32m    rememberLastTrack: true,[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Version for data migration[m
+[32m+[m[32m    version: "2.0"[m
+ };[m
