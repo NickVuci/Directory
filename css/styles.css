@@ -216,7 +216,10 @@ body {
     width: 100%;
     background: var(--bg-overlay);
     backdrop-filter: blur(var(--spacing-md));
-    padding: clamp(var(--spacing-sm), 2vw, var(--spacing-xl)) 0;
+    /* Replace static padding with fluid padding using clamp() and safe-area inset */
+    padding-block-start: calc(env(safe-area-inset-top) + clamp(var(--spacing-sm), 2vw, var(--spacing-xl)));
+    padding-block-end: clamp(var(--spacing-sm), 2vw, var(--spacing-xl));
+    padding-inline: 0;
     text-align: center;
     color: var(--primary-gold);
     z-index: var(--z-header);
@@ -247,6 +250,16 @@ body {
     gap: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
     padding-inline: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
     
+}
+
+/* Navigation buttons with clean unified animations */
+.nav-buttons button {
+    padding-block: clamp(var(--spacing-sm), 1.5vw, var(--spacing-md));
+    padding-inline: clamp(var(--spacing-md), 2vw, var(--spacing-xl));
+    font-size: clamp(var(--font-size-sm), 1.5vw, var(--font-size-base));
+    border-radius: var(--radius-md);
+    width: 120px; /* Set a preferred fixed width */
+    min-width: 80px; /* Allow shrinking down to this width before container query takes over */
 }
 
 /* ==========================================
@@ -341,7 +354,8 @@ body {
     padding-inline: clamp(var(--spacing-md), 2vw, var(--spacing-xl));
     font-size: clamp(var(--font-size-sm), 1.5vw, var(--font-size-base));
     border-radius: var(--radius-md);
-    width: clamp(80px, 15vw, 120px);
+    width: 120px; /* Set a preferred fixed width */
+    min-width: 80px; /* Allow shrinking down to this width before container query takes over */
 }
 
 /* Modern selector for active state */
@@ -480,7 +494,7 @@ a:hover {
         padding-bottom: env(safe-area-inset-bottom);
     }    .header {
         grid-area: header;
-        padding: calc(var(--spacing-lg) + env(safe-area-inset-top)) 0 var(--spacing-sm); /* Added safe area for iOS */
+        padding: calc(var(--spacing-lg) + env(safe-area-inset-top)) 0 var(--spacing-sm);
         background: var(--bg-overlay);
         backdrop-filter: blur(var(--spacing-md));
         text-align: center;
@@ -488,20 +502,17 @@ a:hover {
         border-bottom: 2px solid var(--border-accent);
         z-index: var(--z-header);
         position: sticky;
-        top: env(safe-area-inset-top, 0); /* Use safe area inset for sticky positioning */
-        height: auto; /* Allow header to adapt to content + safe area */
+        top: env(safe-area-inset-top, 0);
+        height: auto;
     }
-    
     .header h1 {
-        font-size: 1.6em; /* Reduced from 2em for more space */
-        margin-bottom: var(--spacing-xs); /* Reduced margin */
+        font-size: 1.6em;
+        margin-bottom: var(--spacing-xs);
     }
-    
     .header h2 {
-        font-size: var(--font-size-base); /* Reduced from 1.2em for more space */
-        margin-bottom: var(--spacing-lg); /* Reduced margin */
-    }    
-
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-lg);
+    }
     .nav-buttons button {
         /* Only switch to flex layout when total width is less than container */
         @container nav-buttons (width < 400px) {
@@ -509,14 +520,7 @@ a:hover {
             width: auto;
             min-inline-size: 0;
         }
-    } 
-    
-    /* Mobile navigation with logical properties */
-    .nav-buttons button {
-        padding-block: var(--spacing-sm);
-        padding-inline: var(--spacing-md);
-        font-size: var(--font-size-sm);
-    }    
+    }
     
     .main-content {
         grid-area: main;
