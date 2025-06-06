@@ -2873,7 +2873,7 @@ window.tracksData = {
         },
         {
             id: "track_126",
-            filename: "NickVuci-FreeLove_by_Thoreau-Draft.mp3",
+            file: "NickVuci-FreeLove_by_Thoreau-Draft.mp3",
             title: "Free Love by Thoreau (Draft)",
             artist: "Nick Vuci",
             year: 2022,
@@ -2885,7 +2885,7 @@ window.tracksData = {
         },
         {
             id: "track_127",
-            filename: "NickVuci-War_by_Vera_Brittain-MockUp.mp3",
+            file: "NickVuci-War_by_Vera_Brittain-MockUp.mp3",
             title: "War by Vera Brittain (Mock-Up)",
             artist: "Nick Vuci",
             year: 2022,
@@ -2897,7 +2897,7 @@ window.tracksData = {
         },
         {
             id: "track_128",
-            filename: "NV-20210420-4567CrossSet-Piano_Quintet_mvmt1_draft.mp3",
+            file: "NV-20210420-4567CrossSet-Piano_Quintet_mvmt1_draft.mp3",
             title: "Piano Quintet Movement 1 (Draft)",
             artist: "Nick Vuci",
             year: 2021,
@@ -2909,7 +2909,7 @@ window.tracksData = {
         },
         {
             id: "track_129",
-            filename: "NV-20210424-QuarterCommaMeantone-LullabyThe_Moon_Over_Lake_Ontario.mp3",
+            file: "NV-20210424-QuarterCommaMeantone-LullabyThe_Moon_Over_Lake_Ontario.mp3",
             title: "Lullaby: The Moon Over Lake Ontario",
             artist: "Nick Vuci",
             year: 2021,
@@ -2921,7 +2921,7 @@ window.tracksData = {
         },
         {
             id: "track_130",
-            filename: "NV-20210505-24EDO-MotherlessChildSketch.mp3",
+            file: "NV-20210505-24EDO-MotherlessChildSketch.mp3",
             title: "Motherless Child Sketch",
             artist: "Nick Vuci",
             year: 2021,
@@ -2933,7 +2933,7 @@ window.tracksData = {
         },
         {
             id: "track_131",
-            filename: "NV-20210528-4567CrossSet-PreludeAndFugue.mp3",
+            file: "NV-20210528-4567CrossSet-PreludeAndFugue.mp3",
             title: "Prelude and Fugue in Cross-Set",
             artist: "Nick Vuci",
             year: 2021,
@@ -2945,7 +2945,7 @@ window.tracksData = {
         },
         {
             id: "track_132",
-            filename: "NV-20210530-16NEJI128-AntiIonianDubstep.mp3",
+            file: "NV-20210530-16NEJI128-AntiIonianDubstep.mp3",
             title: "Anti-Ionian Dubstep",
             artist: "Nick Vuci",
             year: 2021,
@@ -2957,7 +2957,7 @@ window.tracksData = {
         },
         {
             id: "track_133",
-            filename: "NV-20210601-16NEJI128-AntiDorianDubstepSketch.mp3",
+            file: "NV-20210601-16NEJI128-AntiDorianDubstepSketch.mp3",
             title: "Anti-Dorian Dubstep Sketch",
             artist: "Nick Vuci",
             year: 2021,
@@ -2969,7 +2969,7 @@ window.tracksData = {
         },
         {
             id: "track_134",
-            filename: "NV-20210615-Yugo_bagpipe-AjdeJano.mp3",
+            file: "NV-20210615-Yugo_bagpipe-AjdeJano.mp3",
             title: "Ajde Jano (Yugoslav Bagpipe)",
             artist: "Nick Vuci",
             year: 2021,
@@ -2981,7 +2981,7 @@ window.tracksData = {
         },
         {
             id: "track_135",
-            filename: "NV-20210623-MaqamHijaz-StringQuartet_mvmt1.mp3",
+            file: "NV-20210623-MaqamHijaz-StringQuartet_mvmt1.mp3",
             title: "String Quartet in Maqam Hijaz - Movement 1",
             artist: "Nick Vuci",
             year: 2021,
@@ -2993,7 +2993,7 @@ window.tracksData = {
         },
         {
             id: "track_136",
-            filename: "NV-20210623-MaqamHijaz-StringQuartet_mvmt2.mp3",
+            file: "NV-20210623-MaqamHijaz-StringQuartet_mvmt2.mp3",
             title: "String Quartet in Maqam Hijaz - Movement 2",
             artist: "Nick Vuci",
             year: 2021,
@@ -3005,7 +3005,7 @@ window.tracksData = {
         },
         {
             id: "track_137",
-            filename: "NV-20210820-16edo-FantasyIntro.mp3",
+            file: "NV-20210820-16edo-FantasyIntro.mp3",
             title: "Fantasy Introduction",
             artist: "Nick Vuci",
             year: 2021,
@@ -3017,7 +3017,7 @@ window.tracksData = {
         },
         {
             id: "track_138",
-            filename: "NV-20210820-8edo-GoblinMarch.mp3",
+            file: "NV-20210820-8edo-GoblinMarch.mp3",
             title: "Goblin March",
             artist: "Nick Vuci",
             year: 2021,
