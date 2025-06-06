@@ -339,12 +339,12 @@ body {
     margin-block: var(--spacing-sm) 0; /* Logical property */
 }
 .section-card ul li a {
-    color: var(--accent-orange);
+    color: var(--secondary-teal);
     text-decoration: none;
     transition: color var(--transition-normal), text-decoration var(--transition-normal);
 }
 .section-card ul li a:hover {
-    color: var(--accent-red);
+    color: var(--text-light);
     text-decoration: underline;
 }
 
@@ -445,12 +445,12 @@ body {
 
 /* Link styling */
 a {
-    color: var(--accent-orange);
+    color: var(#a8dadc);
     text-decoration: none;
     transition: color var(--transition-normal), text-decoration var(--transition-normal);
 }
 a:hover {
-    color: var(--accent-red);
+    color: var(--text-light);
     text-decoration: underline;
 }
 
@@ -1031,6 +1031,7 @@ a:hover {
 
 .volume-slider-container {
     flex: 1;
+    max-width: 650px; /* Limit the maximum width of the volume slider - made shorter */
 }
 
 .volume-slider {
