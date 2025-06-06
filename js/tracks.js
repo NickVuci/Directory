@@ -583,7 +583,7 @@ window.tracksData = {
         },
         {
             id: "track_026",
-            title: "Lullaby: The Moon Over Lake Ontario",
+            title: "For Rosie",
             artist: "Nick Vuci",
             file: "music/NV-20210424-QuarterCommaMeantone-LullabyThe_Moon_Over_Lake_Ontario.mp3",
             year: 2021,
@@ -597,7 +597,7 @@ window.tracksData = {
             key: "G major (Quarter-comma meantone)",
             instruments: ["acoustic guitar", "vocals"],
             description: "A lullaby composed in quarter-comma meantone tuning, inspired by Lake Ontario",
-            dateAdded: "2021-04-24",
+            dateAdded: "2024",
             playCount: 0,
             lastPlayed: null,
             favorite: false,
