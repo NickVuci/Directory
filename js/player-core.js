@@ -193,10 +193,12 @@ class AudioPlayerCore {    constructor() {
                     artist: "Nick Vuci",
                     tuning: "24-tone equal temperament",
                     file: "music/NV-20201021-24EDO-SoloPianoMiniature1.flac"
-                }
-            ];
+                }            ];
             console.log('Using fallback demo tracks');
         }
+        
+        // Update collection stats when tracks are loaded
+        this.updateCollectionStats();
     }
     
     /**
@@ -207,12 +209,13 @@ class AudioPlayerCore {    constructor() {
         if (!this.currentTrack) {
             this.loadTrack(0);
         }
-          if (this.audioElement.paused) {
-            this.audioElement.play()
+          if (this.audioElement.paused) {            this.audioElement.play()
                 .then(() => {
                     this.isPlaying = true;
                     this.playPauseBtn.textContent = '❙❙';
                     this.playPauseBtn.setAttribute('aria-label', 'Pause');
+                    // Update music section when playback starts
+                    this.updateMusicSection();
                 })
                 .catch(error => {
                     console.error('Error playing audio:', error);
@@ -337,6 +340,9 @@ class AudioPlayerCore {    constructor() {
         // Preload the audio
         this.audioElement.load();
         
+        // Update the music section with current track information
+        this.updateMusicSection();
+        
         console.log(`Loaded track: ${this.currentTrack.title}`);
     }
     
@@ -413,7 +419,243 @@ class AudioPlayerCore {    constructor() {
             this.volumeIcon.setAttribute('aria-label', 'Mute');
             this.isMuted = false;
         }
+    }    /**
+     * Update the music section with current track information
+     */
+    updateMusicSection() {
+        const nowPlayingSection = document.getElementById('now-playing-section');
+        const currentTrackTitle = document.getElementById('current-track-title');
+        const currentTrackArtist = document.getElementById('current-track-artist');
+        const currentTrackAlbum = document.getElementById('current-track-album');
+        const currentTrackYear = document.getElementById('current-track-year');
+        const currentTrackTuning = document.getElementById('current-track-tuning');
+        const currentTrackDescription = document.getElementById('current-track-description');
+        const currentTrackTags = document.getElementById('current-track-tags');
+        
+        // Show the now playing section
+        if (nowPlayingSection) {
+            nowPlayingSection.style.display = 'block';
+        }
+        
+        // Check if we have a current track
+        if (!this.currentTrack) {
+            // If no track is loaded, show a message to start playback
+            if (currentTrackTitle) {
+                currentTrackTitle.textContent = 'No track selected';
+            }
+            if (currentTrackDescription) {
+                currentTrackDescription.textContent = 'Use the player controls at the bottom to start listening to music';
+            }
+            return;
+        }
+        
+        // Update track information
+        if (currentTrackTitle) {
+            currentTrackTitle.textContent = this.currentTrack.title || 'Unknown Title';
+        }
+        
+        if (currentTrackArtist) {
+            currentTrackArtist.textContent = this.currentTrack.artist || 'Unknown Artist';
+        }
+        
+        if (currentTrackAlbum) {
+            currentTrackAlbum.textContent = this.currentTrack.album || 'Unknown Album';
+        }
+        
+        if (currentTrackYear) {
+            currentTrackYear.textContent = this.currentTrack.year || 'Unknown Year';
+        }
+        
+        if (currentTrackTuning) {
+            currentTrackTuning.textContent = this.currentTrack.tuning || 'Standard Tuning';
+        }
+        
+        if (currentTrackDescription) {
+            currentTrackDescription.textContent = this.currentTrack.description || 'No description available';
+        }
+          if (currentTrackTags && this.currentTrack.tags) {
+            currentTrackTags.textContent = this.currentTrack.tags.join(', ');
+        }
+        
+        // Update the About My Music section
+        this.updateAboutMusicSection();
     }
+      /**
+     * Update collection statistics in the music section
+     */
+    updateCollectionStats() {
+        const totalTracksElement = document.getElementById('total-tracks');
+        const totalDurationElement = document.getElementById('total-duration');
+        
+        if (totalTracksElement && this.tracks) {
+            totalTracksElement.textContent = this.tracks.length;
+        }
+        
+        if (totalDurationElement && this.tracks && this.tracks.length > 0) {
+            // Calculate total duration from all tracks
+            let totalSeconds = 0;
+            let tracksWithDuration = 0;
+            
+            this.tracks.forEach(track => {
+                if (track.duration && !isNaN(track.duration)) {
+                    totalSeconds += track.duration;
+                    tracksWithDuration++;
+                }
+            });
+            
+            if (totalSeconds > 0) {
+                totalDurationElement.textContent = this.formatTime(totalSeconds);
+            } else {
+                // If no durations are available, show placeholder
+                totalDurationElement.textContent = "calculating...";
+                
+                // Try to load durations asynchronously
+                this.loadTrackDurations();
+            }
+        }
+    }
+
+    /**
+     * Load track durations asynchronously for collection stats
+     */
+    async loadTrackDurations() {
+        let totalSeconds = 0;
+        let loadedCount = 0;
+        
+        // Create a temporary audio element for duration loading
+        const tempAudio = new Audio();
+        
+        for (const track of this.tracks) {
+            if (!track.duration || isNaN(track.duration)) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        tempAudio.onloadedmetadata = () => {
+                            track.duration = tempAudio.duration;
+                            totalSeconds += tempAudio.duration;
+                            loadedCount++;
+                            resolve();
+                        };
+                        tempAudio.onerror = () => reject();
+                        tempAudio.src = track.file;
+                    });
+                } catch (error) {
+                    console.warn(`Could not load duration for ${track.title}`);
+                }
+            } else {
+                totalSeconds += track.duration;
+                loadedCount++;
+            }
+        }
+        
+        // Update the display with calculated total
+        const totalDurationElement = document.getElementById('total-duration');
+        if (totalDurationElement && totalSeconds > 0) {
+            totalDurationElement.textContent = this.formatTime(totalSeconds);
+        }
+    }
+      /**
+     * Update the "About My Music" section with dynamic content
+     */
+    updateAboutMusicSection() {
+        const aboutMusicContent = document.getElementById('about-music-content');
+        
+        if (!aboutMusicContent) return;
+        
+        // If we have a current track, try to load its custom document
+        if (this.currentTrack) {
+            this.loadTrackAboutDocument(this.currentTrack);
+        } else {
+            // No track loaded - show default content
+            this.showDefaultAboutContent();
+        }
+    }    /**
+     * Try to load a custom about document for the current track
+     * @param {Object} track - The track object
+     */
+    async loadTrackAboutDocument(track) {
+        const aboutMusicContent = document.getElementById('about-music-content');
+        if (!aboutMusicContent) return;
+
+        // Generate the expected document path based on track ID or title
+        const documentPath = this.getTrackDocumentPath(track);
+        console.log(`Looking for custom about document: ${documentPath}`);
+        
+        try {
+            // Try to fetch the custom document
+            const response = await fetch(documentPath);
+            
+            if (response.ok) {
+                const content = await response.text();
+                console.log(`✅ Loaded custom about document for "${track.title}"`);
+                // Show the custom content with track title as heading
+                aboutMusicContent.innerHTML = `
+                    <h4>About "${track.title}"</h4>
+                    <div>${content}</div>
+                `;
+            } else {
+                // Document doesn't exist - show fallback
+                console.log(`📄 No custom document found for "${track.title}" (${response.status})`);
+                this.showTrackAboutFallback(track);
+            }
+        } catch (error) {
+            // Error loading document - show fallback
+            console.log(`📄 No custom about document found for "${track.title}"`);
+            this.showTrackAboutFallback(track);
+        }
+    }
+
+    /**
+     * Generate the expected path for a track's about document
+     * @param {Object} track - The track object
+     * @returns {string} The document path
+     */
+    getTrackDocumentPath(track) {
+        // Use track ID if available, otherwise sanitize title
+        const identifier = track.id || this.sanitizeFilename(track.title);
+        return `about-tracks/${identifier}.html`;
+    }
+
+    /**
+     * Sanitize a string to be used as a filename
+     * @param {string} title - The track title
+     * @returns {string} Sanitized filename
+     */
+    sanitizeFilename(title) {
+        return title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-') // Replace multiple hyphens with single
+            .trim();
+    }    /**
+     * Show fallback content when no custom document exists for a track
+     * @param {Object} track - The track object
+     */
+    showTrackAboutFallback(track) {
+        const aboutMusicContent = document.getElementById('about-music-content');
+        if (!aboutMusicContent) return;
+
+        aboutMusicContent.innerHTML = `
+            <h4>About "${track.title}"</h4>
+            <p><em>No custom info about this track currently.</em></p>
+        `;
+    }
+
+    /**
+     * Show default content when no track is loaded
+     */
+    showDefaultAboutContent() {
+        const aboutMusicContent = document.getElementById('about-music-content');
+        if (!aboutMusicContent) return;
+
+        aboutMusicContent.innerHTML = `
+            <h4>About My Music</h4>
+            <p>My compositions explore microtonal tuning systems, particularly equal temperaments beyond the standard 12-tone scale. These pieces investigate new harmonic possibilities through alternative tuning approaches including 16-EDO, 24-EDO, and various xenharmonic temperaments.</p>
+            <p><em>Select a track to learn more about it.</em></p>
+        `;
+    }
+
+    // ...existing code...
 }
 
 // Export the player

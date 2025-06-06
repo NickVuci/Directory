@@ -13,8 +13,7 @@ function showContent(section) {
     oldContent.classList.add('fade-out');
 
     // Load the new content after fade-out completes
-    setTimeout(() => {
-        // Fetch the new content and insert it into the hidden container
+    setTimeout(() => {        // Fetch the new content and insert it into the hidden container
         fetch(`${section}.html`)
             .then(response => response.text())
             .then(data => {
@@ -30,6 +29,9 @@ function showContent(section) {
                 
                 // Update the active container
                 currentContent = currentContent === 'content1' ? 'content2' : 'content1';
+                
+                // Call section-specific initialization if needed
+                onSectionLoaded(section);
             });
     }, 500);  // Timeout matches the faster fade-out duration (0.5s)
 }
@@ -43,6 +45,24 @@ function updateActiveButton(section) {
     const activeButton = document.querySelector(`.nav-buttons button[onclick="showContent('${section}')"]`);
     if (activeButton) {
         activeButton.classList.add('active');
+    }
+}
+
+/**
+ * Handle section-specific initialization after content is loaded
+ * @param {string} section - The section that was just loaded
+ */
+function onSectionLoaded(section) {
+    if (section === 'music') {
+        // Update the music section with current track and stats
+        // Wait a bit for the DOM to be ready
+        setTimeout(() => {
+            // Get the global player instance if it exists
+            if (window.globalPlayer) {
+                window.globalPlayer.updateCollectionStats();
+                window.globalPlayer.updateMusicSection();
+            }
+        }, 100);
     }
 }
 

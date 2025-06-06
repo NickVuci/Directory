@@ -55,9 +55,9 @@ function initializeAudioPlayer() {
     const copyrightContainer = document.createElement('div');
     copyrightContainer.className = 'copyright';
     copyrightContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} Nick Vuci. All rights reserved.</p>`;
-    playerContainer.appendChild(copyrightContainer);
-      // Add player to window for global access
+    playerContainer.appendChild(copyrightContainer);    // Add player to window for global access
     window.audioPlayer = player;
+    window.globalPlayer = player;  // Alternative reference for main.js
     
     // Initialize playlist UI after a short delay to ensure player is ready
     setTimeout(() => {

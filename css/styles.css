@@ -117,7 +117,7 @@
     
     /* Advanced Layout Properties */
     --content-max-width: min(1200px, calc(100vw - var(--spacing-2xl)));
-    --content-padding: clamp(var(--spacing-md), 3vw, var(--spacing-3xl));
+    --content-padding: clamp(var(--spacing-sm), 3vw, var(--spacing-lg));
       /* Enhanced Animation Properties */
     --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -274,7 +274,7 @@ body {
     max-inline-size: var(--content-max-width);
     padding: var(--content-padding);
     margin-inline: auto;
-    margin-block: var(--spacing-xl); /* Add vertical margin for proper spacing */
+    margin-block: var(--spacing-sm); /* Reduced from var(--spacing-xl) for tighter spacing */
     
     /* Enhanced visual properties */
     background: transparent;
@@ -296,11 +296,11 @@ body {
 /* Hero Section for About, Music, and Tools */
 .section-hero {
     position: relative;
-    background: var(--darker-bg);
-    padding: var(--spacing-3xl) var(--spacing-xl);
+    background: var(#F0F0F0);
+    padding: var(--spacing-lg) var(--spacing-xl); /* Reduced from var(--spacing-3xl) for tighter spacing */
     border-radius: var(--radius-lg);
     color: var(--text-light);
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for tighter spacing */
     overflow: hidden;
     animation: fadeIn 1.5s ease-in-out;
 }
@@ -311,9 +311,9 @@ body {
 
 /* Section Cards */
 .section-card {
-    background: var(--darker-bg);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);    box-shadow: var(--shadow-light);
+    background: var(#F0F0F0);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);    /* Reduced from var(--spacing-xl) for tighter spacing */
     text-align: start; /* Modern logical equivalent of 'left' */
     animation: fadeIn 1s var(--easing-smooth);
 }
@@ -321,7 +321,7 @@ body {
 .section-card h3 {
     font-size: var(--font-size-2xl);
     color: var(--primary-gold);
-    margin-block-end: var(--spacing-md); /* Logical property */
+    margin-block-end: var(--spacing-sm); /* Logical property */
 }
 
 .section-card p, .section-card ul {
@@ -369,11 +369,11 @@ body {
 /* Music format and tuning badges with logical properties */
 
 .music-info {
-    margin-block-start: var(--spacing-2xl); /* Logical property */
-    padding: var(--spacing-xl);
-    background: rgba(30, 31, 38, 0.5);
-    border-radius: var(--radius-lg);
-    border-inline-start: var(--spacing-xs) solid var(--primary-gold); /* Logical property */
+    margin-block-start: var(--spacing-xl); /* Logical property */
+    padding: var(--spacing-lg);
+    background: (#F0F0F0);
+    border-radius: var(--radius-sm);
+    border-inline-start: var(--spacing-xs)  /* Logical property */
 }
 
 .music-info h4 {
@@ -531,11 +531,10 @@ a:hover {
         align-items: center;
         margin-block-start: 0; /* Logical property */
     }
-    
-    /* Mobile content with logical properties */
+      /* Mobile content with logical properties */
     .content {
         inline-size: 95%; /* Logical property */
-        padding: var(--spacing-xl);
+        padding: var(--spacing-xs); /* Reduced from var(--spacing-xl) for tighter mobile spacing */
     }
 }
     /* ==========================================
@@ -1113,3 +1112,86 @@ a:hover {
 .btn-unified:active {
     opacity: 0.9;
 }
+
+/* ==========================================
+   MUSIC SECTION STYLES
+   ========================================== */
+
+.now-playing-section {
+    margin: var(--spacing-lg) 0; /* Reduced from var(--spacing-2xl) for tighter spacing */
+    padding: var(--spacing-md); /* Reduced from var(--spacing-xl) for tighter spacing */
+    background: rgba(168, 218, 220, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-accent);
+}
+
+.now-playing-section h4 {
+    color: var(--primary-gold);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-lg);
+}
+
+.current-track-display {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+}
+
+.track-details h5 {
+    color: var(--text-light);
+    font-size: var(--font-size-xl);
+    margin: 0 0 var(--spacing-sm) 0;
+    font-weight: 600;
+}
+
+.track-details p {
+    color: var(--text-secondary);
+    margin: var(--spacing-xs) 0;
+    font-size: var(--font-size-md);
+}
+
+.track-metadata {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin: var(--spacing-sm) 0;
+    opacity: 0.8;
+}
+
+.track-tags {
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+.track-tags span:first-child {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.track-tags span:last-child {
+    color: var(--accent-orange);
+}
+
+.collection-stats {
+    margin-top: var(--spacing-md); /* Reduced from var(--spacing-xl) for tighter spacing */
+    padding: var(--spacing-md); /* Reduced from var(--spacing-lg) for tighter spacing */
+    background: rgba(30, 31, 38, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.collection-stats p {
+    margin: var(--spacing-xs) 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.collection-stats strong {
+    color: var(--primary-gold);
+}
+
+.collection-stats span {
+    color: var(--text-light);
+}
+
+/* ==========================================
+   END MUSIC SECTION STYLES
+   ========================================== */
