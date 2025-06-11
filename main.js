@@ -97,66 +97,42 @@ function showContent(section, updateUrlFlag = true, skipRandomTrack = false) {
  */
 function onSectionLoaded(section, skipRandomTrack = false) {
     if (section === 'music') {
-        // Update the music section with current track and stats
-        // Wait a bit for the DOM to be ready
         setTimeout(() => {
-            // Get the global player instance if it exists
             if (window.globalPlayer) {
                 window.globalPlayer.updateCollectionStats();
-                window.globalPlayer.updateMusicSection();
-                
-                // Only load random track if we're not loading from URL
-                if (!skipRandomTrack && !isLoadingFromURL && window.globalPlayer.currentTrackIndex === -1) {
-                    selectRandomTrack(window.globalPlayer);
-                }
+                // updateMusicSection will be called by loadTrack automatically
             }
         }, 100);
     }
 }
 
-// Function to load content based on URL
 function loadFromURL() {
-    isLoadingFromURL = true; // Set flag
     const { page, track } = parseURL();
     
-    // Determine which page to show
-    let targetPage = 'about'; // default
-    
+    let targetPage = 'about';
     if (page) {
         targetPage = page;
     } else if (track) {
-        // If only track is specified, show music page
         targetPage = 'music';
     }
     
-    // Load the page first (without updating URL to avoid loops)
-    // Pass true for skipRandomTrack when we have a specific track to load
-    showContent(targetPage, false, !!track);
+    showContent(targetPage, false);
     
-    // Then handle track loading after page loads
+    // Load track immediately after page content is loaded
     setTimeout(() => {
-        if (track && window.globalPlayer) {
-            const trackIndex = window.globalPlayer.tracks.findIndex(t => 
-                t.id === track
-            );
-            
-            if (trackIndex !== -1) {
-                window.globalPlayer.loadTrack(trackIndex);
+        if (window.globalPlayer) {
+            if (track) {
+                const trackIndex = window.globalPlayer.tracks.findIndex(t => t.id === track);
+                if (trackIndex !== -1) {
+                    window.globalPlayer.loadTrack(trackIndex);
+                } else {
+                    selectRandomTrack(window.globalPlayer);
+                }
             } else {
-                // Track not found, load random and update URL
                 selectRandomTrack(window.globalPlayer);
             }
-        } else if (window.globalPlayer && !track) {
-            // No track specified, load random
-            selectRandomTrack(window.globalPlayer);
         }
-        
-        // Update URL to reflect final state
-        const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
-        updateURL(targetPage, currentTrackId);
-        
-        isLoadingFromURL = false; // Clear flag
-    }, 600); // Wait for page load + a bit more
+    }, 100); // Much faster
 }
 
 // Handle browser back/forward
