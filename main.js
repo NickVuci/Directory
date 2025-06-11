@@ -47,7 +47,10 @@ function getCurrentPageName() {
     return 'about';
 }
 
-function showContent(section, updateUrlFlag = true) {
+// Add a flag to track if we're loading from URL
+let isLoadingFromURL = false;
+
+function showContent(section, updateUrlFlag = true, skipRandomTrack = false) {
     // Update the active button state immediately
     updateActiveButton(section);
 
@@ -84,28 +87,15 @@ function showContent(section, updateUrlFlag = true) {
                 }
                 
                 // Call section-specific initialization if needed
-                onSectionLoaded(section);
+                onSectionLoaded(section, skipRandomTrack);
             });
-    }, 500);  // Timeout matches the faster fade-out duration (0.5s)
-}
-
-function updateActiveButton(section) {
-    // Remove the 'active' class from all buttons
-    const buttons = document.querySelectorAll('.nav-buttons button');
-    buttons.forEach(button => button.classList.remove('active'));
-
-    // Add the 'active' class to the currently selected button
-    const activeButton = document.querySelector(`.nav-buttons button[onclick="showContent('${section}')"]`);
-    if (activeButton) {
-        activeButton.classList.add('active');
-    }
-}
-
-/**
+    }, 500);
+}/**
  * Handle section-specific initialization after content is loaded
  * @param {string} section - The section that was just loaded
+ * @param {boolean} skipRandomTrack - Whether to skip loading a random track
  */
-function onSectionLoaded(section) {
+function onSectionLoaded(section, skipRandomTrack = false) {
     if (section === 'music') {
         // Update the music section with current track and stats
         // Wait a bit for the DOM to be ready
@@ -114,6 +104,11 @@ function onSectionLoaded(section) {
             if (window.globalPlayer) {
                 window.globalPlayer.updateCollectionStats();
                 window.globalPlayer.updateMusicSection();
+                
+                // Only load random track if we're not loading from URL
+                if (!skipRandomTrack && !isLoadingFromURL && window.globalPlayer.currentTrackIndex === -1) {
+                    selectRandomTrack(window.globalPlayer);
+                }
             }
         }, 100);
     }
@@ -121,6 +116,7 @@ function onSectionLoaded(section) {
 
 // Function to load content based on URL
 function loadFromURL() {
+    isLoadingFromURL = true; // Set flag
     const { page, track } = parseURL();
     
     // Determine which page to show
@@ -134,7 +130,8 @@ function loadFromURL() {
     }
     
     // Load the page first (without updating URL to avoid loops)
-    showContent(targetPage, false);
+    // Pass true for skipRandomTrack when we have a specific track to load
+    showContent(targetPage, false, !!track);
     
     // Then handle track loading after page loads
     setTimeout(() => {
@@ -149,7 +146,7 @@ function loadFromURL() {
                 // Track not found, load random and update URL
                 selectRandomTrack(window.globalPlayer);
             }
-        } else if (window.globalPlayer) {
+        } else if (window.globalPlayer && !track) {
             // No track specified, load random
             selectRandomTrack(window.globalPlayer);
         }
@@ -157,6 +154,8 @@ function loadFromURL() {
         // Update URL to reflect final state
         const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
         updateURL(targetPage, currentTrackId);
+        
+        isLoadingFromURL = false; // Clear flag
     }, 600); // Wait for page load + a bit more
 }
 
@@ -172,5 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loadFromURL();
     } else {
         showContent('about');
+        // Load random track for default page load
+        setTimeout(() => {
+            if (window.globalPlayer) {
+                selectRandomTrack(window.globalPlayer);
+            }
+        }, 700);
     }
 });
