@@ -103,26 +103,12 @@ function updateActiveButton(section) {
     }
 }
 
-/**
- * Handle section-specific initialization after content is loaded
- * @param {string} section - The section that was just loaded
- */
-function onSectionLoaded(section) {
-    if (section === 'music') {
-        // Update the music section with current track and stats
-        // Wait a bit for the DOM to be ready
-        setTimeout(() => {
-            // Get the global player instance if it exists
-            if (window.globalPlayer) {
-                window.globalPlayer.updateCollectionStats();
-                window.globalPlayer.updateMusicSection();
-            }
-        }, 100);
-    }
-}
+// Add flag at the top
+let isLoadingFromURL = false;
 
 // Function to load content based on URL
 function loadFromURL() {
+    isLoadingFromURL = true;
     const { page, track } = parseURL();
     
     // Determine which page to show
@@ -160,6 +146,27 @@ function loadFromURL() {
         const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
         updateURL(targetPage, currentTrackId);
     }, 600); // Wait for page load + a bit more
+}
+
+/**
+ * Handle section-specific initialization after content is loaded
+ * @param {string} section - The section that was just loaded
+ */
+
+function onSectionLoaded(section) {
+    if (section === 'music') {
+        // Update the music section with current track and stats
+        // Wait a bit for the DOM to be ready
+        setTimeout(() => {
+            // Get the global player instance if it exists
+            if (window.globalPlayer) {
+                window.globalPlayer.updateCollectionStats();
+                if (!isLoadingFromURL) {
+                    window.globalPlayer.updateMusicSection();
+                }
+            }
+        }, 100);
+    }
 }
 
 // Handle browser back/forward
