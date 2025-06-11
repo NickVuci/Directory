@@ -1,3 +1,6 @@
+// Add this at the top of the file
+let currentContent = 'content1';  // This is missing!
+
 // URL management functions
 function parseURL() {
     const hash = window.location.hash.substring(1); // Remove #
