@@ -673,20 +673,22 @@ class AudioPlayerCore {    constructor() {
      * Update URL whenever track changes
      */
     updateURLForCurrentTrack() {
-        if (window.updateURL && typeof window.updateURL === 'function') {
-            // Get current page name from the active navigation button
-            const activeButton = document.querySelector('.nav-buttons button.active');
-            let currentPage = 'about';
-            
-            if (activeButton) {
-                const onclickAttr = activeButton.getAttribute('onclick');
-                const match = onclickAttr.match(/showContent\('([^']+)'\)/);
-                currentPage = match ? match[1] : 'about';
+        // Add a small delay to ensure we don't interfere with initial loading
+        setTimeout(() => {
+            if (window.updateURL && typeof window.updateURL === 'function') {
+                const activeButton = document.querySelector('.nav-buttons button.active');
+                let currentPage = 'about';
+                
+                if (activeButton) {
+                    const onclickAttr = activeButton.getAttribute('onclick');
+                    const match = onclickAttr.match(/showContent\('([^']+)'\)/);
+                    currentPage = match ? match[1] : 'about';
+                }
+                
+                const trackId = this.getCurrentTrackId();
+                window.updateURL(currentPage, trackId);
             }
-            
-            const trackId = this.getCurrentTrackId();
-            window.updateURL(currentPage, trackId);
-        }
+        }, 50);
     }
 }
 
