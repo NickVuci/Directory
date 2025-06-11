@@ -1844,8 +1844,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_096",
-            title: "Summertime Supermoon MP3 (19-TET)",
+            id: "19tet-summertime-supermoon",
+            title: "Summertime Supermoon",
             artist: "Nick Vuci",
             file: "music/NickVuci-20230606-19TET-Summertime Supermoon_MP3.mp3",
             year: 2023,
@@ -1854,11 +1854,11 @@ window.tracksData = {
             mood: ["peaceful", "celestial", "summer"],
             tags: ["microtonal", "19-TET", "ambient", "nature", "remaster"],
             duration: null,
-            album: "Celestial Works",
+            album: "Nature Works",
             bpm: 62,
             key: "19-TET",
-            instruments: ["synthesizer", "piano"],
-            description: "Remastered version of the summertime supermoon piece",
+            instruments: ["piano"],
+            description: "Improv on the supermoon of summer",
             dateAdded: "2023-06-06",
             playCount: 0,
             lastPlayed: null,
@@ -1867,8 +1867,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_097",
-            title: "Porcupine Scherzoesque After Beethoven (22-TET)",
+            id: "22tet-porcupine-scherzoesque-after-beethoven",
+            title: "Porcupine Scherzoesque After Beethoven",
             artist: "Nick Vuci",
             file: "music/NickVuci-20230609-22TET-PorcupineScherzoesqueAfter Beethoven_MP3.mp3",
             year: 2023,
@@ -2143,8 +2143,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_109",
-            title: "Into The Limit for String Quartet (EJI)",
+            id: "string-quartet-into-the-limit",
+            title: "Into The Limit for String Quartet",
             artist: "Nick Vuci",
             file: "music/NickVuci-20240213-EJI-IntoTheLimitForStringQuartet_MP3.mp3",
             year: 2024,
@@ -2211,8 +2211,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_112",
-            title: "Orchestral Piece for Tuning Club (45-TET)",
+            id: "45tet-orchestral-piece",
+            title: "Orchestral Piece for Tuning Club",
             artist: "Nick Vuci",
             file: "music/NickVuci-20240217-45TET-Orchestral_Piece_for_Tuning_Club_MP3.mp3",
             year: 2024,
@@ -2234,8 +2234,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_113",
-            title: "Swimming in Lake Opeongo (34-TET 6L1s)",
+            id: "34tet-swimming-in-lake-opeongo",
+            title: "Swimming in Lake Opeongo",
             artist: "Nick Vuci",
             file: "music/NickVuci-20240411-34TET_6L1s_6_0-SwimmingInLakeOpeongo.mp3",
             year: 2024,
@@ -2303,8 +2303,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_116",
-            title: "Piano Presto (22-TET)",
+            id: "22tet-piano-presto",
+            title: "Piano Presto",
             artist: "Nick Vuci",
             file: "music/NickVuci-20240718-22TET-PianoPresto.mp3",
             year: 2024,
@@ -2418,7 +2418,7 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_121",
+            id: "9tet-prelude-and-fugue",
             title: "Prelude and Fugue (9-TET)",
             artist: "Nick Vuci",
             file: "music/NickVuci-20240817-9TET-PreludeAndFugue.mp3",
@@ -2431,7 +2431,7 @@ window.tracksData = {
             album: "Contrapuntal Works",
             bpm: 96,
             key: "9-TET",
-            instruments: ["piano"],
+            instruments: ["synth"],
             description: "A prelude and fugue pair in the sparse harmonies of 9-TET",
             dateAdded: "2024-08-17",
             playCount: 0,
@@ -2464,13 +2464,13 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_123",
-            title: "Tetracot 7 After the Wildfires (34-TET)",
+            id: "34tet-after-the-wildfires",
+            title: "After the Wildfires",
             artist: "Nick Vuci",
             file: "music/NickVuci-20240822-34TET-Tetracot7_AfterTheWildfires.mp3",
             year: 2024,
             genre: ["Ambient", "Nature", "Tetracot Temperament"],
-            tuning: "34-TET (Tetracot)",
+            tuning: "34-TET (Tetracot[7])",
             mood: ["reflective", "nature", "post-disaster"],
             tags: ["microtonal", "34-TET", "tetracot", "nature", "wildfires"],
             duration: null,
