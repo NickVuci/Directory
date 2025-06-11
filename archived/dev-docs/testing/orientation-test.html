@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>iOS Orientation Test - Nick Vuci</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1e1f26;
+            color: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .test-card {
+            background: rgba(233, 196, 106, 0.2);
+            border: 1px solid #e9c46a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .success { background: #4CAF50; color: white; }
+        .warning { background: #FF9800; color: white; }
+        .error { background: #F44336; color: white; }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .label {
+            font-weight: bold;
+            color: #e9c46a;
+        }
+        
+        .value {
+            color: #a8dadc;
+        }
+        
+        #playerVisibility {
+            font-family: monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1>🍎 iOS Orientation Fix Test</h1>
+        <p>This page tests the iOS player orientation fix. Rotate your device to test both portrait and landscape modes.</p>
+    </div>
+
+    <div class="test-card">
+        <h2>Device Information</h2>
+        <div class="info-grid">
+            <span class="label">User Agent:</span>
+            <span class="value" id="userAgent"></span>
+            
+            <span class="label">Is iOS Device:</span>
+            <span class="value" id="isIOS"></span>
+            
+            <span class="label">Screen Width:</span>
+            <span class="value" id="screenWidth"></span>
+            
+            <span class="label">Screen Height:</span>
+            <span class="value" id="screenHeight"></span>
+            
+            <span class="label">Window Width:</span>
+            <span class="value" id="windowWidth"></span>
+            
+            <span class="label">Window Height:</span>
+            <span class="value" id="windowHeight"></span>
+            
+            <span class="label">Orientation:</span>
+            <span class="value" id="orientation"></span>
+            
+            <span class="label">Orientation Angle:</span>
+            <span class="value" id="orientationAngle"></span>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>Player Visibility Status</h2>
+        <div id="playerVisibility"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>Actions</h2>
+        <button onclick="updateInfo()" style="padding: 10px 20px; margin: 5px; background: #007aff; color: white; border: none; border-radius: 5px;">Refresh Info</button>
+        <button onclick="goToMainSite()" style="padding: 10px 20px; margin: 5px; background: #e9c46a; color: #1e1f26; border: none; border-radius: 5px;">Go to Main Site</button>
+    </div>
+
+    <!-- iOS Device Detection (same as main site) -->
+    <script>
+        // Detect iOS devices and set flag for conditional player loading
+        window.isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (window.isIOSDevice) {
+            console.log('🍎 iOS device detected');
+            document.documentElement.classList.add('ios-device');
+        }
+    </script>
+
+    <script>
+        function updateInfo() {
+            // Basic device info
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('isIOS').textContent = window.isIOSDevice ? 'YES' : 'NO';
+            document.getElementById('screenWidth').textContent = screen.width + 'px';
+            document.getElementById('screenHeight').textContent = screen.height + 'px';
+            document.getElementById('windowWidth').textContent = window.innerWidth + 'px';
+            document.getElementById('windowHeight').textContent = window.innerHeight + 'px';
+            
+            // Orientation info
+            const orientation = screen.orientation ? screen.orientation.type : 'unknown';
+            const angle = screen.orientation ? screen.orientation.angle : window.orientation || 'unknown';
+            document.getElementById('orientation').textContent = orientation;
+            document.getElementById('orientationAngle').textContent = angle + '°';
+            
+            // Check if we're in landscape based on dimensions
+            const isLandscape = window.innerWidth > window.innerHeight;
+            document.getElementById('orientation').textContent += isLandscape ? ' (Landscape)' : ' (Portrait)';
+            
+            // Player visibility check (simulated)
+            let visibilityReport = '';
+            
+            if (window.isIOSDevice) {
+                visibilityReport += 'iOS Device Detected: ✅\n';
+                visibilityReport += 'CSS Class Added: ' + (document.documentElement.classList.contains('ios-device') ? '✅' : '❌') + '\n\n';
+                
+                // Check media query conditions
+                const isMobileWidth = window.innerWidth <= 768;
+                visibilityReport += 'Mobile Width (≤768px): ' + (isMobileWidth ? '✅' : '❌') + ' (' + window.innerWidth + 'px)\n';
+                visibilityReport += 'Landscape Mode: ' + (isLandscape ? '✅' : '❌') + '\n\n';
+                
+                visibilityReport += 'Expected Player States:\n';
+                visibilityReport += '• Desktop Player: HIDDEN (iOS override)\n';
+                visibilityReport += '• Mobile Player: HIDDEN (iOS override)\n';
+                visibilityReport += '• iOS Player: VISIBLE (iOS override)\n\n';
+                
+                if (isLandscape && !isMobileWidth) {
+                    visibilityReport += '⚠️ LANDSCAPE + WIDE SCREEN DETECTED\n';
+                    visibilityReport += 'This is the problematic scenario that should now be fixed!\n';
+                    visibilityReport += 'iOS overrides should still apply despite >768px width.';
+                } else {
+                    visibilityReport += '✅ Standard mobile scenario';
+                }
+            } else {
+                visibilityReport += 'Non-iOS Device Detected\n';
+                visibilityReport += 'Standard responsive behavior applies';
+            }
+            
+            document.getElementById('playerVisibility').textContent = visibilityReport;
+        }
+        
+        function goToMainSite() {
+            window.location.href = './index.html';
+        }
+        
+        // Update info on load
+        updateInfo();
+        
+        // Update info on orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(updateInfo, 100);
+        });
+        
+        // Update info on resize
+        window.addEventListener('resize', () => {
+            setTimeout(updateInfo, 50);
+        });
+    </script>
+</body>
+</html>

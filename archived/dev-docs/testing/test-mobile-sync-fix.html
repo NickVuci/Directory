@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Sync Fix Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+        
+        .test-info {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .test-steps {
+            background: #444;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .test-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .resize-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #0066cc;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #0052a3;
+        }
+        
+        .status {
+            background: #2a4a2a;
+            border: 1px solid #4a6a4a;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .current-state {
+            background: #4a4a2a;
+            border: 1px solid #6a6a4a;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎵 Mobile State Synchronization Fix Test</h1>
+        
+        <div class="test-info">
+            <h3>Test Purpose</h3>
+            <p>This test verifies that the music player properly synchronizes state when switching from desktop to mobile mode. The mobile player should reflect the current audio position, play/pause status, and other state information.</p>
+        </div>
+        
+        <div class="test-steps">
+            <h3>Test Steps</h3>
+            <ol>
+                <li>Start playing music in desktop mode</li>
+                <li>Let it play for a few seconds to build up some progress</li>
+                <li>Use the "Simulate Mobile" button or resize browser window to trigger mobile mode</li>
+                <li>Verify that mobile player shows correct play/pause state and progress position</li>
+                <li>Use "Simulate Desktop" to switch back and verify synchronization works both ways</li>
+            </ol>
+        </div>
+        
+        <div class="resize-controls">
+            <button class="btn" onclick="simulateMobile()">📱 Simulate Mobile</button>
+            <button class="btn" onclick="simulateDesktop()">💻 Simulate Desktop</button>
+            <button class="btn" onclick="getAudioState()">🔍 Get Current State</button>
+            <button class="btn" onclick="clearStatus()">🧹 Clear Status</button>
+        </div>
+        
+        <div id="status" class="status">
+            <strong>Test Status:</strong><br>
+            Ready to test mobile state synchronization fix.
+        </div>
+        
+        <div id="currentState" class="current-state">
+            <strong>Current Audio State:</strong><br>
+            Click "Get Current State" to see current audio information.
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div id="musicPlayer" class="music-player collapsed draggable">
+        <div class="player-header">
+            <button class="collapse-btn" onclick="musicPlayer.togglePlayer()">📻</button>
+            <div class="track-info">
+                <div id="trackTitle" class="track-title">Loading...</div>
+                <div id="trackArtist" class="track-artist">Artist</div>
+            </div>
+        </div>
+        
+        <div class="player-content">
+            <div class="player-controls">
+                <button class="control-btn" onclick="previousTrack()">⏮</button>
+                <button class="control-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">▶</button>
+                <button class="control-btn" onclick="nextTrack()">⏭</button>
+            </div>
+            
+            <div class="player-progress">
+                <span class="time-display" id="currentTime">0:00</span>
+                <input type="range" class="progress-bar" id="progressBar" min="0" max="100" value="0" oninput="seekTo(this.value)" onchange="seekTo(this.value)">
+                <span class="time-display" id="totalTime">0:00</span>
+            </div>
+
+            <div class="volume-control">
+                <span class="volume-icon">🔊</span>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" oninput="setVolume(this.value)" onchange="setVolume(this.value)">
+            </div>
+        </div>
+        <audio id="audioPlayer" preload="metadata"></audio>
+    </div>
+
+    <!-- Mobile Music Player -->
+    <div id="mobileMusicPlayer" class="mobile-music-player">
+        <div class="mobile-player-content">
+            <div class="mobile-track-info">
+                <div id="mobileTrackTitle" class="mobile-track-title">Loading...</div>
+                <div id="mobileTrackTuning" class="mobile-track-tuning">Tuning</div>
+            </div>
+            
+            <div class="mobile-progress-container">
+                <div class="mobile-time-info">
+                    <span id="mobileCurrentTime" class="mobile-time">0:00</span>
+                    <span id="mobileTotalTime" class="mobile-time">0:00</span>
+                </div>
+                
+                <div class="mobile-progress-wrapper">
+                    <input type="range" class="mobile-progress-bar" id="mobileProgressBar" min="0" max="100" value="0">
+                    <div class="mobile-slider-thumb" id="mobileSliderThumb">▶</div>
+                    <div class="mobile-progress-hint">Tap to play/pause • Drag to seek</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load tracks and scripts -->
+    <script src="tracks.js"></script>
+    <script type="module" src="music-player-modular-v2.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+        // Test functions
+        function simulateMobile() {
+            // Force mobile mode
+            const event = new Event('resize');
+            // Temporarily override window.innerWidth
+            const originalWidth = window.innerWidth;
+            Object.defineProperty(window, 'innerWidth', {
+                writable: true,
+                configurable: true,
+                value: 600
+            });
+            
+            window.dispatchEvent(event);
+            
+            // Restore original width after a short delay
+            setTimeout(() => {
+                Object.defineProperty(window, 'innerWidth', {
+                    writable: true,
+                    configurable: true,
+                    value: originalWidth
+                });
+            }, 100);
+            
+            updateStatus('🔄 Simulated mobile mode switch');
+        }
+        
+        function simulateDesktop() {
+            const event = new Event('resize');
+            const originalWidth = window.innerWidth;
+            Object.defineProperty(window, 'innerWidth', {
+                writable: true,
+                configurable: true,
+                value: 1200
+            });
+            
+            window.dispatchEvent(event);
+            
+            setTimeout(() => {
+                Object.defineProperty(window, 'innerWidth', {
+                    writable: true,
+                    configurable: true,
+                    value: originalWidth
+                });
+            }, 100);
+            
+            updateStatus('🔄 Simulated desktop mode switch');
+        }
+        
+        function getAudioState() {
+            if (window.musicPlayer) {
+                try {
+                    let state;
+                    if (musicPlayer.audioEngine && musicPlayer.audioEngine.isReady()) {
+                        state = musicPlayer.audioEngine.getState();
+                    } else if (musicPlayer.elements && musicPlayer.elements.audio) {
+                        const audio = musicPlayer.elements.audio;
+                        state = {
+                            paused: audio.paused,
+                            currentTime: audio.currentTime || 0,
+                            duration: audio.duration || 0,
+                            volume: audio.volume || 0.5,
+                            isPlaying: !audio.paused
+                        };
+                    } else {
+                        state = { error: 'No audio access available' };
+                    }
+                    
+                    const stateDiv = document.getElementById('currentState');
+                    stateDiv.innerHTML = `<strong>Current Audio State:</strong><br>${JSON.stringify(state, null, 2)}`;
+                } catch (error) {
+                    updateStatus('❌ Error getting audio state: ' + error.message);
+                }
+            } else {
+                updateStatus('❌ Music player not available');
+            }
+        }
+        
+        function updateStatus(message) {
+            const statusDiv = document.getElementById('status');
+            const timestamp = new Date().toLocaleTimeString();
+            statusDiv.innerHTML += `<br>[${timestamp}] ${message}`;
+        }
+        
+        function clearStatus() {
+            document.getElementById('status').innerHTML = '<strong>Test Status:</strong><br>Status cleared.';
+            document.getElementById('currentState').innerHTML = '<strong>Current Audio State:</strong><br>Click "Get Current State" to see current audio information.';
+        }
+        
+        // Monitor resize events
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth <= 768;
+            updateStatus(`📏 Window resized to ${window.innerWidth}px (${isMobile ? 'Mobile' : 'Desktop'} mode)`);
+        });
+        
+        // Monitor when music player is ready
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.musicPlayer) {
+                    updateStatus('✅ Music player loaded and ready for testing');
+                } else {
+                    updateStatus('⚠️ Music player not found - check console for errors');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

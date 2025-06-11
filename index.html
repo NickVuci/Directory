@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">    
+    <title>Nick Vuci - Xenharmonic Musician</title>
+
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/x-icon" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png">
+    
+    <!-- Theme Color for iOS/Android -->
+    <meta name="theme-color" content="#E9C46A">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Core CSS Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header with title, subtitle, and navigation buttons -->
+    <header class="header">
+        <h1>Nick Vuci</h1>
+        <h2>Xenharmonic Musician</h2>        
+        
+        <!-- Navigation buttons directly inside the header -->        
+         <nav class="nav-buttons">
+            <button class="btn-unified" onclick="showContent('about')">About</button>
+            <button class="btn-unified" onclick="showContent('music')">Music</button>
+            <button class="btn-unified" onclick="showContent('tools')">Tools</button>
+            <button class="btn-unified" onclick="showContent('contact')">Contact</button>
+        </nav>
+    </header>
+    
+    <!-- Content area for sections -->
+    <main class="main-content">
+        <section id="content1" class="content"></section>
+        <section id="content2" class="content" style="display: none;"></section>    
+    </main>
+  <!-- Footer with Audio Player -->    
+    <footer class="footer">
+        <!-- Audio player will be inserted here by player-init.js -->
+        <!-- Copyright is added by the player-init.js script -->
+    </footer>
+      <!-- Core JavaScript -->
+    <script src="main.js"></script>      <!-- Audio Player Scripts -->
+    <script src="js/tracks.js"></script>
+      <!-- Playlist System Scripts -->
+    <script src="js/playlist/playlist-storage.js"></script>
+    <script src="js/playlist/playlist-data.js"></script>
+    <script src="js/playlist/playlist-engine.js"></script>
+    <script src="js/playlist/playlist-virtual-scroll.js"></script>
+    <script src="js/playlist/playlist-track-cards.js"></script>
+    <script src="js/playlist/playlist-ui.js"></script>
+    
+    <!-- Player Scripts -->
+    <script src="js/player-core.js"></script>
+    <script src="js/player-init.js"></script>
+    <script src="js/player-ios.js"></script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Debug Console</title>
+    <style>
+        body { 
+            font-family: monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 { color: #569cd6; }
+        .console {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .log {
+            margin: 5px 0;
+            padding: 3px 0;
+            border-bottom: 1px solid #333;
+        }
+        .log-info { color: #9cdcfe; }
+        .log-warn { color: #ce9178; }
+        .log-error { color: #f44747; }
+        .log-success { color: #6a9955; }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        pre {
+            white-space: pre-wrap;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Filter Debug Console</h1>
+    
+    <div class="controls">
+        <button id="runTest">Run All Tests</button>
+        <button id="clearConsole">Clear Console</button>
+    </div>
+    
+    <div class="console" id="console"></div>
+    
+    <script>
+        // Console output
+        const consoleElement = document.getElementById('console');
+        
+        function log(message, type = 'info') {
+            const logElement = document.createElement('div');
+            logElement.className = `log log-${type}`;
+            
+            // Format objects nicely
+            if (typeof message === 'object') {
+                try {
+                    const pre = document.createElement('pre');
+                    pre.textContent = JSON.stringify(message, replacer, 2);
+                    logElement.appendChild(pre);
+                } catch (e) {
+                    logElement.textContent = String(message);
+                }
+            } else {
+                logElement.textContent = message;
+            }
+            
+            consoleElement.appendChild(logElement);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        }
+        
+        function replacer(key, value) {
+            if (value instanceof Map) {
+                return {
+                    dataType: 'Map', 
+                    value: Array.from(value.entries())
+                };
+            } else if (value instanceof Set) {
+                return {
+                    dataType: 'Set', 
+                    value: Array.from(value)
+                };
+            }
+            return value;
+        }
+        
+        // Clear console
+        document.getElementById('clearConsole').addEventListener('click', function() {
+            consoleElement.innerHTML = '';
+        });
+        
+        // Test runner
+        document.getElementById('runTest').addEventListener('click', async function() {
+            consoleElement.innerHTML = '';
+            log('Starting tests...', 'info');
+            
+            try {
+                await runTests();
+                log('Tests complete!', 'success');
+            } catch (error) {
+                log(`Test error: ${error.message}`, 'error');
+                log(error.stack, 'error');
+            }
+        });
+        
+        // Load a script dynamically
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Run tests
+        async function runTests() {
+            // Test 1: Load tracks.js
+            log('Test 1: Loading tracks.js...', 'info');
+            try {
+                await loadScript('../../js/tracks.js');
+                log('tracks.js loaded successfully', 'success');
+                
+                if (window.tracksData) {
+                    log(`Found ${window.tracksData.tracks.length} tracks in tracksData`);
+                    log('Sample track:');
+                    log(window.tracksData.tracks[0]);
+                } else {
+                    log('window.tracksData not found!', 'error');
+                }
+            } catch (error) {
+                log(`Failed to load tracks.js: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 2: Load playlist-data.js
+            log('Test 2: Loading playlist-data.js...', 'info');
+            try {
+                await loadScript('./playlist-data.js');
+                log('playlist-data.js loaded successfully', 'success');
+            } catch (error) {
+                log(`Failed to load playlist-data.js: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 3: Initialize PlaylistDataManager
+            log('Test 3: Initializing PlaylistDataManager...', 'info');
+            let dataManager;
+            try {
+                dataManager = new PlaylistDataManager();
+                log('PlaylistDataManager initialized successfully', 'success');
+                log(`Tracks loaded: ${dataManager.tracks.size}`);
+            } catch (error) {
+                log(`Failed to initialize PlaylistDataManager: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 4: Check filter categories
+            log('Test 4: Checking filter categories...', 'info');
+            try {
+                log(`Filter categories found: ${dataManager.filters.size}`);
+                
+                if (dataManager.filters.size === 0) {
+                    log('No filter categories were generated!', 'warn');
+                    
+                    log('Manually triggering filter generation...');
+                    dataManager.generateFilterCategories();
+                    
+                    log(`After manual generation: ${dataManager.filters.size} categories`);
+                }
+                
+                // Display all filter categories and values
+                log('Filter categories:');
+                for (const [category, values] of dataManager.filters.entries()) {
+                    log(`${category}: ${values.length} values`);
+                    if (values.length > 0) {
+                        log(`Sample values: ${values.slice(0, 3).join(', ')}${values.length > 3 ? '...' : ''}`);
+                    }
+                }
+            } catch (error) {
+                log(`Error checking filter categories: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 5: Load storage.js
+            log('Test 5: Loading playlist-storage.js...', 'info');
+            try {
+                await loadScript('./playlist-storage.js');
+                log('playlist-storage.js loaded successfully', 'success');
+            } catch (error) {
+                log(`Failed to load playlist-storage.js: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 6: Initialize Storage
+            log('Test 6: Initializing PlaylistStorage...', 'info');
+            let storage;
+            try {
+                storage = new PlaylistStorage();
+                log('PlaylistStorage initialized successfully', 'success');
+            } catch (error) {
+                log(`Failed to initialize PlaylistStorage: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 7: Load engine.js
+            log('Test 7: Loading playlist-engine.js...', 'info');
+            try {
+                await loadScript('./playlist-engine.js');
+                log('playlist-engine.js loaded successfully', 'success');
+            } catch (error) {
+                log(`Failed to load playlist-engine.js: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 8: Initialize Engine
+            log('Test 8: Initializing PlaylistEngine...', 'info');
+            let engine;
+            try {
+                engine = new PlaylistEngine(dataManager, storage);
+                log('PlaylistEngine initialized successfully', 'success');
+                log(`Filtered tracks: ${engine.getFilteredTracks().length}`);
+            } catch (error) {
+                log(`Failed to initialize PlaylistEngine: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 9: Load filters.js
+            log('Test 9: Loading playlist-filters.js...', 'info');
+            try {
+                await loadScript('./playlist-filters.js');
+                log('playlist-filters.js loaded successfully', 'success');
+            } catch (error) {
+                log(`Failed to load playlist-filters.js: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 10: Initialize Filters
+            log('Test 10: Initializing PlaylistFilters...', 'info');
+            let filters;
+            try {
+                filters = new PlaylistFilters(dataManager, engine);
+                log('PlaylistFilters initialized successfully', 'success');
+                log('Filter categories from PlaylistFilters:');
+                log(filters.filterCategories);
+            } catch (error) {
+                log(`Failed to initialize PlaylistFilters: ${error.message}`, 'error');
+                throw error;
+            }
+            
+            // Test 11: Check trackMatchesCategory method (used for counting tracks per filter)
+            log('Test 11: Testing trackMatchesCategory method...', 'info');
+            try {
+                const sampleTrack = Array.from(dataManager.tracks.values())[0];
+                const sampleCategory = 'genre';
+                const sampleValue = sampleTrack.genre[0];
+                
+                log(`Testing with track "${sampleTrack.title}" and filter "${sampleCategory}:${sampleValue}"`);
+                
+                const result = engine.trackMatchesCategory(
+                    sampleTrack, 
+                    sampleCategory, 
+                    new Set([sampleValue])
+                );
+                
+                log(`Match result: ${result}`, result ? 'success' : 'error');
+                
+                // Test count method
+                const count = filters.countTracksWithValue(sampleCategory, sampleValue);
+                log(`Count for "${sampleValue}" in "${sampleCategory}": ${count}`);
+            } catch (error) {
+                log(`Error in trackMatchesCategory test: ${error.message}`, 'error');
+            }
+            
+            // Test 12: Create UI Container for filters
+            log('Test 12: Testing filter UI creation...', 'info');
+            try {
+                const container = document.createElement('div');
+                container.id = 'filter-container';
+                container.style.display = 'none'; // Hide from view
+                document.body.appendChild(container);
+                
+                filters.initializeUI(container);
+                log('Filter UI created successfully', 'success');
+                log(`Created ${container.children.length} UI elements`);
+                
+                // Get filter stats
+                const stats = filters.getFilterStats();
+                log('Filter statistics:');
+                log(stats);
+            } catch (error) {
+                log(`Error creating filter UI: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

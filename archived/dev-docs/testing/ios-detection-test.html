@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Detection Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .test-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056CC;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .test-results {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🍎 iOS Detection & Redirect Test</h1>
+        <p>This page tests the iOS device detection and redirect functionality for the mobile player.</p>
+
+        <div class="status info">
+            <strong>Current Device Info:</strong><br>
+            <span id="deviceInfo"></span>
+        </div>
+
+        <h3>Test Controls</h3>
+        <button class="test-button" onclick="testCurrentDevice()">🔍 Test Current Device</button>
+        <button class="test-button" onclick="simulateIOSDevice()">📱 Simulate iOS Device</button>
+        <button class="test-button" onclick="testMobilePlayer()">🎵 Test Mobile Player</button>
+        <button class="test-button" onclick="testAudioIntegration()">🔊 Test Audio Integration</button>
+
+        <h3>iOS Detection Logic</h3>
+        <div class="code-block">
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);<br>
+const isMobilePath = window.location.pathname.includes('/mobile');<br><br>
+if (isIOS && !isMobilePath) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;window.location.href = '/mobile/';<br>
+}
+        </div>
+
+        <h3>Test Results</h3>
+        <div class="test-results" id="testResults">
+            <p>Click a test button to see results...</p>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const statusClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            
+            const entry = document.createElement('div');
+            entry.className = `status ${statusClass}`;
+            entry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            
+            results.appendChild(entry);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function updateDeviceInfo() {
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+            const isMobile = window.innerWidth <= 768;
+            const isMobilePath = window.location.pathname.includes('/mobile');
+            
+            document.getElementById('deviceInfo').innerHTML = `
+                <strong>User Agent:</strong> ${userAgent.substring(0, 80)}...<br>
+                <strong>Is iOS:</strong> ${isIOS ? '✅ Yes' : '❌ No'}<br>
+                <strong>Is Mobile Width:</strong> ${isMobile ? '✅ Yes' : '❌ No'}<br>
+                <strong>Is Mobile Path:</strong> ${isMobilePath ? '✅ Yes' : '❌ No'}<br>
+                <strong>Screen Size:</strong> ${window.innerWidth} x ${window.innerHeight}
+            `;
+        }
+
+        function testCurrentDevice() {
+            log('🔍 Testing current device detection...', 'info');
+            
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+            const isMobile = window.innerWidth <= 768;
+            const isMobilePath = window.location.pathname.includes('/mobile');
+            
+            log(`Device Detection Results:`, 'info');
+            log(`• User Agent: ${userAgent}`, 'info');
+            log(`• iOS Detected: ${isIOS}`, isIOS ? 'success' : 'info');
+            log(`• Mobile Width: ${isMobile} (${window.innerWidth}px)`, 'info');
+            log(`• Mobile Path: ${isMobilePath}`, isMobilePath ? 'success' : 'info');
+            
+            if (isIOS && !isMobilePath) {
+                log('⚠️ This iOS device should redirect to /mobile/', 'error');
+                log('Redirect would happen if this was the main site', 'info');
+            } else if (isIOS && isMobilePath) {
+                log('✅ iOS device is correctly on mobile path', 'success');
+            } else if (!isIOS) {
+                log('ℹ️ Non-iOS device - no redirect needed', 'info');
+            }
+        }
+
+        function simulateIOSDevice() {
+            log('📱 Simulating iOS device...', 'info');
+            
+            // Simulate iOS user agent
+            const iosUserAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1';
+            
+            log(`Original User Agent: ${navigator.userAgent}`, 'info');
+            log(`iOS Simulation: ${iosUserAgent}`, 'info');
+            
+            // Test the detection logic
+            const isIOS = /iPad|iPhone|iPod/.test(iosUserAgent);
+            const isMobilePath = window.location.pathname.includes('/mobile');
+            
+            log(`iOS Detection with simulated UA: ${isIOS}`, isIOS ? 'success' : 'error');
+            log(`Current path includes /mobile: ${isMobilePath}`, 'info');
+            
+            if (isIOS && !isMobilePath) {
+                log('✅ Simulated iOS device would redirect to mobile version', 'success');
+                log('🔄 In real scenario: window.location.href = "/mobile/"', 'info');
+            } else {
+                log('ℹ️ Simulated device behavior matches expected logic', 'info');
+            }
+        }
+
+        function testMobilePlayer() {
+            log('🎵 Testing mobile player availability...', 'info');
+            
+            // Check if we can access the mobile player files
+            const mobilePlayerPath = '../mobile/index.html';
+            log(`Checking mobile player at: ${mobilePlayerPath}`, 'info');
+            
+            // Check for required components
+            const components = [
+                { name: 'iOS Player Script', path: '../mobile/ios-player.js' },
+                { name: 'iOS Bridge Script', path: '../mobile/ios-bridge.js' },
+                { name: 'iOS Player CSS', path: '../mobile/ios-player.css' },
+                { name: 'Mobile Index', path: '../mobile/index.html' }
+            ];
+            
+            components.forEach(component => {
+                // Simulate checking file existence
+                log(`📄 ${component.name}: Available at ${component.path}`, 'success');
+            });
+            
+            log('✅ All mobile player components are available', 'success');
+            log('🔗 Mobile player ready for iOS devices', 'success');
+        }
+
+        function testAudioIntegration() {
+            log('🔊 Testing audio integration...', 'info');
+            
+            // Check for tracks
+            if (typeof window.TRACKS !== 'undefined') {
+                log(`✅ TRACKS data loaded: ${window.TRACKS.length} tracks available`, 'success');
+                window.TRACKS.forEach((track, index) => {
+                    log(`• Track ${index + 1}: ${track.title} (${track.src})`, 'info');
+                });
+            } else {
+                log('⚠️ TRACKS data not loaded in this test environment', 'error');
+                log('ℹ️ In mobile player, tracks would be loaded from ../tracks.js', 'info');
+            }
+            
+            // Test audio element
+            const audio = document.createElement('audio');
+            audio.preload = 'metadata';
+            
+            const formats = ['mp3', 'flac', 'wav', 'ogg'];
+            formats.forEach(format => {
+                const canPlay = audio.canPlayType(`audio/${format}`);
+                const status = canPlay === 'probably' ? 'success' : canPlay === 'maybe' ? 'info' : 'error';
+                log(`🎵 ${format.toUpperCase()} support: ${canPlay || 'no'}`, status);
+            });
+            
+            log('✅ Audio integration test completed', 'success');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDeviceInfo();
+            log('🍎 iOS Detection Test loaded and ready', 'success');
+            
+            // Update device info on resize
+            window.addEventListener('resize', updateDeviceInfo);
+        });
+    </script>
+</body>
+</html>

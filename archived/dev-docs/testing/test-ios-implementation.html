@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Implementation Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .pass { background: #1a472a; color: #4ade80; }
+        .fail { background: #472a1a; color: #f87171; }
+        .info { background: #1a3047; color: #60a5fa; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056CC; }
+    </style>
+</head>
+<body>
+    <h1>🍎 iOS Music Player Implementation Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Results</h3>
+        <div id="testResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Manual Tests</h3>
+        <button onclick="testFooterHiding()">Test Footer Hiding</button>
+        <button onclick="testTrackInfo()">Test Track Info Display</button>
+        <button onclick="testIOSDetection()">Test iOS Detection</button>
+        <button onclick="simulateIOSDevice()">Simulate iOS Device</button>
+        <button onclick="runAllTests()">Run All Tests</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Manual Test Instructions</h3>
+        <ol>
+            <li><strong>Footer Hiding Test:</strong> When in iOS mode, the footer should be completely hidden</li>
+            <li><strong>Track Info Test:</strong> iOS player should show track title + tuning (no artist name)</li>
+            <li><strong>iOS Detection Test:</strong> Verify iOS device detection is working</li>
+        </ol>
+    </div>
+
+    <script>
+        function addTestResult(test, result, message) {
+            const resultsDiv = document.getElementById('testResults');
+            const resultElement = document.createElement('div');
+            resultElement.className = `test-result ${result}`;
+            resultElement.innerHTML = `<strong>${test}:</strong> ${message}`;
+            resultsDiv.appendChild(resultElement);
+        }
+
+        function testFooterHiding() {
+            addTestResult('Footer Hiding Test', 'info', 'Checking CSS rules...');
+            
+            // Check if CSS rule exists
+            const stylesheets = Array.from(document.styleSheets);
+            let foundRule = false;
+            
+            try {
+                stylesheets.forEach(sheet => {
+                    if (!sheet.href || sheet.href.includes('ios-player.css')) {
+                        try {
+                            const rules = Array.from(sheet.cssRules || sheet.rules || []);
+                            rules.forEach(rule => {
+                                if (rule.selectorText && rule.selectorText.includes('.ios-device .footer')) {
+                                    foundRule = true;
+                                    const hasDisplayNone = rule.style.display === 'none';
+                                    const hasPointerEventsNone = rule.style.pointerEvents === 'none';
+                                    
+                                    if (hasDisplayNone && hasPointerEventsNone) {
+                                        addTestResult('Footer Hiding CSS', 'pass', 'CSS rule correctly implemented');
+                                    } else {
+                                        addTestResult('Footer Hiding CSS', 'fail', 'CSS rule incomplete');
+                                    }
+                                }
+                            });
+                        } catch (e) {
+                            // CORS error - expected for external stylesheets
+                        }
+                    }
+                });
+                
+                if (!foundRule) {
+                    addTestResult('Footer Hiding CSS', 'info', 'Could not verify CSS due to CORS, but rule should exist in ios-player.css');
+                }
+            } catch (error) {
+                addTestResult('Footer Hiding CSS', 'fail', 'Error checking CSS: ' + error.message);
+            }
+        }
+
+        function testTrackInfo() {
+            addTestResult('Track Info Test', 'info', 'Checking iOS player track info implementation...');
+            
+            // Check if iOS player exists and has updateTrackInfo method
+            if (window.iosPlayer && typeof window.iosPlayer.updateTrackInfo === 'function') {
+                addTestResult('iOS Player', 'pass', 'iOS player found with updateTrackInfo method');
+                
+                // Test with sample track data
+                const testTrack = {
+                    title: "Test Track",
+                    artist: "Test Artist", 
+                    tuning: "24-EDO",
+                    src: "test.mp3"
+                };
+                
+                try {
+                    window.iosPlayer.updateTrackInfo(testTrack);
+                    addTestResult('Track Info Update', 'pass', 'updateTrackInfo executed successfully');
+                    
+                    // Verify the display shows tuning instead of artist
+                    const miniArtist = document.getElementById('iosMiniArtist');
+                    const fullArtist = document.getElementById('iosFullArtist');
+                    
+                    if (miniArtist && miniArtist.textContent === testTrack.tuning) {
+                        addTestResult('Mini Player Info', 'pass', 'Mini player shows tuning correctly');
+                    } else {
+                        addTestResult('Mini Player Info', 'fail', 'Mini player not showing tuning');
+                    }
+                    
+                    if (fullArtist && fullArtist.textContent === testTrack.tuning) {
+                        addTestResult('Full Player Info', 'pass', 'Full player shows tuning correctly');
+                    } else {
+                        addTestResult('Full Player Info', 'fail', 'Full player not showing tuning');
+                    }
+                    
+                } catch (error) {
+                    addTestResult('Track Info Update', 'fail', 'Error updating track info: ' + error.message);
+                }
+            } else {
+                addTestResult('iOS Player', 'fail', 'iOS player not found or missing updateTrackInfo method');
+            }
+        }
+
+        function testIOSDetection() {
+            addTestResult('iOS Detection Test', 'info', 'Checking iOS detection system...');
+            
+            // Check if iOS detection variables exist
+            if (typeof window.isIOSDevice !== 'undefined') {
+                addTestResult('iOS Detection Variable', 'pass', `isIOSDevice = ${window.isIOSDevice}`);
+            } else {
+                addTestResult('iOS Detection Variable', 'fail', 'window.isIOSDevice not found');
+            }
+            
+            // Check if body has ios-device class when needed
+            const hasIOSClass = document.body.classList.contains('ios-device');
+            addTestResult('iOS Device Class', hasIOSClass ? 'pass' : 'info', 
+                `Body ${hasIOSClass ? 'has' : 'does not have'} ios-device class`);
+        }
+
+        function simulateIOSDevice() {
+            addTestResult('iOS Simulation', 'info', 'Simulating iOS device...');
+            
+            // Add iOS device class and variable
+            window.isIOSDevice = true;
+            document.body.classList.add('ios-device');
+            
+            addTestResult('iOS Simulation', 'pass', 'iOS device simulation activated');
+            addTestResult('Test Status', 'info', 'Check if footer is hidden and iOS player is visible');
+            
+            // Try to hide footer and show iOS player
+            const footer = document.querySelector('.footer');
+            if (footer) {
+                footer.style.display = 'none';
+                addTestResult('Footer Hidden', 'pass', 'Footer manually hidden for test');
+            }
+            
+            const iosPlayer = document.getElementById('iosPlayer');
+            if (iosPlayer) {
+                iosPlayer.style.display = 'block';
+                addTestResult('iOS Player Shown', 'pass', 'iOS player manually shown for test');
+            }
+        }
+
+        function runAllTests() {
+            document.getElementById('testResults').innerHTML = '';
+            addTestResult('Test Suite', 'info', 'Running comprehensive tests...');
+            
+            testIOSDetection();
+            testFooterHiding();
+            testTrackInfo();
+            
+            addTestResult('Test Suite', 'pass', 'All automated tests completed');
+        }
+
+        // Run initial tests on load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>
