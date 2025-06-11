@@ -200,7 +200,7 @@ class AudioPlayerCore {    constructor() {
         // Update collection stats when tracks are loaded
         this.updateCollectionStats();
     }
-    
+
     /**
      * Toggle play/pause
      */
@@ -270,6 +270,8 @@ class AudioPlayerCore {    constructor() {
             this.audioElement.play()
                 .catch(error => console.error('Error playing next track:', error));
         }
+
+        this.updateURLForCurrentTrack();
     }
     
     /**
@@ -296,6 +298,8 @@ class AudioPlayerCore {    constructor() {
             this.audioElement.play()
                 .catch(error => console.error('Error playing previous track:', error));
         }
+
+        this.updateURLForCurrentTrack();
     }
     
     /**
@@ -344,6 +348,8 @@ class AudioPlayerCore {    constructor() {
         this.updateMusicSection();
         
         console.log(`Loaded track: ${this.currentTrack.title}`);
+
+        this.updateURLForCurrentTrack();
     }
     
     /**
@@ -655,7 +661,33 @@ class AudioPlayerCore {    constructor() {
         `;
     }
 
-    // ...existing code...
+    /**
+     * Get the current track ID for URL management
+     * @returns {string|null} The current track ID or null if no track loaded
+     */
+    getCurrentTrackId() {
+        return this.currentTrackIndex !== -1 ? this.tracks[this.currentTrackIndex]?.id : null;
+    }
+
+    /**
+     * Update URL whenever track changes
+     */
+    updateURLForCurrentTrack() {
+        if (window.updateURL && typeof window.updateURL === 'function') {
+            // Get current page name from the active navigation button
+            const activeButton = document.querySelector('.nav-buttons button.active');
+            let currentPage = 'about';
+            
+            if (activeButton) {
+                const onclickAttr = activeButton.getAttribute('onclick');
+                const match = onclickAttr.match(/showContent\('([^']+)'\)/);
+                currentPage = match ? match[1] : 'about';
+            }
+            
+            const trackId = this.getCurrentTrackId();
+            window.updateURL(currentPage, trackId);
+        }
+    }
 }
 
 // Export the player

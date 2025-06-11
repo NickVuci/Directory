@@ -12,18 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
  * Select and load a random track
  * @param {Object} player - The audio player instance
  */
+// since loadTrack will handle it
 function selectRandomTrack(player) {
-    // Check if tracks are available
-    if (player.tracks && player.tracks.length > 0) {
-        // Generate a random index
+    if (player && player.tracks && player.tracks.length > 0) {
         const randomIndex = Math.floor(Math.random() * player.tracks.length);
-        
-        // Load the random track
         player.loadTrack(randomIndex);
-        
+        // URL will be updated automatically by loadTrack method
         console.log(`Random track selected: ${player.tracks[randomIndex].title}`);
-    } else {
-        console.warn('No tracks available for random selection');
     }
 }
 
