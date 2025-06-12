@@ -1133,7 +1133,7 @@ window.tracksData = {
         },
         {
             id: "track_053",
-            title: "Prelude 2 Sketch (Electric Piano)",
+            title: "Prelude 2",
             artist: "Nick Vuci",
             file: "music/NickVuci-20220320-16TET-Prelude2Sketch_EPiano.mp3",
             year: 2022,
@@ -1156,7 +1156,7 @@ window.tracksData = {
         },
         {
             id: "5tet-nocturne",
-            title: "Piano Nocturne Draft (5-TET)",
+            title: "Piano Nocturne Draft",
             artist: "Nick Vuci",
             file: "music/NickVuci-20220404-5TET-PianoNocturneDraft.mp3",
             year: 2022,
@@ -1224,8 +1224,8 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "track_057",
-            title: "Violin Sonata Exposition Sketch (13-TET)",
+            id: "13tet-romanza",
+            title: "Romanza",
             artist: "Nick Vuci",
             file: "music/NickVuci-20220605-13TET-ViolinSonata_ExpositionSketch.mp3",
             year: 2022,
@@ -1844,7 +1844,7 @@ window.tracksData = {
             analysisData: null
         },
         {
-            id: "19tet-summertime-supermoon",
+            id: "19tet-summertime-supermoon1",
             title: "Summertime Supermoon",
             artist: "Nick Vuci",
             file: "music/NickVuci-20230606-19TET-Summertime Supermoon_MP3.mp3",
