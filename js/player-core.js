@@ -357,12 +357,18 @@ class AudioPlayerCore {    constructor() {
      * @param {number} timeInSeconds - Time in seconds
      * @returns {string} Formatted time string
      */
-    formatTime(timeInSeconds) {
-        if (!timeInSeconds || isNaN(timeInSeconds)) return '0:00';
+    formatTime(seconds) {
+        if (isNaN(seconds) || seconds < 0) return "0:00";
         
-        const minutes = Math.floor(timeInSeconds / 60);
-        const seconds = Math.floor(timeInSeconds % 60);
-        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = Math.floor(seconds % 60);
+        
+        if (hours > 0) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        } else {
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
     }
     
     /**
