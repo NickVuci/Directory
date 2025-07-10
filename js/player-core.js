@@ -75,6 +75,9 @@ class AudioPlayerCore {    constructor() {
         // Create a more compact layout if it's in the footer
         const playerHTML = `
             <div class="audio-player ${isFooterPlayer ? 'footer-audio-player' : ''}">
+                <button class="player-toggle-btn" aria-label="Toggle player visibility">
+                    <i class="fas fa-chevron-up">▲</i>
+                </button>
                 <div class="player-header">
                     <div class="track-info">
                         <div class="track-title">Select a track</div>

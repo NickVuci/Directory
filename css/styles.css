@@ -756,7 +756,8 @@ a:hover {
     backdrop-filter: blur(var(--spacing-md));
     border: none;
     border-radius: var(--radius-md);
-    padding: var(--spacing-xl);
+    padding: var(--spacing-xs);
+    padding-top: calc(var(--spacing-xs) + var(--spacing-md)); /* Extra padding at top for toggle button */
     max-width: 100%;
     overflow: hidden;
     position: relative;
@@ -767,63 +768,134 @@ a:hover {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
+    transition: max-height var(--transition-normal), padding var(--transition-normal), opacity var(--transition-normal);
+}
+
+/* Toggle Button for Collapsing/Expanding - Positioned at the top */
+.player-toggle-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    width: var(--spacing-lg);
+    height: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-circle);
+    transition: all var(--transition-normal);
+    position: absolute;
+    top: var(--spacing-2xs);
+    right: var(--spacing-xs);
+    z-index: 2;
 }
 
 /* Player Header with Track Info - Enhanced with golden styling */
 .player-header {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: var(--spacing-md); /* Minimal padding at the top */
+    position: relative;
 }
 
 .track-info {
     text-align: center;
+    flex-grow: 1;
 }
 
 .track-title {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     color: var(--primary-gold);
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-2xs);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 600;
 }
 
+.player-toggle-btn:hover {
+    background: rgba(233, 196, 106, 0.2);
+    color: var(--primary-gold);
+}
+
+.player-toggle-btn i {
+    transition: transform var(--transition-normal);
+}
+
+/* Collapsed Player State */
+.footer-player.collapsed {
+    max-height: var(--spacing-xl);
+    overflow: hidden;
+}
+
+.footer-player.collapsed .player-toggle-btn i {
+    transform: rotate(180deg);
+}
+
+.footer-player.collapsed .track-info,
+.footer-player.collapsed .player-controls,
+.footer-player.collapsed .progress-container,
+.footer-player.collapsed .volume-control {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast), height var(--transition-fast), margin var(--transition-fast);
+}
+
+.footer-player:not(.collapsed) .player-controls,
+.footer-player:not(.collapsed) .progress-container,
+.footer-player:not(.collapsed) .volume-control {
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal), height var(--transition-normal), margin var(--transition-normal);
+}
+
 .track-details {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-2xs);
 }
 
 /* Player Controls - Clean minimal styling */
 .player-controls {
     display: flex;
     justify-content: center;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-2xs);
 }
 
 .control-btn {
     /* Inherit all btn-unified properties */
-    width: 3rem;
-    height: 3rem;
+    width: 1.8rem;
+    height: 1.8rem;
     border-radius: var(--button-radius);
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .play-pause-btn {
-    width: 3.5rem;
-    height: 3.5rem;
-    font-size: 1.4rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1rem;
 }
 
 /* Progress Bar - Enhanced with golden styling and component variables */
 .progress-container {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
+    gap: var(--spacing-2xs);
+}
+
+.current-time, .duration {
+    text-align: center;
+    font-size: var(--font-size-xs);
 }
 
 .current-time {
@@ -843,7 +915,7 @@ a:hover {
     appearance: none;
     -webkit-appearance: none;
     width: 100%;
-    height: 8px;
+    height: 4px;
     border-radius: var(--slider-track-radius);
     background: var(--slider-track-bg);
     outline: none;
@@ -859,8 +931,8 @@ a:hover {
 .progress-bar::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
+    width: 8px;
+    height: 8px;
     border-radius: var(--radius-circle);
     background: var(--slider-thumb-color);
     cursor: pointer;
@@ -868,8 +940,8 @@ a:hover {
 }
 
 .progress-bar::-moz-range-thumb {
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
+    width: 8px;
+    height: 8px;
     border-radius: var(--radius-circle);
     background: var(--slider-thumb-color);
     cursor: pointer;
@@ -884,13 +956,13 @@ a:hover {
 
 /* Progress Bar Track */
 .progress-bar::-webkit-slider-runnable-track {
-    height: 8px;
+    height: 4px;
     border-radius: var(--slider-track-radius);
     background: var(--slider-track-bg);
 }
 
 .progress-bar::-moz-range-track {
-    height: 8px;
+    height: 4px;
     border-radius: var(--slider-track-radius);
     background: var(--slider-track-bg);
 }
@@ -901,14 +973,14 @@ a:hover {
 .footer-player {
     display: flex;
     flex-direction: column;
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
     background: var(--dark-bg);
     backdrop-filter: blur(var(--spacing-md));
-    position: relative;;
+    position: relative;
 }
 
 .footer-player .copyright {
-    margin-top: var(--spacing-xs);
+    margin-top: var(--spacing-2xs);
     font-size: var(--font-size-3xs);
     color: var(--text-secondary);
     text-align: center;
@@ -922,21 +994,22 @@ a:hover {
 
 /* Compact Player Controls for Footer - Enhanced spacing */
 .footer-player .player-controls {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
 }
 
 .footer-player .track-info {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
 }
 
 .footer-player .progress-container {
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-2xs);
 }
 
 /* Audio Player Responsive Adjustments - Clean minimal styling */
 @media (max-width: 600px) {
     .audio-player {
         padding: var(--spacing-lg);
+        padding-top: calc(var(--spacing-lg) + var(--spacing-sm)); /* Extra padding at top for toggle button */
         border-radius: var(--radius-md);
     }
     
@@ -947,36 +1020,36 @@ a:hover {
     
     .play-pause-btn {
         width: 3rem;
-    height: 3rem;
+        height: 3rem;
     }
-      /* Track item styles removed */
-      /* Playlist container styles removed */
+    /* Track item styles removed */
+    /* Playlist container styles removed */
 }
 
 /* iOS-Friendly Touch Targets - Enhanced for accessibility */
 @media (pointer: coarse) {
     .control-btn {
-        min-width: 3rem;
-        min-height: 3rem;
+        min-width: 2rem;
+        min-height: 2rem;
     }
     
     .play-pause-btn {
-        min-width: 3.5rem;
-        min-height: 3.5rem;
+        min-width: 2.2rem;
+        min-height: 2.2rem;
     }
     
     .progress-bar {
-        height: 10px;
+        height: 6px;
     }
     
     .progress-bar::-webkit-slider-thumb {
-        width: 18px;
-        height: 18px;
+        width: 12px;
+        height: 12px;
     }
     
     .progress-bar::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
+        width: 12px;
+        height: 12px;
     }
     /* Track item styles removed */
 }
@@ -984,21 +1057,42 @@ a:hover {
 /* Audio Player Footer Responsive adjustments - Enhanced mobile experience */
 @media (max-width: 768px) {
     .footer-player {
-        padding: var(--spacing-md);
+        padding: var(--spacing-xs);
     }
     
     .footer-player .control-btn {
-        width: 2.25rem;
-        height: 2.25rem;
-        font-size: 1rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        font-size: 0.75rem;
     }
     
     .footer-player .play-pause-btn {
-        width: 2.75rem;
-        height: 2.75rem;
-        font-size: 1.2rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.9rem;
     }
       /* Playlist styles removed */
+}
+
+/* Responsive Collapsible Player */
+@media (max-width: 768px) {
+    .footer-player.collapsed {
+        max-height: var(--spacing-lg); /* Ensure there's enough space for the toggle button */
+        min-height: var(--spacing-lg);
+    }
+    
+    .player-toggle-btn {
+        width: var(--spacing-md);
+        height: var(--spacing-md);
+        font-size: var(--font-size-xs);
+        top: var(--spacing-3xs);
+        right: var(--spacing-2xs);
+    }
+    
+    .player-header {
+        margin-bottom: var(--spacing-3xs); /* Minimal margin on mobile */
+        padding-top: var(--spacing-sm); /* Minimal padding on mobile */
+    }
 }
 
 /* ==========================================
@@ -1008,18 +1102,18 @@ a:hover {
 .volume-control {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
     pointer-events: auto;
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-2xs);
 }
 
 .volume-icon {
     /* Inherit btn-unified properties */
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     color: var(--text-secondary);
     user-select: none;
-    width: var(--spacing-2xl);
-    height: var(--spacing-2xl);
+    width: var(--spacing-lg);
+    height: var(--spacing-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1032,7 +1126,7 @@ a:hover {
 
 .volume-slider {
     width: 100%;
-    height: var(--spacing-xs);
+    height: var(--spacing-2xs);
     -webkit-appearance: none;
     appearance: none;
     background: var(--slider-track-bg);
@@ -1044,8 +1138,8 @@ a:hover {
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--slider-thumb-color);
     cursor: pointer;
@@ -1053,8 +1147,8 @@ a:hover {
 }
 
 .volume-slider::-moz-range-thumb {
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--slider-thumb-color);
     cursor: pointer;
@@ -1069,7 +1163,7 @@ a:hover {
 }
 
 .volume-slider::-webkit-slider-runnable-track {
-    height: var(--spacing-xs);
+    height: var(--spacing-2xs);
     border-radius: var(--slider-track-radius);
     background: var(--slider-track-bg);
 }
