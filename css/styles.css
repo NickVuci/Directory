@@ -45,8 +45,8 @@
 
       /* Layout Spacing - Enhanced with Modern CSS Functions */
     --header-height: clamp(100px, 120px, 150px);        /* Responsive header height */
-    --footer-height: clamp(70px, 80px, 90px);           /* Responsive footer height */
-    --mobile-footer-height: clamp(60px, 65px, 70px);    /* Responsive mobile footer */
+    --footer-height: clamp(50px, 15dvh, 90px);          /* Responsive footer height */
+    --mobile-footer-height: clamp(40px, 10dvh, 70px);   /* Responsive mobile footer */
     --mobile-breakpoint: 768px;
     
     /* ==========================================
@@ -462,6 +462,7 @@ a:hover {
     z-index: var(--z-header);
     border-top: 2px solid var(--border-accent);
     animation: fadeIn 1.5s var(--easing-smooth);
+    max-height: var(--footer-height);
 }
 
 /* ==========================================
@@ -545,6 +546,7 @@ a:hover {
         border-top: 2px solid var(--border-accent);
         z-index: var(--z-player);
         min-height: var(--mobile-footer-height); /* Compact layout for mobile */
+        max-height: var(--mobile-footer-height); /* Responsive height */
         /* Ensure footer sticks to bottom even with iOS dynamic UI */
         padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
         /* Add safe area padding to prevent cutoff at the bottom */
@@ -768,6 +770,7 @@ a:hover {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
+    max-height: var(--footer-height);
     transition: max-height var(--transition-normal), padding var(--transition-normal), opacity var(--transition-normal);
 }
 
@@ -1058,6 +1061,7 @@ a:hover {
 @media (max-width: 768px) {
     .footer-player {
         padding: var(--spacing-xs);
+        max-height: var(--mobile-footer-height);
     }
     
     .footer-player .control-btn {
