@@ -145,6 +145,10 @@ function loadFromURL() {
         // Update URL to reflect final state
         const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
         updateURL(targetPage, currentTrackId);
+
+        // Allow subsequent automatic updates and refresh music section
+        isLoadingFromURL = false;
+        window.globalPlayer?.updateMusicSection?.();
     }, 600); // Wait for page load + a bit more
 }
 
