@@ -216,10 +216,10 @@ class iOSAudioPlayer {
     updateMediaSessionMetadata() {
         if ('mediaSession' in navigator && this.basePlayer.currentTrack) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: this.basePlayer.currentTrack.title,
-                album: this.basePlayer.currentTrack.album,
-                tuning: this.basePlayer.currentTrack.tuning,
-
+                title: this.basePlayer.currentTrack.title || '',
+                artist: this.basePlayer.currentTrack.artist || '',
+                album: this.basePlayer.currentTrack.album || ''
+                // Note: MediaMetadata does not support custom fields like 'tuning'
             });
         }
     }

@@ -334,10 +334,13 @@ class AudioPlayerCore {    constructor() {
         // Update audio source
         this.audioElement.src = this.currentTrack.file;
         
-        // Update track info display
-        this.trackTitleElement.textContent = this.currentTrack.title;
-        this.trackInfoElement.textContent = this.currentTrack.album;
-        this.trackInfoElement.textContent = this.currentTrack.tuning;
+    // Update track info display
+    this.trackTitleElement.textContent = this.currentTrack.title || 'Unknown Title';
+    // Show album and tuning in one compact line if available
+    const album = this.currentTrack.album || '';
+    const tuning = this.currentTrack.tuning || '';
+    const sep = album && tuning ? ' • ' : '';
+    this.trackInfoElement.textContent = `${album}${sep}${tuning}` || ' ';
         
         // Reset progress and time displays
         this.progressBar.value = 0;
