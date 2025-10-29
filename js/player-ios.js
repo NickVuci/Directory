@@ -120,38 +120,32 @@ class iOSAudioPlayer {
         const allControlButtons = document.querySelectorAll('.control-btn');
         
         allControlButtons.forEach(button => {
-            // Clone and replace to remove any existing listeners
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            
+            // Guard against duplicate binding
+            if (button.dataset.iosTouchBound === 'true') return;
+            button.dataset.iosTouchBound = 'true';
+
             // Add active class on touch start
-            newButton.addEventListener('touchstart', (e) => {
+            button.addEventListener('touchstart', (e) => {
                 e.preventDefault(); // Prevent double-tap zoom
-                newButton.classList.add('ios-button-active');
+                button.classList.add('ios-button-active');
                 
                 // Handle button actions
-                if (newButton.classList.contains('play-pause-btn')) {
-                    // Store reference to play/pause button if it's the first time
-                    if (!this.basePlayer.playPauseBtn || this.basePlayer.playPauseBtn !== newButton) {
-                        this.basePlayer.playPauseBtn = newButton;
+                if (button.classList.contains('play-pause-btn')) {
+                    if (!this.basePlayer.playPauseBtn || this.basePlayer.playPauseBtn !== button) {
+                        this.basePlayer.playPauseBtn = button;
                     }
                     this.basePlayer.togglePlay();
-                } else if (newButton.classList.contains('prev-btn')) {
+                } else if (button.classList.contains('prev-btn')) {
                     this.basePlayer.playPreviousTrack();
-                } else if (newButton.classList.contains('next-btn')) {
+                } else if (button.classList.contains('next-btn')) {
                     this.basePlayer.playNextTrack();
                 }
-            });
+            }, { passive: false });
             
-            // Remove active class on touch end
-            newButton.addEventListener('touchend', () => {
-                newButton.classList.remove('ios-button-active');
-            });
-            
-            // Remove active class if touch is moved outside the button
-            newButton.addEventListener('touchcancel', () => {
-                newButton.classList.remove('ios-button-active');
-            });
+            // Remove active class on touch end/cancel
+            const clearActive = () => button.classList.remove('ios-button-active');
+            button.addEventListener('touchend', clearActive);
+            button.addEventListener('touchcancel', clearActive);
         });
         
         // Optimize progress bar for touch
@@ -234,8 +228,7 @@ class iOSAudioPlayer {
             silentAudio.setAttribute('src', 'data:audio/mp3;base64,//MkxAAHiAICWABElBeKPL/RANb2w+yiT1g/gTok//lP/W/l3h8QO/OCdCqCW2Cw//MkxAQHkAIWUAhEmAQXWUOFW2dxPu//9mr60elY5BbWs//MkxAoHAAJWUAhEmAQswqHjSNb/+9v875PquTkc5bW//MkxA4HKAIW8AhEmAQXekxN/xdPs//0d3ZPMdGC2sIM//MkxBcHAAJOMAhEmAQVoRgxP/+XP0nkKey2s//MkxBoHAAI8MAhEmAVKQiAPP/6XP8uGv59KCW1//MkxB4HAAI0YAhEmAUsJvyDP/6XP8KR/Lhn3bW//MkxCYHIAIiUAhEmAQwMY5PZ//z6HE3/6Wk1ZaW//MkxCsHAAIuAAhEmAQNrRQn//40DP/6sIMK2s//MkxDMHGAIaMAhEmAQlAGP/+XCwev/vTbGtbI//MkxDsHOAIaEAhEAAwwkRP/82DEP/+LPIKS2//MkxD8GkAIKMAhEmBQ+AMP/9//0K1a3/+srW//MkxEsGqAIoABEAAAl8MP/+ev//8uVrZa3//MkxE4HAAIOEAAIAAD4c///9//9BLW//+PP//MkxFUFwAIIAAAAAB0AP/8a///+l2//+bZa//MkxF4Fo/4IAAAAAAA/+ev//+BS2///z0//MkxGQEAA4IAAAAAAA//l3//+lS///k68');
             silentAudio.load();
             
-            // Only needed once
-            document.documentElement.removeEventListener('touchstart', this);
+            // Listener is registered with { once: true } so no manual removal needed
         }, { once: true });
         
         // Find and store reference to play/pause button if not already stored
