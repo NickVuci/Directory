@@ -94,12 +94,16 @@ function showContent(section, updateUrlFlag = true) {
 function updateActiveButton(section) {
     // Remove the 'active' class from all buttons
     const buttons = document.querySelectorAll('.nav-buttons button');
-    buttons.forEach(button => button.classList.remove('active'));
+    buttons.forEach(button => {
+        button.classList.remove('active');
+        button.removeAttribute('aria-current');
+    });
 
     // Add the 'active' class to the currently selected button
     const activeButton = document.querySelector(`.nav-buttons button[onclick="showContent('${section}')"]`);
     if (activeButton) {
         activeButton.classList.add('active');
+        activeButton.setAttribute('aria-current', 'page');
     }
 }
 

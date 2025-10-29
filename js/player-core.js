@@ -189,7 +189,7 @@ class AudioPlayerCore {    constructor() {
                     title: "Softer for J",
                     artist: "Nick Vuci",
                     tuning: "16-tone equal temperament",
-                    file: "music/NickVuci-20220211-16edo-Softer.mp3"
+                    file: "music/NickVuci-20220211-16TET-Softer.mp3"
                 },
                 {
                     title: "Solo Piano Miniature 1",

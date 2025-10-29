@@ -1174,7 +1174,7 @@ a:hover {
 }
 
 /* Hide volume control on mobile */
-@media (max-width: var(--mobile-breakpoint)) {
+@media (max-width: 768px) {
     .volume-control {
         display: none;
     }
