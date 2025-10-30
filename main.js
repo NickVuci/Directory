@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.hash) {
         loadFromURL();
     } else {
-        showContent('music-list');
+        showContent('about');
         setTimeout(() => { if (window.globalPlayer) { selectRandomTrack(window.globalPlayer); } }, 700);
     }
 });
