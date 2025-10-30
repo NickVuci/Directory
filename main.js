@@ -128,13 +128,16 @@ function renderMusicList() {
     function syncListIcons() {
         try {
             const buttons = container.querySelectorAll('.play-icon');
-            buttons.forEach(btn => { btn.textContent = '▶'; });
+            buttons.forEach(btn => { btn.textContent = '▶'; btn.setAttribute('aria-label','Play'); });
             const gp = window.globalPlayer;
             if (!gp || !gp.tracks || gp.currentTrackIndex == null) return;
             const isPlaying = gp.audioElement && !gp.audioElement.paused;
             const currentIdx = gp.currentTrackIndex;
             const currentBtn = container.querySelector(`.play-icon[data-index="${currentIdx}"]`);
-            if (currentBtn) currentBtn.textContent = isPlaying ? '❙❙' : '▶';
+            if (currentBtn) {
+                currentBtn.textContent = isPlaying ? '❙❙' : '▶';
+                currentBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+            }
         } catch {}
     }
 
@@ -145,9 +148,25 @@ function renderMusicList() {
         const idx = parseInt(btn.getAttribute('data-index'), 10);
         const playSelected = () => {
             try {
-                window.globalPlayer.loadTrack(idx);
-                if (window.globalPlayer.audioElement && window.globalPlayer.audioElement.paused) {
-                    window.globalPlayer.audioElement.play().catch(() => {});
+                const gp = window.globalPlayer;
+                if (!gp) return;
+
+                const sameTrack = (gp.currentTrackIndex === idx);
+                const audio = gp.audioElement;
+
+                if (sameTrack && audio) {
+                    // Toggle play/pause when clicking the current track
+                    if (audio.paused) {
+                        audio.play().catch(() => {});
+                    } else {
+                        audio.pause();
+                    }
+                } else {
+                    // Load a different track and start playing
+                    gp.loadTrack(idx);
+                    if (gp.audioElement && gp.audioElement.paused) {
+                        gp.audioElement.play().catch(() => {});
+                    }
                 }
                 // Reflect state immediately in the list
                 syncListIcons();
