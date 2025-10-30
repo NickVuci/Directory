@@ -33,9 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setupToggleListener(toggleBtn, player);
     }
     
-    // Check if we should start collapsed based on viewport
+    // Determine initial collapsed state
+    // Previously defaulted to collapsed on mobile, which could hide the player off-screen on some devices.
+    // Now default to expanded everywhere unless the user explicitly chose to collapse it.
     const isMobile = window.innerWidth <= 768;
-    let startCollapsed = isMobile; // Default to collapsed on mobile
+    let startCollapsed = false; // Default expanded on all devices
     
     // Restore previous state from localStorage, if available
     const storedState = localStorage.getItem('playerCollapsed');
