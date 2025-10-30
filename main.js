@@ -124,6 +124,21 @@ function renderMusicList() {
         list.appendChild(li);
     });
     container.appendChild(list);
+    // Helper to sync list play icons with the global player state
+    function syncListIcons() {
+        try {
+            const buttons = container.querySelectorAll('.play-icon');
+            buttons.forEach(btn => { btn.textContent = '▶'; });
+            const gp = window.globalPlayer;
+            if (!gp || !gp.tracks || gp.currentTrackIndex == null) return;
+            const isPlaying = gp.audioElement && !gp.audioElement.paused;
+            const currentIdx = gp.currentTrackIndex;
+            const currentBtn = container.querySelector(`.play-icon[data-index="${currentIdx}"]`);
+            if (currentBtn) currentBtn.textContent = isPlaying ? '❙❙' : '▶';
+        } catch {}
+    }
+
+    // Click handler to play from list and update icons
     container.addEventListener('click', (e) => {
         const btn = e.target.closest('.play-icon');
         if (!btn) return;
@@ -134,6 +149,8 @@ function renderMusicList() {
                 if (window.globalPlayer.audioElement && window.globalPlayer.audioElement.paused) {
                     window.globalPlayer.audioElement.play().catch(() => {});
                 }
+                // Reflect state immediately in the list
+                syncListIcons();
             } catch {}
         };
         if (window.globalPlayer) playSelected();
@@ -148,6 +165,31 @@ function renderMusicList() {
             }, 100);
         }
     }, { passive: true });
+
+    // If a player exists, keep the list icons synced with its state
+    const attachPlayerSync = () => {
+        const gp = window.globalPlayer;
+        if (!gp || !gp.audioElement) return false;
+        const el = gp.audioElement;
+        if (el.__musicListSyncAttached) { syncListIcons(); return true; }
+        const sync = () => syncListIcons();
+        el.addEventListener('play', sync);
+        el.addEventListener('pause', sync);
+        el.addEventListener('ended', sync);
+        el.addEventListener('loadedmetadata', sync);
+        // Initial sync
+        syncListIcons();
+        el.__musicListSyncAttached = true;
+        return true;
+    };
+
+    if (!attachPlayerSync()) {
+        // Retry briefly if the player isn't ready yet
+        let tries = 0;
+        const t = setInterval(() => {
+            if (attachPlayerSync() || ++tries > 25) clearInterval(t);
+        }, 120);
+    }
 }
 
 function bindContactForm() {
