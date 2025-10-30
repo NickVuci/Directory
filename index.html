@@ -18,6 +18,28 @@
 
   <!-- Site CSS (production): minified modular bundle -->
   <link rel="stylesheet" href="css/dist/app.min.css">
+  
+  <!-- Mobile footer visibility fix (iOS/Safari friendly) -->
+  <style>
+    @media (max-width: 768px) {
+      /* Pin footer (player container) above iOS browser bars */
+      .footer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: env(safe-area-inset-bottom, 0);
+        z-index: var(--z-player, 1000);
+        /* Ensure the footer has space for the home indicator */
+        padding-bottom: max(var(--spacing-md, 8px), env(safe-area-inset-bottom, 0));
+        margin: 0;
+      }
+
+      /* Reserve space so content isn't hidden behind the fixed footer */
+      .main-content {
+        padding-bottom: calc(var(--mobile-footer-height, 65px) + env(safe-area-inset-bottom, 0) + var(--spacing-xl, 24px));
+      }
+    }
+  </style>
 </head>
 <body>
     <!-- Header with title, subtitle, and navigation buttons -->
