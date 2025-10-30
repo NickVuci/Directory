@@ -68,14 +68,25 @@ function initializeAudioPlayer() {
  */
 function initializePlaylistUI() {
     console.log('Initializing playlist UI...');
-      // Check if all required playlist components are loaded
+            // Allow disabling via feature flag to avoid endless retries when scripts are commented out
+        if (window.DISABLE_PLAYLIST_UI === true) {
+                console.info('Playlist UI disabled by flag.');
+                return;
+        }
+            // Check if all required playlist components are loaded
     if (!window.PlaylistData || 
         !window.PlaylistEngine || 
         !window.PlaylistVirtualScroll || 
         !window.PlaylistStorage ||
         !window.PlaylistUI) {
-        console.warn('Playlist components not yet loaded, retrying...');
-        setTimeout(initializePlaylistUI, 200);
+                // Limit retries to avoid spamming logs if scripts are disabled
+                window.__playlistInitRetries = (window.__playlistInitRetries || 0) + 1;
+                if (window.__playlistInitRetries <= 15) { // ~3 seconds total
+                        console.warn('Playlist components not yet loaded, retrying...');
+                        setTimeout(initializePlaylistUI, 200);
+                } else {
+                        console.info('Playlist components not available. Skipping playlist UI init.');
+                }
         return;
     }
     
