@@ -184,6 +184,7 @@ function bindContactForm() {
     if (!form) return;
 
     const statusEl = document.getElementById('cf-status');
+    const submitBtn = form.querySelector('button[type="submit"]');
 
     function setStatus(msg, type = 'info') {
         if (!statusEl) return;
@@ -198,32 +199,81 @@ function bindContactForm() {
         const name = (document.getElementById('cf-name')?.value || '').trim();
         const email = (document.getElementById('cf-email')?.value || '').trim();
         const message = (document.getElementById('cf-message')?.value || '').trim();
+        const honeypot = (document.getElementById('cf-company')?.value || '').trim();
 
         // Basic validation
         const emailOk = /^\S+@\S+\.\S+$/.test(email);
+        if (honeypot) {
+            // Likely a bot; silently pretend success
+            setStatus('Thanks! Message received.', 'success');
+            return;
+        }
         if (!name || !emailOk || !message) {
             setStatus('Please enter your name, a valid email, and a message.', 'error');
             return;
         }
 
-        const recipient = form.getAttribute('data-recipient') || 'contact@nickvuci.com';
-        const subject = `Website Contact from ${name}`;
-        const bodyLines = [
-            message,
-            '',
-            `— Sent from nickvuci.com contact page`,
-            `From: ${name}`,
-            `Email: ${email}`
-        ];
-        const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+        const endpoint = form.getAttribute('data-endpoint');
+        if (endpoint && endpoint.startsWith('http')) {
+            // Submit via Formspree (or compatible) using JSON
+            const payload = {
+                name,
+                email,
+                message,
+                _subject: `Website Contact from ${name}`,
+                _source: 'nickvuci.com/contact',
+            };
 
-        // Try to open the user's email client
-        try {
-            window.location.href = mailtoUrl;
-            setStatus('Opening your email app… If nothing happens, ensure a default mail app is set.', 'success');
-        } catch (err) {
-            console.error('Failed to open mail client', err);
-            setStatus('Could not open your email app. You can email me directly instead.', 'error');
+            // Disable send to prevent double submissions
+            if (submitBtn) submitBtn.disabled = true;
+            setStatus('Sending…', 'info');
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(async (res) => {
+                if (res.ok) {
+                    setStatus('Thanks! Your message was sent.', 'success');
+                    form.reset();
+                } else {
+                    // Try to parse any error returned
+                    let detail = '';
+                    try { const data = await res.json(); detail = data?.errors?.[0]?.message || data?.message || ''; } catch {}
+                    throw new Error(detail || `Request failed (${res.status})`);
+                }
+            })
+            .catch((err) => {
+                console.error('Form submit failed:', err);
+                setStatus('Sorry, there was a problem sending your message. Please try again or email directly.', 'error');
+            })
+            .finally(() => {
+                if (submitBtn) submitBtn.disabled = false;
+            });
+        } else {
+            // Fallback to mailto if no endpoint configured
+            const recipient = form.getAttribute('data-recipient') || 'contact@nickvuci.com';
+            const subject = `Website Contact from ${name}`;
+            const bodyLines = [
+                message,
+                '',
+                `— Sent from nickvuci.com contact page`,
+                `From: ${name}`,
+                `Email: ${email}`
+            ];
+            const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+
+            try {
+                window.location.href = mailtoUrl;
+                setStatus('Opening your email app… If nothing happens, ensure a default mail app is set.', 'success');
+            } catch (err) {
+                console.error('Failed to open mail client', err);
+                setStatus('Could not open your email app. You can email me directly instead.', 'error');
+            }
         }
     });
 }
