@@ -155,6 +155,21 @@ class AudioPlayerCore {    constructor() {
         // Audio element events
         this.audioElement.addEventListener('timeupdate', this.updateProgress);
         this.audioElement.addEventListener('ended', this.audioEnded);
+        // Ensure play/pause state stays in sync even when playback is started externally
+        this.audioElement.addEventListener('play', () => {
+            this.isPlaying = true;
+            if (this.playPauseBtn) {
+                this.playPauseBtn.textContent = '❙❙';
+                this.playPauseBtn.setAttribute('aria-label', 'Pause');
+            }
+        });
+        this.audioElement.addEventListener('pause', () => {
+            this.isPlaying = false;
+            if (this.playPauseBtn) {
+                this.playPauseBtn.textContent = '▶';
+                this.playPauseBtn.setAttribute('aria-label', 'Play');
+            }
+        });
         
         // Load metadata event
         this.audioElement.addEventListener('loadedmetadata', () => {
