@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+.yarn/
+.pnp.*
+
+# Logs
+logs
+*.log
+
+# Editors/IDE
+.vscode/
+.history/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Build caches and temp
+.cache/
+coverage/
+
+# IMPORTANT: keep built CSS for static hosting
+# Do NOT ignore css/dist; we deploy from these files
