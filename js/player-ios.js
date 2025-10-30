@@ -7,6 +7,7 @@ class iOSAudioPlayer {
     constructor(basePlayer) {
         this.basePlayer = basePlayer;
         this.isIOS = this.detectIOS();
+        this._vvHandlersBound = false;
         
         if (this.isIOS) {
             console.log('🍎 iOS detected, applying optimizations');
@@ -18,6 +19,8 @@ class iOSAudioPlayer {
             }
             
             this.applyIOSOptimizations();
+            // Ensure footer sits above mobile browser UI using VisualViewport
+            this.applyViewportInsetWorkaround();
         }
     }
     
@@ -57,7 +60,42 @@ class iOSAudioPlayer {
         
         // Ensure play/pause button state is correct initially
         this.syncPlayPauseButton();
-    }/**
+    }
+
+    /**
+     * Adjust bottom inset so the fixed footer remains visible above Safari/Chrome mobile bars
+     */
+    applyViewportInsetWorkaround() {
+        const updateInset = () => {
+            try {
+                if (window.visualViewport) {
+                    const vv = window.visualViewport;
+                    const overlap = Math.max(0, (window.innerHeight - vv.height - vv.offsetTop));
+                    document.documentElement.style.setProperty('--vv-bottom-inset', overlap + 'px');
+                } else {
+                    document.documentElement.style.setProperty('--vv-bottom-inset', '0px');
+                }
+            } catch (e) {
+                // No-op on failure
+            }
+        };
+
+        // Initial update (twice to handle late viewport stabilization)
+        updateInset();
+        setTimeout(updateInset, 250);
+
+        if (this._vvHandlersBound) return;
+        this._vvHandlersBound = true;
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', updateInset);
+            window.visualViewport.addEventListener('scroll', updateInset);
+        }
+        window.addEventListener('orientationchange', () => setTimeout(updateInset, 300));
+        window.addEventListener('resize', updateInset);
+        window.addEventListener('scroll', updateInset, { passive: true });
+    }
+    /**
      * Enhance touch targets for better iOS experience
      */
     enhanceTouchTargets() {

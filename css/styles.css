@@ -549,10 +549,10 @@ a:hover {
         z-index: var(--z-player);
         min-height: var(--mobile-footer-height); /* Compact layout for mobile */
         /* Pin footer above mobile browser nav bar and account for safe areas */
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--vv-bottom-inset, 0); /* Adjust using visual viewport inset on mobile browsers */
         /* Ensure content inside the footer clears the home indicator */
         padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom, 0));
         margin-bottom: 0;
