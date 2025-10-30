@@ -1,0 +1,7 @@
+/* @layer components: social icons */
+@layer components {
+  .social-icons { display: grid; grid-template-columns: repeat(auto-fit, minmax(44px, max-content)); gap: var(--spacing-md); align-items: center; }
+  .social-link { display: inline-flex; align-items: center; justify-content: center; inline-size: 44px; block-size: 44px; border-radius: var(--radius-circle); border: 1px solid var(--border-accent); background: rgba(255, 255, 255, 0.03); transition: transform var(--transition-normal), background var(--transition-normal), box-shadow var(--transition-normal); }
+  .social-link:hover { background: rgba(233, 196, 106, 0.15); box-shadow: 0 4px 14px rgba(0,0,0,0.25); transform: translateY(-2px); }
+  .social-link img { inline-size: 24px; block-size: 24px; object-fit: contain; filter: none; }
+}

@@ -1,0 +1,16 @@
+/* @layer components: navigation */
+@layer components {
+  .nav-buttons button {
+    background: var(--button-bg);
+    color: var(--button-color);
+    border: var(--button-border);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    padding-block: clamp(var(--spacing-sm), 1.5vw, var(--spacing-md));
+    padding-inline: clamp(var(--spacing-md), 2vw, var(--spacing-xl));
+    font-size: clamp(var(--font-size-sm), 1.5vw, var(--font-size-base));
+    border-radius: var(--radius-md);
+    width: 120px;
+    min-width: 80px;
+  }
+}

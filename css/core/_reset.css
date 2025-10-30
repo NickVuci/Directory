@@ -1,0 +1,14 @@
+/* @layer base: reset */
+@layer base {
+  /* Box sizing reset */
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; padding: 0; }
+
+  /* Scrollbar styling (webkit + firefox) */
+  :root { scrollbar-color: rgba(233, 196, 106, 0.6) rgba(30, 31, 38, 0.3); scrollbar-width: thin; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: rgba(30, 31, 38, 0.3); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, rgba(233, 196, 106, 0.6), rgba(168, 218, 220, 0.6)); border-radius: 4px; transition: background 0.3s ease, transform 0.3s ease; }
+  ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, rgba(233, 196, 106, 0.8), rgba(168, 218, 220, 0.8)); transform: scale(1.1); }
+  ::-webkit-scrollbar-corner { background: rgba(30, 31, 38, 0.3); }
+}

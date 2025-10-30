@@ -1,0 +1,107 @@
+/* @layer base: variables */
+@layer base {
+  :root {
+    /* Color Palette */
+    --primary-gold: #e9c46a;
+    --text-secondary: #a8dadc;
+    --text-light: #f0f0f0;
+    --accent-orange: #f4a261;
+    --dark-bg: #1e1f26;
+    --light-bg: #283c63;
+    --bg-transparent: transparent;
+    --border-accent: #e9c56a5b;
+
+    /* Typography Scale */
+    --font-size-3xs: clamp(0.45rem, 0.5em, 0.55rem);
+    --font-size-2xs: clamp(0.5rem, 0.6em, 0.65rem);
+    --font-size-xs: clamp(0.6rem, 0.7em, 0.75rem);
+    --font-size-sm: clamp(0.7rem, 0.8em, 0.85rem);
+    --font-size-base: 1em;
+    --font-size-md: clamp(1rem, 1.1em, 1.15rem);
+    --font-size-lg: clamp(1.1rem, 1.2em, 1.3rem);
+    --font-size-xl: clamp(1.25rem, 1.5em, 1.75rem);
+    --font-size-2xl: clamp(1.5rem, 2em, 2.5rem);
+    --font-size-3xl: clamp(2rem, 3em, 3.5rem);
+
+    /* Spacing Scale */
+    --spacing-3xs: 2px;
+    --spacing-2xs: 4px;
+    --spacing-xs: 6px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+    --spacing-3xl: 48px;
+
+    /* Layout */
+    --header-height: clamp(100px, 120px, 150px);
+    --footer-height: clamp(70px, 80px, 90px);
+    --mobile-footer-height: clamp(60px, 65px, 70px);
+    --mobile-breakpoint: 768px;
+
+    /* Radius */
+    --radius-xs: 2px;
+    --radius-sm: 3px;
+    --radius-md: 4px;
+    --radius-lg: 10px;
+    --radius-xl: 15px;
+    --radius-circle: 50%;
+
+    /* Z-index */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-header: 999;
+    --z-player: 1000;
+    --z-playlist: 1100;
+    --z-modal: 9999;
+
+    /* Animation & Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Effective value in original file was the latter duplicate; keep that */
+    --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --easing-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Shadows */
+    --shadow-light: 0 4px 10px #0000001a;
+    --shadow-medium: 0 8px 32px #0000004d;
+    --shadow-heavy: 0 12px 50px #00000080;
+
+    /* Components */
+    --slider-track-bg: #a8dadc4d;
+    --slider-thumb-color: var(--primary-gold);
+    --slider-thumb-size: 12px;
+    --slider-track-radius: var(--radius-xs);
+
+    --button-bg: var(--border-accent);
+    --button-border: 1px solid var(--primary-gold);
+    --button-color: var(--primary-gold);
+    --button-hover-bg: var(--primary-gold);
+    --button-hover-color: var(--dark-bg);
+    --button-radius: var(--radius-circle);
+
+    --card-bg: var(--border-accent);
+    --card-border: 1px solid var(--primary-gold);
+    --card-hover-bg: var(--primary-gold);
+    --card-hover-color: var(--dark-bg);
+    --card-transform: translateY(-2px);
+    --card-shadow: var(--shadow-medium);
+
+    /* Layout helpers */
+    --spacing-inline: var(--spacing-md);
+    --spacing-block: var(--spacing-lg);
+    --content-max-width: min(1200px, calc(100vw - var(--spacing-2xl)));
+    --content-padding: clamp(var(--spacing-sm), 3vw, var(--spacing-lg));
+
+    /* Container query sizes */
+    --container-xs: 20rem;
+    --container-sm: 24rem;
+    --container-md: 28rem;
+    --container-lg: 32rem;
+    --container-xl: 36rem;
+  }
+}

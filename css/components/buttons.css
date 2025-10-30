@@ -1,0 +1,13 @@
+/* @layer components: buttons */
+@layer components {
+  .btn-unified {
+    background: var(--button-bg);
+    color: var(--button-color);
+    border: var(--button-border);
+    border-radius: var(--button-radius, var(--radius-lg));
+    cursor: pointer;
+    transition: all var(--transition-normal);
+  }
+  .btn-unified:hover { background: var(--button-hover-bg); color: var(--button-hover-color); }
+  .btn-unified:active { opacity: 0.9; }
+}

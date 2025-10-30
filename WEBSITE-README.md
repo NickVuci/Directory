@@ -12,7 +12,10 @@ Personal website for Nick Vuci's xenharmonic music projects and tools.
 ## Structure
 
 - `index.html` - Main website entry point
-- `css/styles.css` - Canonical stylesheet (modern responsive CSS)
+- `css/app.css` - Modular site bundle (imports core, layout, components, pages)
+- `css/core/` - Reusable core bundle (variables, reset, base)
+- `css/core.css` - Distributable core CSS for other apps (imports core + essentials)
+- `css/styles.css` - Legacy consolidated stylesheet (kept during migration)
 - `main.js` - Hash-based navigation and content swapping (About/Music/Tools/Contact)
 - `js/player-core.js` - Core footer audio player
 - `js/player-init.js` - Player bootstrap and playlist integration hooks
@@ -41,6 +44,13 @@ Notes:
 ## Development
 
 For technical documentation and refactoring plans, see the `dev-docs/` directory. Historical/legacy work lives under `archived/`.
+
+### CSS refactor (2025-10)
+
+- Introduced layered CSS architecture using `@layer` and modular files under `css/`.
+- New reusable core lives in `css/core/` (see `css/README.md`).
+- Site now loads `css/app.css` alongside legacy `css/styles.css` during migration; once parity is verified, switch to `app.css` only.
+- Optional PostCSS toolchain added for bundling/minification: `npm run build` produces minified bundles in `css/dist/`.
 
 ## Housekeeping
 
