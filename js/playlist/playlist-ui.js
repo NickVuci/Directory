@@ -96,12 +96,13 @@ class PlaylistUI {
     /**
      * Initialize core playlist components
      */    initializeComponents() {
-        this.dataManager = new PlaylistData();
-        this.engine = new PlaylistEngine(this.dataManager);
+        // Storage first so engine can read preferences
         this.storage = new PlaylistStorage();
+        this.dataManager = new PlaylistData();
+        this.engine = new PlaylistEngine(this.dataManager, this.storage);
         
         // Load saved filter states
-        const savedFilters = this.storage.get('filterStates');
+        const savedFilters = this.storage.getFilterStates?.() || null;
         if (savedFilters) {
             this.engine.setFilterStates(savedFilters);
         }
@@ -788,8 +789,8 @@ class PlaylistUI {
         this.updatePlaylistCount();
         this.updateFilterUI();
         
-        // Save filter state
-        this.storage.set('filterStates', this.engine.getFilterStates());
+    // Save filter state
+    this.storage.updateFilterStates?.(this.engine.getFilterStates());
     }
 
     /**
@@ -813,8 +814,8 @@ class PlaylistUI {
         this.updatePlaylistCount();
         this.updateFilterUI();
         
-        // Save cleared state
-        this.storage.set('filterStates', {});
+    // Save cleared state
+    this.storage.updateFilterStates?.({});
     }
 
     /**
@@ -826,8 +827,8 @@ class PlaylistUI {
         this.updatePlaylistCount();
         this.updateFilterUI();
         
-        // Save state
-        this.storage.set('filterStates', this.engine.getFilterStates());
+    // Save state
+    this.storage.updateFilterStates?.(this.engine.getFilterStates());
     }    /**
      * Update the track list with current filters
      */

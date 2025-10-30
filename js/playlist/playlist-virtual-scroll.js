@@ -7,16 +7,43 @@
 class PlaylistVirtualScroll {
     /**
      * Initialize the virtual scroll
-     * @param {HTMLElement} container - Scrollable container element
-     * @param {Function} renderItemCallback - Function to render a single item
-     * @param {number} itemHeight - Height of each item in pixels
-     * @param {number} bufferSize - Number of items to render outside viewport
+     * Accepts either positional args or an options object for flexibility.
+     *
+     * Positional signature:
+     *  - @param {HTMLElement} container - Scrollable container element
+     *  - @param {Function} renderItemCallback - Function to render a single item
+     *  - @param {number} itemHeight - Height of each item in pixels
+     *  - @param {number} bufferSize - Number of items to render outside viewport
+     *
+     * Options signature:
+     *  - @param {Object} options
+     *    - container {HTMLElement}
+     *    - renderItem {Function}
+     *    - itemHeight {number}
+     *    - bufferSize {number}
      */
-    constructor(container, renderItemCallback, itemHeight = 60, bufferSize = 5) {
-        this.container = container;
-        this.renderItem = renderItemCallback;
-        this.itemHeight = itemHeight;
-        this.bufferSize = bufferSize;
+    constructor(containerOrOptions, renderItemCallback, itemHeight = 60, bufferSize = 5) {
+        // Support both legacy positional args and modern options object
+        if (containerOrOptions instanceof HTMLElement) {
+            this.container = containerOrOptions;
+            this.renderItem = renderItemCallback;
+            this.itemHeight = itemHeight;
+            this.bufferSize = bufferSize;
+        } else if (containerOrOptions && typeof containerOrOptions === 'object') {
+            const {
+                container,
+                renderItem,
+                itemHeight: optItemHeight = 60,
+                bufferSize: optBufferSize = 5
+            } = containerOrOptions;
+
+            this.container = container;
+            this.renderItem = renderItem;
+            this.itemHeight = optItemHeight;
+            this.bufferSize = optBufferSize;
+        } else {
+            throw new Error('Invalid arguments for PlaylistVirtualScroll constructor');
+        }
         this.items = [];
         this.visibleItems = new Map(); // Map of currently rendered items by index
         

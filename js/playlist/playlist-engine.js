@@ -16,6 +16,7 @@ class PlaylistEngine {
         this.activeFilters = new Map();  // Currently active filters by category
         this.filteredTracks = [];        // Tracks after applying filters
         this.filterCombinationMode = 'AND'; // Default to AND logic between categories
+        this.searchQuery = '';
         
         // Filter cache for performance
         this.filterCache = new Map();
@@ -32,7 +33,7 @@ class PlaylistEngine {
         this.lastFilterHash = null;
         
         // Load any saved filter states from storage
-        const preferences = this.storage.getPreferences();
+        const preferences = this.storage?.getPreferences ? this.storage.getPreferences() : {};
         const savedFilters = preferences.filterStates;
         if (savedFilters) {
             for (const [category, filters] of Object.entries(savedFilters)) {
@@ -41,6 +42,10 @@ class PlaylistEngine {
                 }
             }
             this.applyFilters();
+        }
+        // Load search query if available
+        if (typeof preferences.searchQuery === 'string') {
+            this.searchQuery = preferences.searchQuery;
         }
     }
 
@@ -54,8 +59,28 @@ class PlaylistEngine {
             this.applyFilters();
             
             // Save preference
-            this.storage.setPreference('filterCombinationMode', mode);
+            if (this.storage?.updatePreferences) {
+                this.storage.updatePreferences({ filterCombinationMode: mode });
+            }
         }
+    }
+
+    /**
+     * Back-compat: setFilterMode maps to setFilterCombinationMode
+     */
+    setFilterMode(mode) {
+        this.setFilterCombinationMode(mode);
+    }
+
+    /**
+     * Update the search query and re-apply filters
+     */
+    setSearchQuery(query) {
+        this.searchQuery = (query || '').trim();
+        if (this.storage?.updateSearchQuery) {
+            this.storage.updateSearchQuery(this.searchQuery);
+        }
+        this.applyFilters();
     }
 
     /**
@@ -86,6 +111,31 @@ class PlaylistEngine {
         this.saveFilterState();
         
         return !isActive;
+    }
+
+    /**
+     * Add a filter value (idempotent)
+     */
+    addFilter(category, value) {
+        if (!this.activeFilters.has(category)) {
+            this.activeFilters.set(category, new Set());
+        }
+        const set = this.activeFilters.get(category);
+        set.add(value);
+        this.applyFilters();
+        this.saveFilterState();
+    }
+
+    /**
+     * Remove a filter value (idempotent)
+     */
+    removeFilter(category, value) {
+        if (!this.activeFilters.has(category)) return;
+        const set = this.activeFilters.get(category);
+        set.delete(value);
+        if (set.size === 0) this.activeFilters.delete(category);
+        this.applyFilters();
+        this.saveFilterState();
     }
     
     /**
@@ -191,8 +241,8 @@ class PlaylistEngine {
             const values = Array.from(this.activeFilters.get(category)).sort();
             parts.push(`${category}:${values.join(',')}`);
         }
-        
-        return parts.join(';') + `:${this.filterCombinationMode}`;
+        // Include search query in hash as it impacts results
+        return parts.join(';') + `:${this.filterCombinationMode}` + `:q=${this.searchQuery}`;
     }
     
     /**
@@ -225,16 +275,28 @@ class PlaylistEngine {
         if (this.filterCombinationMode === 'AND') {
             // Track must match at least one value in EVERY active category
             this.filteredTracks = allTracks.filter(track => {
-                return Array.from(this.activeFilters.entries()).every(([category, values]) => {
+                const matchesFilters = Array.from(this.activeFilters.entries()).every(([category, values]) => {
                     return this.trackMatchesCategory(track, category, values);
                 });
+                return matchesFilters;
             });
         } else {
             // Track must match at least one value in ANY active category
             this.filteredTracks = allTracks.filter(track => {
-                return Array.from(this.activeFilters.entries()).some(([category, values]) => {
+                const matchesFilters = Array.from(this.activeFilters.entries()).some(([category, values]) => {
                     return this.trackMatchesCategory(track, category, values);
                 });
+                return matchesFilters;
+            });
+        }
+
+        // Apply search query if present (title/artist basic search)
+        if (this.searchQuery) {
+            const q = this.searchQuery.toLowerCase();
+            this.filteredTracks = this.filteredTracks.filter(t => {
+                const title = (t.title || '').toLowerCase();
+                const artist = (t.artist || '').toLowerCase();
+                return title.includes(q) || artist.includes(q);
             });
         }
         
@@ -344,7 +406,11 @@ class PlaylistEngine {
      * Get count of active filters
      * @returns {number} - Total number of active filter values
      */
-    getActiveFilterCount() {
+    getActiveFilterCount(category) {
+        if (typeof category === 'string') {
+            if (!this.activeFilters.has(category)) return 0;
+            return this.activeFilters.get(category).size;
+        }
         let count = 0;
         for (const values of this.activeFilters.values()) {
             count += values.size;
@@ -377,6 +443,71 @@ class PlaylistEngine {
      */
     clearCache() {
         this.filterCache.clear();
+    }
+
+    /**
+     * Return filter categories with option counts for UI
+     */
+    getFilterCategories() {
+        const categories = [];
+        const tracks = Array.from(this.dataManager.tracks.values());
+        const filtersMap = this.dataManager.filters; // Map(category -> values[])
+
+        const toTitle = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+        filtersMap.forEach((values, category) => {
+            // Build counts
+            const counts = new Map();
+            tracks.forEach(track => {
+                const val = track[category];
+                if (Array.isArray(val)) {
+                    val.forEach(v => counts.set(String(v), (counts.get(String(v)) || 0) + 1));
+                } else if (val !== undefined && val !== null) {
+                    counts.set(String(val), (counts.get(String(val)) || 0) + 1);
+                }
+            });
+
+            const options = values.map(v => ({
+                value: String(v),
+                label: String(v),
+                count: counts.get(String(v)) || 0
+            }));
+
+            categories.push({
+                name: category,
+                displayName: toTitle(category),
+                options
+            });
+        });
+
+        return categories;
+    }
+
+    /**
+     * Set filter states from object map
+     */
+    setFilterStates(stateObj) {
+        this.activeFilters.clear();
+        if (stateObj && typeof stateObj === 'object') {
+            Object.entries(stateObj).forEach(([cat, arr]) => {
+                if (Array.isArray(arr) && arr.length > 0) {
+                    this.activeFilters.set(cat, new Set(arr));
+                }
+            });
+        }
+        this.applyFilters();
+        this.saveFilterState();
+    }
+
+    /**
+     * Expose filter states for saving
+     */
+    getFilterStates() {
+        const out = {};
+        this.activeFilters.forEach((set, cat) => {
+            out[cat] = Array.from(set);
+        });
+        return out;
     }
     
     /**
