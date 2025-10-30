@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Variables Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-section { margin-bottom: 20px; border: 1px solid #ddd; padding: 10px; }
+        h2 { margin-top: 0; }
+        button { padding: 5px 10px; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>Filter Variables Debug Test</h1>
+    
+    <div class="debug-section">
+        <h2>1. Load Tracks Data</h2>
+        <button id="loadTracks">Load Tracks</button>
+        <pre id="tracksOutput">Click to load tracks data...</pre>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. Initialize Data Manager</h2>
+        <button id="initDataManager">Initialize Data Manager</button>
+        <pre id="dataManagerOutput">Click to initialize data manager...</pre>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. Check Filter Categories</h2>
+        <button id="checkFilters">Check Filter Categories</button>
+        <pre id="filtersOutput">Click to check filter categories...</pre>
+    </div>
+    
+    <div class="debug-section">
+        <h2>4. Initialize Filter UI</h2>
+        <button id="initUI">Initialize UI</button>
+        <div id="filtersContainer" style="margin-top: 10px; border: 1px solid #999; padding: 10px; min-height: 100px;"></div>
+    </div>
+    
+    <script>
+        // Global variables for testing
+        let dataManager, engine, storage, filters;
+        
+        // Debugging functions
+        function safeStringify(obj, maxDepth = 2) {
+            const seen = new WeakSet();
+            return JSON.stringify(obj, (key, value) => {
+                if (typeof value === 'object' && value !== null) {
+                    if (seen.has(value) || maxDepth <= 0) {
+                        return '[Circular or Max Depth]';
+                    }
+                    seen.add(value);
+                    maxDepth--;
+                }
+                
+                // Handle Maps, Sets and other non-JSON types
+                if (value instanceof Map) {
+                    return {
+                        dataType: 'Map',
+                        value: Array.from(value.entries())
+                    };
+                } else if (value instanceof Set) {
+                    return {
+                        dataType: 'Set',
+                        value: Array.from(value.values())
+                    };
+                }
+                
+                return value;
+            }, 2);
+        }
+        
+        // Event listeners
+        document.getElementById('loadTracks').addEventListener('click', function() {
+            const output = document.getElementById('tracksOutput');
+            
+            // Load tracks.js
+            const script = document.createElement('script');
+            script.src = '../../js/tracks.js';
+            script.onload = function() {
+                output.textContent = `Tracks loaded: ${window.tracksData ? 'YES' : 'NO'}\n`;
+                if (window.tracksData) {
+                    output.textContent += `Number of tracks: ${window.tracksData.tracks.length}\n\n`;
+                    output.textContent += `Sample track:\n${safeStringify(window.tracksData.tracks[0])}`;
+                } else {
+                    output.textContent += 'ERROR: window.tracksData not found!';
+                }
+            };
+            script.onerror = function() {
+                output.textContent = 'ERROR loading tracks.js';
+            };
+            document.head.appendChild(script);
+        });
+        
+        document.getElementById('initDataManager').addEventListener('click', function() {
+            const output = document.getElementById('dataManagerOutput');
+            
+            // Load necessary scripts in sequence
+            function loadScripts(scripts, index = 0) {
+                if (index >= scripts.length) {
+                    // All scripts loaded, initialize components
+                    try {
+                        // Initialize data manager
+                        dataManager = new PlaylistDataManager();
+                        
+                        // Show output
+                        output.textContent = `Data Manager initialized: ${dataManager ? 'YES' : 'NO'}\n`;
+                        output.textContent += `Tracks loaded: ${dataManager.tracks.size}\n\n`;
+                        output.textContent += `Filter categories: ${dataManager.filters ? dataManager.filters.size : 'NONE'}\n`;
+                        
+                        if (dataManager.filters && dataManager.filters.size > 0) {
+                            output.textContent += '\nFilter categories available:\n';
+                            for (const [category, values] of dataManager.filters.entries()) {
+                                output.textContent += `${category}: ${values.length} values\n`;
+                            }
+                        } else {
+                            output.textContent += '\nWARNING: No filter categories generated!';
+                        }
+                    } catch (error) {
+                        output.textContent = `ERROR initializing: ${error.message}\n\n${error.stack}`;
+                    }
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = scripts[index];
+                script.onload = function() {
+                    loadScripts(scripts, index + 1);
+                };
+                script.onerror = function() {
+                    output.textContent = `ERROR loading ${scripts[index]}`;
+                };
+                document.head.appendChild(script);
+            }
+            
+            // Start loading scripts
+            output.textContent = 'Loading scripts...';
+            loadScripts([
+                '../../js/tracks.js', 
+                '../../js/playlist/playlist-data.js', 
+                '../../js/playlist/playlist-storage.js'
+            ]);
+        });
+        
+        document.getElementById('checkFilters').addEventListener('click', function() {
+            const output = document.getElementById('filtersOutput');
+            
+            if (!dataManager) {
+                output.textContent = 'ERROR: Please initialize data manager first!';
+                return;
+            }
+            
+            try {
+                output.textContent = 'Filter Categories:\n\n';
+                
+                if (dataManager.filters && dataManager.filters.size > 0) {
+                    for (const [category, values] of dataManager.filters.entries()) {
+                        output.textContent += `${category} (${values.length} values):\n`;
+                        output.textContent += `${values.join(', ')}\n\n`;
+                    }
+                } else {
+                    output.textContent += 'WARNING: No filter categories available!\n\n';
+                    
+                    // Try to regenerate filters
+                    output.textContent += 'Attempting to regenerate filters...\n';
+                    dataManager.generateFilterCategories();
+                    
+                    if (dataManager.filters && dataManager.filters.size > 0) {
+                        for (const [category, values] of dataManager.filters.entries()) {
+                            output.textContent += `${category} (${values.length} values):\n`;
+                            output.textContent += `${values.join(', ')}\n\n`;
+                        }
+                    } else {
+                        output.textContent += 'Failed to generate filters!';
+                    }
+                }
+            } catch (error) {
+                output.textContent = `ERROR checking filters: ${error.message}\n\n${error.stack}`;
+            }
+        });
+        
+        document.getElementById('initUI').addEventListener('click', function() {
+            const container = document.getElementById('filtersContainer');
+            
+            if (!dataManager) {
+                container.textContent = 'ERROR: Please initialize data manager first!';
+                return;
+            }
+            
+            try {
+                function loadScripts(scripts, index = 0, onComplete) {
+                    if (index >= scripts.length) {
+                        onComplete();
+                        return;
+                    }
+                    
+                    const script = document.createElement('script');
+                    script.src = scripts[index];
+                    script.onload = function() {
+                        loadScripts(scripts, index + 1, onComplete);
+                    };
+                    script.onerror = function() {
+                        container.textContent = `ERROR loading ${scripts[index]}`;
+                    };
+                    document.head.appendChild(script);
+                }
+                
+                container.textContent = 'Loading scripts...';
+                loadScripts([
+                    '../../js/playlist/playlist-engine.js', 
+                    '../../js/playlist/playlist-filters.js'
+                ], 0, function() {
+                    // Initialize components
+                    try {
+                        // Initialize storage if needed
+                        if (!storage) {
+                            storage = new PlaylistStorage();
+                        }
+                        
+                        // Initialize engine
+                        engine = new PlaylistEngine(dataManager, storage);
+                        
+                        // Initialize filters
+                        filters = new PlaylistFilters(dataManager, engine);
+                        
+                        // Initialize UI
+                        container.textContent = '';
+                        filters.initializeUI(container);
+                    } catch (error) {
+                        container.textContent = `ERROR initializing UI: ${error.message}\n\n${error.stack}`;
+                    }
+                });
+            } catch (error) {
+                container.textContent = `ERROR: ${error.message}\n\n${error.stack}`;
+            }
+        });
+    </script>
+</body>
+</html>
