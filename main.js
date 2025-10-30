@@ -69,7 +69,7 @@ function loadFromURL() {
     isLoadingFromURL = true;
     const { page, track } = parseURL();
     let targetPage = 'about';
-    if (page) targetPage = page; else if (track) targetPage = 'music';
+    if (page) targetPage = page; else if (track) targetPage = 'music-list';
     showContent(targetPage, false);
     setTimeout(() => {
         if (track && window.globalPlayer) {
