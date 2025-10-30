@@ -2,6 +2,66 @@
 <div class="section-hero">
     <div class="section-card fade-in">
         <h3>Contact</h3>
-        <p>you know where to find me</p>
+    </div>
+
+    <!-- Social Links -->
+    <div class="section-card fade-in" id="social-links">
+            <!-- Edit your handles here; default is @NickVuci. Discord uses an invite link. -->
+            <div class="social-icons" role="list" aria-label="Social profiles">
+                <a class="social-link" role="listitem" href="https://x.com/NickVuci" target="_blank" rel="noopener" aria-label="X / Twitter" title="X / Twitter">
+                    <img src="https://cdn.simpleicons.org/x/ffffff" alt="X logo" width="28" height="28" loading="lazy">
+                </a>
+                <a class="social-link" role="listitem" href="https://instagram.com/NickVuci" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+                    <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram logo" width="28" height="28" loading="lazy">
+                </a>
+                <a class="social-link" role="listitem" href="https://www.youtube.com/@NickVuci" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
+                    <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube logo" width="28" height="28" loading="lazy">
+                </a>
+                <a class="social-link" role="listitem" href="https://www.tiktok.com/@NickVuci" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok">
+                    <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok logo" width="28" height="28" loading="lazy">
+                </a>
+                <a class="social-link" role="listitem" href="https://github.com/NickVuci" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+                    <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub logo" width="28" height="28" loading="lazy">
+                </a>
+                <a class="social-link" role="listitem" href="https://www.threads.net/@NickVuci" target="_blank" rel="noopener" aria-label="Threads" title="Threads">
+                    <img src="https://cdn.simpleicons.org/threads/ffffff" alt="Threads logo" width="28" height="28" loading="lazy">
+                </a>
+                <!-- Discord: replace invite with your server invite code -->
+                <a class="social-link" role="listitem" href="https://discord.gg/NickVuci" target="_blank" rel="noopener" aria-label="Discord" title="Discord">
+                    <img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord logo" width="28" height="28" loading="lazy">
+                </a>
+                <!-- Optional: add Mastodon. Replace instance and handle if used. -->
+                <!-- <a class="social-link" role="listitem" href="https://mastodon.social/@NickVuci" target="_blank" rel="me noopener" aria-label="Mastodon" title="Mastodon">
+                    <img src="https://cdn.simpleicons.org/mastodon/ffffff" alt="Mastodon logo" width="28" height="28" loading="lazy">
+                </a> -->
+            </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="section-card fade-in" id="contact-form-card">
+        <h3>Send a Message</h3>
+        <!--
+            To set your destination email, update data-recipient below.
+            Use a real address, e.g., contact@nickvuci.com or hello@nickvuci.com.
+        -->
+        <form id="contact-form" data-recipient="contact@nickvuci.com" novalidate>
+            <div class="form-row">
+                <label for="cf-name">Your Name</label>
+                <input id="cf-name" name="name" type="text" placeholder="Jane Doe" required>
+            </div>
+            <div class="form-row">
+                <label for="cf-email">Your Email</label>
+                <input id="cf-email" name="email" type="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-row">
+                <label for="cf-message">Message</label>
+                <textarea id="cf-message" name="message" rows="5" placeholder="Write your message…" required></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-unified">Send</button>
+                <span id="cf-status" role="status" aria-live="polite" class="cf-status" hidden></span>
+            </div>
+            <p class="cf-privacy">This form uses your email app to send the message. No data is stored on this site.</p>
+        </form>
     </div>
 </div>

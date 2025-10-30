@@ -170,7 +170,62 @@ function onSectionLoaded(section) {
                 }
             }
         }, 100);
+    } else if (section === 'contact') {
+        // Initialize contact form interactions when contact section loads
+        setTimeout(bindContactForm, 50);
     }
+}
+
+/**
+ * Bind submit handler for the contact form to generate a mailto link
+ */
+function bindContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    const statusEl = document.getElementById('cf-status');
+
+    function setStatus(msg, type = 'info') {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.hidden = !msg;
+        statusEl.dataset.type = type;
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = (document.getElementById('cf-name')?.value || '').trim();
+        const email = (document.getElementById('cf-email')?.value || '').trim();
+        const message = (document.getElementById('cf-message')?.value || '').trim();
+
+        // Basic validation
+        const emailOk = /^\S+@\S+\.\S+$/.test(email);
+        if (!name || !emailOk || !message) {
+            setStatus('Please enter your name, a valid email, and a message.', 'error');
+            return;
+        }
+
+        const recipient = form.getAttribute('data-recipient') || 'contact@nickvuci.com';
+        const subject = `Website Contact from ${name}`;
+        const bodyLines = [
+            message,
+            '',
+            `— Sent from nickvuci.com contact page`,
+            `From: ${name}`,
+            `Email: ${email}`
+        ];
+        const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+
+        // Try to open the user's email client
+        try {
+            window.location.href = mailtoUrl;
+            setStatus('Opening your email app… If nothing happens, ensure a default mail app is set.', 'success');
+        } catch (err) {
+            console.error('Failed to open mail client', err);
+            setStatus('Could not open your email app. You can email me directly instead.', 'error');
+        }
+    });
 }
 
 // Handle browser back/forward
