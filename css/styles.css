@@ -527,6 +527,8 @@ a:hover {
         flex-direction: column;
         align-items: center;
         margin-block-start: 0; /* Logical property */
+        /* Reserve space so fixed footer doesn't overlap content */
+        padding-bottom: calc(var(--mobile-footer-height) + env(safe-area-inset-bottom, 0) + var(--spacing-xl));
     }
       /* Mobile content with logical properties */
     .content {
@@ -546,10 +548,14 @@ a:hover {
         border-top: 2px solid var(--border-accent);
         z-index: var(--z-player);
         min-height: var(--mobile-footer-height); /* Compact layout for mobile */
-        /* Ensure footer sticks to bottom even with iOS dynamic UI */
-        padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
-        /* Add safe area padding to prevent cutoff at the bottom */
-        margin-bottom: env(safe-area-inset-bottom, 0);
+        /* Pin footer above mobile browser nav bar and account for safe areas */
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        /* Ensure content inside the footer clears the home indicator */
+        padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom, 0));
+        margin-bottom: 0;
     }    /* Mobile Player Container */
     .mobile-music-player {
         display: block;
@@ -969,6 +975,104 @@ a:hover {
 }
 
 /* Playlist Styling Removed */
+/* Minimal Playlist UI styles (restored essentials) */
+
+/* Toggle button in footer */
+.playlist-toggle-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    width: var(--spacing-xl);
+    height: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-circle);
+    transition: all var(--transition-normal);
+    position: absolute;
+    top: var(--spacing-2xs);
+    left: var(--spacing-xs);
+    z-index: 2;
+}
+
+.playlist-toggle-btn:hover {
+    background: rgba(233, 196, 106, 0.2);
+    color: var(--primary-gold);
+}
+
+/* Container is hidden by default; shown when expanded */
+.playlist-container[aria-hidden="true"] { display: none; }
+
+.playlist-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--mobile-footer-height) + env(safe-area-inset-bottom, 0));
+    background: var(--dark-bg);
+    border-top: 2px solid var(--border-accent);
+    box-shadow: var(--shadow-medium);
+    z-index: var(--z-playlist);
+    max-height: 70vh;
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.playlist-container.playlist-expanded {
+    display: block;
+}
+
+.playlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--border-accent);
+}
+
+.playlist-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    max-height: calc(70vh - 56px);
+}
+
+/* Ensure the tracks area has height for virtual scroll */
+.playlist-tracks-section .playlist-section-content {
+    flex: 1;
+    min-height: 300px;
+}
+
+.playlist-tracks-container {
+    height: 100%;
+}
+
+/* Basic track card layout so content is visible */
+.track-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.track-card__title { color: var(--primary-gold); font-weight: 600; }
+.track-card__artist { color: var(--text-secondary); font-size: var(--font-size-sm); }
+.track-card__duration { color: var(--text-secondary); font-size: var(--font-size-sm); }
+
+/* Mobile fullscreen mode */
+.playlist-mobile-fullscreen {
+    top: env(safe-area-inset-top, 0);
+    bottom: 0;
+    max-height: none;
+    border-radius: 0;
+}
 
 /* Footer Player Styling - Clean aesthetic matching header */
 .footer-player {
