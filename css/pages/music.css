@@ -1,0 +1,16 @@
+/* @layer pages: music */
+@layer pages {
+  .now-playing-section { margin: var(--spacing-lg) 0; padding: var(--spacing-md); background: rgba(168, 218, 220, 0.1); border-radius: var(--radius-lg); border: 1px solid var(--border-accent); }
+  .now-playing-section h4 { color: var(--primary-gold); margin-bottom: var(--spacing-lg); font-size: var(--font-size-lg); }
+  .current-track-display { display: flex; gap: var(--spacing-lg); align-items: flex-start; }
+  .track-details h5 { color: var(--text-light); font-size: var(--font-size-xl); margin: 0 0 var(--spacing-sm) 0; font-weight: 600; }
+  .track-details p { color: var(--text-secondary); margin: var(--spacing-xs) 0; font-size: var(--font-size-md); }
+  .track-metadata { color: var(--text-secondary); font-size: var(--font-size-sm); margin: var(--spacing-sm) 0; opacity: 0.8; }
+  .track-tags { margin-top: var(--spacing-md); font-size: var(--font-size-sm); }
+  .track-tags span:first-child { color: var(--text-secondary); opacity: 0.8; }
+  .track-tags span:last-child { color: var(--accent-orange); }
+  .collection-stats { margin-top: var(--spacing-md); padding: var(--spacing-md); background: rgba(30, 31, 38, 0.3); border-radius: var(--radius-md); }
+  .collection-stats p { margin: var(--spacing-xs) 0; color: var(--text-secondary); font-size: var(--font-size-sm); }
+  .collection-stats strong { color: var(--primary-gold); }
+  .collection-stats span { color: var(--text-light); }
+}

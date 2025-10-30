@@ -1,0 +1,23 @@
+{
+  "name": "directory-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:css": "postcss css/app.css -o css/dist/app.min.css",
+    "build:core": "postcss css/core.css -o css/dist/core.min.css",
+    "build": "npm run build:css && npm run build:core",
+    "dev:css": "postcss css/app.css -o css/dist/app.css -w",
+    "lint:css": "stylelint \"css/**/*.css\"",
+    "fix:css": "stylelint \"css/**/*.css\" --fix"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "cssnano": "^6.1.2",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.0",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1",
+    "stylelint-order": "^6.0.4"
+  }
+}

@@ -1,0 +1,24 @@
+/* @layer components: playlist (minimal essentials; full UI currently disabled) */
+@layer components {
+  /* Toggle button (currently hidden in legacy) */
+  .playlist-toggle-btn { background: transparent; color: var(--text-secondary); border: none; cursor: pointer; font-size: var(--font-size-sm); inline-size: var(--spacing-xl); block-size: var(--spacing-xl); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-circle); transition: all var(--transition-normal); position: absolute; top: var(--spacing-2xs); left: var(--spacing-xs); z-index: 2; }
+  .playlist-toggle-btn:hover { background: rgba(233, 196, 106, 0.2); color: var(--primary-gold); }
+
+  /* Container */
+  .playlist-container[aria-hidden="true"] { display: none; }
+  .playlist-container { position: fixed; left: 0; right: 0; bottom: calc(var(--mobile-footer-height) + env(safe-area-inset-bottom, 0)); background: var(--dark-bg); border-top: 2px solid var(--border-accent); box-shadow: var(--shadow-medium); z-index: var(--z-playlist); max-height: 70vh; border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg); overflow: hidden; }
+  .playlist-container.playlist-expanded { display: block; }
+
+  .playlist-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md); background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border-accent); }
+  .playlist-content { display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md); max-height: calc(70vh - 56px); }
+
+  .playlist-tracks-section .playlist-section-content { flex: 1; min-height: 300px; }
+  .playlist-tracks-container { height: 100%; }
+
+  .track-card { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .track-card__title { color: var(--primary-gold); font-weight: 600; }
+  .track-card__artist, .track-card__duration { color: var(--text-secondary); font-size: var(--font-size-sm); }
+
+  /* Mobile fullscreen */
+  .playlist-mobile-fullscreen { top: env(safe-area-inset-top, 0); bottom: 0; max-height: none; border-radius: 0; }
+}

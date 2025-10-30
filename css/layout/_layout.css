@@ -1,0 +1,109 @@
+/* @layer layout: site structure */
+@layer layout {
+  /* Body layout grid (structure only) */
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    grid-area: header;
+    inline-size: 100%;
+    background: var(--dark-bg);
+    backdrop-filter: blur(var(--spacing-md));
+    padding-block-start: calc(env(safe-area-inset-top) + clamp(var(--spacing-sm), 2vw, var(--spacing-xl)));
+    padding-block-end: clamp(var(--spacing-sm), 2vw, var(--spacing-xl));
+    padding-inline: 0;
+    text-align: center;
+    color: var(--primary-gold);
+    z-index: var(--z-header);
+    border-bottom: 2px solid var(--border-accent);
+  }
+  .header h1 { font-size: clamp(1.6em, 4vw, var(--font-size-2xl)); margin-block-end: var(--spacing-xs); }
+  .header h2 { font-size: clamp(var(--font-size-base), 2vw, var(--font-size-lg)); color: var(--text-secondary); margin-block-end: clamp(var(--spacing-md), 3vw, var(--spacing-lg)); }
+
+  /* Main content area */
+  .main-content {
+    grid-area: main;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 0; /* for proper scrolling in grid */
+  }
+
+  .content {
+    inline-size: min(90%, var(--content-max-width));
+    max-inline-size: var(--content-max-width);
+    padding: var(--content-padding);
+    margin-inline: auto;
+    margin-block: var(--spacing-sm);
+    background: transparent;
+    border-radius: var(--radius-lg);
+    text-align: start;
+    color: var(--text-light);
+  }
+
+  /* Footer */
+  .footer {
+    grid-area: footer;
+    inline-size: 100%;
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--dark-bg);
+    backdrop-filter: blur(var(--spacing-md));
+    color: var(--text-secondary);
+    z-index: var(--z-header);
+    border-top: 2px solid var(--border-accent);
+  }
+
+  /* Nav buttons container */
+  .nav-buttons {
+    container-type: inline-size;
+    container-name: nav-buttons;
+    display: flex;
+    justify-content: center;
+    gap: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
+    padding-inline: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
+  }
+
+  .nav-buttons button.active { background: var(--button-hover-bg); color: var(--button-hover-color); }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    body {
+      height: 100dvh; /* dynamic viewport height */
+      min-height: 100vh;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .header {
+      position: sticky;
+      top: env(safe-area-inset-top, 0);
+      height: auto;
+      padding: calc(var(--spacing-lg) + env(safe-area-inset-top)) 0 var(--spacing-sm);
+    }
+    .header h1 { font-size: 1.6em; }
+    .header h2 { font-size: var(--font-size-base); }
+    .content { inline-size: 95%; padding: var(--spacing-xs); }
+
+    /* Example container query for button wrapping */
+    @container nav-buttons (width < 400px) {
+      .nav-buttons button { flex: 1; width: auto; min-inline-size: 0; }
+    }
+  }
+
+  /* Fallbacks for unsupported features */
+  @supports not (container-type: inline-size) {
+    /* Allow buttons to wrap naturally when container queries unavailable */
+    .nav-buttons { flex-wrap: wrap; }
+    .nav-buttons button { flex: 1 1 auto; width: auto; }
+  }
+}
