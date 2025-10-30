@@ -13,4 +13,17 @@
   .collection-stats p { margin: var(--spacing-xs) 0; color: var(--text-secondary); font-size: var(--font-size-sm); }
   .collection-stats strong { color: var(--primary-gold); }
   .collection-stats span { color: var(--text-light); }
+
+  /* Music list layout tweaks */
+  .music-list .all-tracks-list { list-style: none; padding-left: 0; margin: 0; }
+  .music-list .track-row-inner { display: flex; align-items: center; gap: var(--spacing-sm); }
+  /* Nudge the inline play button slightly left to align with desired visual edge */
+  .music-list .play-icon {
+    background: none;
+    border: none;
+    color: var(--primary-gold);
+    padding: 0;
+    line-height: 1;
+    transform: translateX(-8px);
+  }
 }

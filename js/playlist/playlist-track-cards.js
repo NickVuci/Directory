@@ -77,7 +77,7 @@ class TrackCard {
                 </div>
                 <div class="track-card__controls">
                     <div class="track-card__actions">
-                        <button class="track-card__btn track-card__btn--play" title="Play">
+                        <button class="track-card__btn track-card__btn--play" aria-label="Play">
                             <span class="track-card__play-icon">▶</span>
                         </button>
                         <button class="track-card__btn track-card__btn--favorite ${this.track.favorite ? 'active' : ''}" title="Favorite">
@@ -135,7 +135,7 @@ class TrackCard {
                         ${this.track.album ? `<span class="track-card__album">${this.escapeHtml(this.track.album)}</span>` : ''}
                     </div>
                     <div class="track-card__controls">
-                        <button class="track-card__btn track-card__btn--play" title="Play">
+                        <button class="track-card__btn track-card__btn--play" aria-label="Play">
                             <span class="track-card__play-icon">▶</span>
                         </button>
                         <button class="track-card__btn track-card__btn--favorite ${this.track.favorite ? 'active' : ''}" title="Favorite">
@@ -253,7 +253,7 @@ class TrackCard {
                 
                 <div class="track-card__grid-footer">
                     <span class="track-card__duration">${duration}</span>
-                    <button class="track-card__btn track-card__btn--play" title="Play">
+                    <button class="track-card__btn track-card__btn--play" aria-label="Play">
                         <span class="track-card__play-icon">▶</span>
                     </button>
                 </div>
