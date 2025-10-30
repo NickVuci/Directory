@@ -5,8 +5,21 @@
     "order/properties-alphabetical-order": null,
     "color-hex-length": "short",
     "selector-class-pattern": "^[a-z]([a-z0-9-]|__|--)*$",
-    "declaration-block-no-redundant-longhand-properties": true,
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "declaration-block-single-line-max-declarations": null,
+    "comment-empty-line-before": null,
+    "rule-empty-line-before": null,
+    "at-rule-empty-line-before": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "property-no-vendor-prefix": null,
+    "font-family-name-quotes": null,
+    "media-feature-range-notation": null,
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "keyframes-name-pattern": null,
+    "declaration-block-no-duplicate-custom-properties": null,
+    "no-duplicate-selectors": null,
+    "custom-property-empty-line-before": null
   },
   "overrides": [
     {

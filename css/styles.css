@@ -1,3 +1,6 @@
+/* Deprecated: legacy aggregator. This file remains only for backward compatibility.
+    It forwards to the modular site CSS. Prefer linking to css/dist/app.min.css in production. */
+@import url('./app.css');
 /* ==========================================
    CSS CUSTOM PROPERTIES (VARIABLES)
    ========================================== */
