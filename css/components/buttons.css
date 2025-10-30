@@ -10,4 +10,10 @@
   }
   .btn-unified:hover { background: var(--button-hover-bg); color: var(--button-hover-color); }
   .btn-unified:active { opacity: 0.9; }
+  /* Persist hover look when active/current page */
+  .btn-unified.active,
+  .btn-unified[aria-current="page"] {
+    background: var(--button-hover-bg);
+    color: var(--button-hover-color);
+  }
 }
