@@ -1393,6 +1393,12 @@ a:hover {
    ========================================== */
 
 /* ==========================================
+    TEMP: HIDE PLAYLIST BUTTON
+    ========================================== */
+/* Temporarily hide the playlist toggle button in the footer player */
+.playlist-toggle-btn { display: none !important; }
+
+/* ==========================================
    CONTACT PAGE STYLES
    ========================================== */
 
