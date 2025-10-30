@@ -114,7 +114,7 @@ function renderMusicList() {
         li.className = 'track-row';
         li.innerHTML = `
             <div class="track-row-inner">
-                <button class="play-icon" aria-label="Play" title="Play" data-index="${i}">▶</button>
+                <button class="play-icon" aria-label="Play" data-index="${i}">▶</button>
                 <div class="track-meta">
                     <strong class="title">${clean(t.title)}</strong>
                     ${t.year ? `<span class="sep"> • </span><span class="year">${t.year}</span>` : ''}
