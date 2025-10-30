@@ -1,47 +1,30 @@
+// Rebuild clean file to fix earlier merge corruption
+
 // Add this at the top of the file
-let currentContent = 'content1';  // This is missing!
+let currentContent = 'content1';
 
 // URL management functions
 function parseURL() {
-    const hash = window.location.hash.substring(1); // Remove #
+    const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
-    
-    return {
-        page: params.get('page'),
-        track: params.get('track')
-    };
+    return { page: params.get('page'), track: params.get('track') };
 }
 
 function updateURL(page, trackId) {
     const params = new URLSearchParams();
-    
-    // Only add page param if it's not the default 'about'
-    if (page && page !== 'about') {
-        params.set('page', page);
-    }
-    
-    // Always add track param if provided
-    if (trackId) {
-        params.set('track', trackId);
-    }
-    
+    if (page && page !== 'about') params.set('page', page);
+    if (trackId) params.set('track', trackId);
     const newHash = params.toString();
-    
-    // Update URL without triggering hashchange if it's different
     if (window.location.hash !== '#' + newHash) {
-        // Use history.replaceState to avoid triggering hashchange
         const newURL = window.location.pathname + window.location.search + '#' + newHash;
         history.replaceState(null, null, newURL);
     }
 }
-
-// Make updateURL globally available for player integration
 window.updateURL = updateURL;
 
 function getCurrentPageName() {
     const activeButton = document.querySelector('.nav-buttons button.active');
     if (activeButton) {
-        // Extract page name from onclick attribute
         const onclickAttr = activeButton.getAttribute('onclick');
         const match = onclickAttr.match(/showContent\('([^']+)'\)/);
         return match ? match[1] : 'about';
@@ -50,251 +33,173 @@ function getCurrentPageName() {
 }
 
 function showContent(section, updateUrlFlag = true) {
-    // Update the active button state immediately
     updateActiveButton(section);
-
     const oldContent = document.getElementById(currentContent);
     const newContent = document.getElementById(currentContent === 'content1' ? 'content2' : 'content1');
-
-    // Start fade-out on the old content
     oldContent.classList.remove('fade-in');
     oldContent.classList.add('fade-out');
-
-    // Load the new content after fade-out completes
     setTimeout(() => {
-        // Fetch the new content and insert it into the hidden container
         fetch(`${section}.html`)
-            .then(response => response.text())
-            .then(data => {
-                newContent.innerHTML = data;
+            .then(r => r.text())
+            .then(html => {
+                newContent.innerHTML = html;
                 newContent.style.display = 'block';
-                
-                // Start fade-in on the new content
                 newContent.classList.remove('fade-out');
                 newContent.classList.add('fade-in');
-                
-                // Hide the old content after fade-out
                 oldContent.style.display = 'none';
-                
-                // Update the active container
                 currentContent = currentContent === 'content1' ? 'content2' : 'content1';
-                
-                // Update URL if requested
                 if (updateUrlFlag) {
                     const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
                     updateURL(section, currentTrackId);
                 }
-                
-                // Call section-specific initialization if needed
                 onSectionLoaded(section);
             });
     }, 500);
 }
 
 function updateActiveButton(section) {
-    // Remove the 'active' class from all buttons
     const buttons = document.querySelectorAll('.nav-buttons button');
-    buttons.forEach(button => {
-        button.classList.remove('active');
-        button.removeAttribute('aria-current');
-    });
-
-    // Add the 'active' class to the currently selected button
+    buttons.forEach(btn => { btn.classList.remove('active'); btn.removeAttribute('aria-current'); });
     const activeButton = document.querySelector(`.nav-buttons button[onclick="showContent('${section}')"]`);
-    if (activeButton) {
-        activeButton.classList.add('active');
-        activeButton.setAttribute('aria-current', 'page');
-    }
+    if (activeButton) { activeButton.classList.add('active'); activeButton.setAttribute('aria-current', 'page'); }
 }
 
-// Add flag at the top
 let isLoadingFromURL = false;
-
-// Function to load content based on URL
 function loadFromURL() {
     isLoadingFromURL = true;
     const { page, track } = parseURL();
-    
-    // Determine which page to show
-    let targetPage = 'about'; // default
-    
-    if (page) {
-        targetPage = page;
-    } else if (track) {
-        // If only track is specified, show music page
-        targetPage = 'music';
-    }
-    
-    // Load the page first (without updating URL to avoid loops)
+    let targetPage = 'about';
+    if (page) targetPage = page; else if (track) targetPage = 'music';
     showContent(targetPage, false);
-    
-    // Then handle track loading after page loads
     setTimeout(() => {
         if (track && window.globalPlayer) {
-            const trackIndex = window.globalPlayer.tracks.findIndex(t => 
-                t.id === track
-            );
-            
-            if (trackIndex !== -1) {
-                window.globalPlayer.loadTrack(trackIndex);
-            } else {
-                // Track not found, load random and update URL
-                selectRandomTrack(window.globalPlayer);
-            }
+            const idx = window.globalPlayer.tracks.findIndex(t => t.id === track);
+            if (idx !== -1) window.globalPlayer.loadTrack(idx); else selectRandomTrack(window.globalPlayer);
         } else if (window.globalPlayer) {
-            // No track specified, load random
             selectRandomTrack(window.globalPlayer);
         }
-        
-        // Update URL to reflect final state
         const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
         updateURL(targetPage, currentTrackId);
-    }, 600); // Wait for page load + a bit more
+        isLoadingFromURL = false;
+    }, 600);
 }
-
-/**
- * Handle section-specific initialization after content is loaded
- * @param {string} section - The section that was just loaded
- */
 
 function onSectionLoaded(section) {
     if (section === 'music') {
-        // Update the music section with current track and stats
-        // Wait a bit for the DOM to be ready
         setTimeout(() => {
-            // Get the global player instance if it exists
             if (window.globalPlayer) {
                 window.globalPlayer.updateCollectionStats();
-                if (!isLoadingFromURL) {
-                    window.globalPlayer.updateMusicSection();
-                }
+                if (!isLoadingFromURL) window.globalPlayer.updateMusicSection();
             }
         }, 100);
+    } else if (section === 'music-list') {
+        setTimeout(renderMusicList, 50);
     } else if (section === 'contact') {
-        // Initialize contact form interactions when contact section loads
         setTimeout(bindContactForm, 50);
     }
 }
 
-/**
- * Bind submit handler for the contact form to generate a mailto link
- */
+function renderMusicList() {
+    const container = document.getElementById('all-tracks-list');
+    if (!container) return;
+    const tracks = (window.tracksData && Array.isArray(window.tracksData.tracks)) ? window.tracksData.tracks : [];
+    const totalTracksEl = document.getElementById('total-tracks');
+    if (totalTracksEl) totalTracksEl.textContent = tracks.length;
+    container.innerHTML = '';
+    const list = document.createElement('ul');
+    list.className = 'all-tracks-list';
+    const clean = (title) => (title ? title.replace(/^Nick\s*Vuci\s*[-–:]*\s*/i, '').trim() : 'Untitled');
+    tracks.forEach((t, i) => {
+        const li = document.createElement('li');
+        li.className = 'track-row';
+        li.innerHTML = `
+            <div class="track-row-inner">
+                <button class="play-icon" aria-label="Play" title="Play" data-index="${i}">▶</button>
+                <div class="track-meta">
+                    <strong class="title">${clean(t.title)}</strong>
+                    ${t.year ? `<span class="sep"> • </span><span class="year">${t.year}</span>` : ''}
+                    ${t.tuning ? `<span class="sep"> • </span><span class="tuning">${t.tuning}</span>` : ''}
+                </div>
+            </div>`;
+        list.appendChild(li);
+    });
+    container.appendChild(list);
+    container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.play-icon');
+        if (!btn) return;
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        const playSelected = () => {
+            try {
+                window.globalPlayer.loadTrack(idx);
+                if (window.globalPlayer.audioElement && window.globalPlayer.audioElement.paused) {
+                    window.globalPlayer.audioElement.play().catch(() => {});
+                }
+            } catch {}
+        };
+        if (window.globalPlayer) playSelected();
+        else {
+            let tries = 0;
+            const int = setInterval(() => {
+                tries++;
+                if (window.globalPlayer || tries > 20) {
+                    clearInterval(int);
+                    if (window.globalPlayer) playSelected();
+                }
+            }, 100);
+        }
+    }, { passive: true });
+}
+
 function bindContactForm() {
     const form = document.getElementById('contact-form');
     if (!form) return;
-
     const statusEl = document.getElementById('cf-status');
     const submitBtn = form.querySelector('button[type="submit"]');
-
     function setStatus(msg, type = 'info') {
         if (!statusEl) return;
         statusEl.textContent = msg;
         statusEl.hidden = !msg;
         statusEl.dataset.type = type;
     }
-
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-
         const name = (document.getElementById('cf-name')?.value || '').trim();
         const email = (document.getElementById('cf-email')?.value || '').trim();
         const message = (document.getElementById('cf-message')?.value || '').trim();
         const honeypot = (document.getElementById('cf-company')?.value || '').trim();
-
-        // Basic validation
         const emailOk = /^\S+@\S+\.\S+$/.test(email);
-        if (honeypot) {
-            // Likely a bot; silently pretend success
-            setStatus('Thanks! Message received.', 'success');
-            return;
-        }
-        if (!name || !emailOk || !message) {
-            setStatus('Please enter your name, a valid email, and a message.', 'error');
-            return;
-        }
-
+        if (honeypot) { setStatus('Thanks! Message received.', 'success'); return; }
+        if (!name || !emailOk || !message) { setStatus('Please enter your name, a valid email, and a message.', 'error'); return; }
         const endpoint = form.getAttribute('data-endpoint');
         if (endpoint && endpoint.startsWith('http')) {
-            // Submit via Formspree (or compatible) using JSON
-            const payload = {
-                name,
-                email,
-                message,
-                _subject: `Website Contact from ${name}`,
-                _source: 'nickvuci.com/contact',
-            };
-
-            // Disable send to prevent double submissions
+            const payload = { name, email, message, _subject: `Website Contact from ${name}`, _source: 'nickvuci.com/contact' };
             if (submitBtn) submitBtn.disabled = true;
             setStatus('Sending…', 'info');
-
-            fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
+            fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) })
             .then(async (res) => {
-                if (res.ok) {
-                    setStatus('Thanks! Your message was sent.', 'success');
-                    form.reset();
-                } else {
-                    // Try to parse any error returned
-                    let detail = '';
-                    try { const data = await res.json(); detail = data?.errors?.[0]?.message || data?.message || ''; } catch {}
-                    throw new Error(detail || `Request failed (${res.status})`);
-                }
+                if (res.ok) { setStatus('Thanks! Your message was sent.', 'success'); form.reset(); }
+                else { let detail = ''; try { const data = await res.json(); detail = data?.errors?.[0]?.message || data?.message || ''; } catch {} throw new Error(detail || `Request failed (${res.status})`); }
             })
-            .catch((err) => {
-                console.error('Form submit failed:', err);
-                setStatus('Sorry, there was a problem sending your message. Please try again or email directly.', 'error');
-            })
-            .finally(() => {
-                if (submitBtn) submitBtn.disabled = false;
-            });
+            .catch((err) => { console.error('Form submit failed:', err); setStatus('Sorry, there was a problem sending your message. Please try again or email directly.', 'error'); })
+            .finally(() => { if (submitBtn) submitBtn.disabled = false; });
         } else {
-            // Fallback to mailto if no endpoint configured
             const recipient = form.getAttribute('data-recipient') || 'contact@nickvuci.com';
             const subject = `Website Contact from ${name}`;
-            const bodyLines = [
-                message,
-                '',
-                `— Sent from nickvuci.com contact page`,
-                `From: ${name}`,
-                `Email: ${email}`
-            ];
+            const bodyLines = [ message, '', `— Sent from nickvuci.com contact page`, `From: ${name}`, `Email: ${email}` ];
             const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-
-            try {
-                window.location.href = mailtoUrl;
-                setStatus('Opening your email app… If nothing happens, ensure a default mail app is set.', 'success');
-            } catch (err) {
-                console.error('Failed to open mail client', err);
-                setStatus('Could not open your email app. You can email me directly instead.', 'error');
-            }
+            try { window.location.href = mailtoUrl; setStatus('Opening your email app… If nothing happens, ensure a default mail app is set.', 'success'); }
+            catch (err) { console.error('Failed to open mail client', err); setStatus('Could not open your email app. You can email me directly instead.', 'error'); }
         }
     });
 }
 
-// Handle browser back/forward
-window.addEventListener('hashchange', () => {
-    loadFromURL();
-});
+window.addEventListener('hashchange', () => { loadFromURL(); });
 
-// Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if there's a URL to load, otherwise default to about
     if (window.location.hash) {
         loadFromURL();
     } else {
-        showContent('about');
-        // Load random track for default page load after player is ready
-        setTimeout(() => {
-            if (window.globalPlayer) {
-                selectRandomTrack(window.globalPlayer);
-            }
-        }, 700);
+        showContent('music-list');
+        setTimeout(() => { if (window.globalPlayer) { selectRandomTrack(window.globalPlayer); } }, 700);
     }
 });
