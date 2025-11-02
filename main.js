@@ -211,17 +211,15 @@ function renderMusicList() {
         return cmp * dirMul;
     });
 
-    // Render rows using original index for play mapping
-    entries.forEach(({ t, i: origIdx, titleClean: titleTxt, dateText, dateRank }) => {
+    // Render rows using original index for play mapping (dates hidden from UI)
+    entries.forEach(({ t, i: origIdx, titleClean: titleTxt }) => {
         const li = document.createElement('li');
         li.className = 'track-row';
-        const dateLabel = dateText || rankToIso(dateRank);
         li.innerHTML = `
             <div class="track-row-inner">
                 <button class="play-icon" aria-label="Play" data-index="${origIdx}">▶</button>
                 <div class="track-meta">
                     <strong class="title">${titleTxt}</strong>
-                    ${dateLabel ? `<span class="sep"> • </span><span class="date">${dateLabel}</span>` : ''}
                     ${t.tuning ? `<span class="sep"> • </span><span class="tuning">${t.tuning}</span>` : ''}
                 </div>
             </div>`;
