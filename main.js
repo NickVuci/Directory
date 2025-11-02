@@ -106,18 +106,122 @@ function renderMusicList() {
     const totalTracksEl = document.getElementById('total-tracks');
     if (totalTracksEl) totalTracksEl.textContent = tracks.length;
     container.innerHTML = '';
+
+    // Sorting state (persist across re-renders)
+    const defaultSort = { key: 'date', dir: 'desc' }; // newest first by default
+    if (!window.musicListSort) {
+        try {
+            const saved = localStorage.getItem('musicListSort');
+            window.musicListSort = saved ? JSON.parse(saved) : defaultSort;
+        } catch { window.musicListSort = defaultSort; }
+    }
+    // Back-compat: migrate old 'year' key to 'date'
+    if (window.musicListSort.key === 'year') {
+        window.musicListSort.key = 'date';
+        // Migrate to newest-first by default when coming from the old 'year' key
+        window.musicListSort.dir = 'desc';
+        try { localStorage.setItem('musicListSort', JSON.stringify(window.musicListSort)); } catch {}
+    }
+    const sortState = window.musicListSort;
+
+    // Build sort controls
+    const sortBar = document.createElement('div');
+    sortBar.className = 'sort-bar';
+    const label = document.createElement('span');
+    label.className = 'sort-label';
+    label.textContent = 'Sort by:';
+    sortBar.appendChild(label);
+
+    function makeSortBtn(key, text) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sort-btn' + (sortState.key === key ? ' active' : '');
+        btn.setAttribute('data-key', key);
+        btn.textContent = text;
+        if (sortState.key === key) {
+            const dirEl = document.createElement('span');
+            dirEl.className = 'dir';
+            dirEl.textContent = sortState.dir === 'asc' ? '▲' : '▼';
+            btn.appendChild(dirEl);
+        }
+        btn.addEventListener('click', () => {
+            if (window.musicListSort.key === key) {
+                window.musicListSort.dir = window.musicListSort.dir === 'asc' ? 'desc' : 'asc';
+            } else {
+                window.musicListSort.key = key;
+                window.musicListSort.dir = (key === 'date') ? 'desc' : 'asc';
+            }
+            try { localStorage.setItem('musicListSort', JSON.stringify(window.musicListSort)); } catch {}
+            renderMusicList();
+        }, { passive: true });
+        return btn;
+    }
+    sortBar.appendChild(makeSortBtn('title', 'Title'));
+    sortBar.appendChild(makeSortBtn('date', 'Date'));
+    sortBar.appendChild(makeSortBtn('tuning', 'Tuning'));
+    container.appendChild(sortBar);
+
     const list = document.createElement('ul');
     list.className = 'all-tracks-list';
+
+    // Helpers
     const clean = (title) => (title ? title.replace(/^Nick\s*Vuci\s*[-–:]*\s*/i, '').trim() : 'Untitled');
-    tracks.forEach((t, i) => {
+    const getDateRank = (t) => {
+        if (t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date)) return parseInt(t.date.replace(/-/g, ''), 10);
+        if (t.file) {
+            const m = String(t.file).match(/-(\d{4})(\d{2})(\d{2})-/);
+            if (m) return parseInt(`${m[1]}${m[2]}${m[3]}`, 10);
+        }
+        return null;
+    };
+    const rankToIso = (rank) => {
+        if (rank == null) return '';
+        const s = String(rank).padStart(8, '0');
+        return `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`;
+    };
+
+    // Prepare entries with original indices
+    const entries = tracks.map((t, i) => ({
+        t,
+        i,
+        titleClean: clean(t.title || ''),
+        tuningClean: (t.tuning || '').toString(),
+        dateRank: getDateRank(t),
+        dateText: t.dateDisplay || (t.date ? t.date : '')
+    }));
+
+    // Sort entries
+    const dirMul = (sortState.dir === 'asc') ? 1 : -1;
+    entries.sort((a, b) => {
+        let cmp = 0;
+        if (sortState.key === 'title') {
+            cmp = a.titleClean.localeCompare(b.titleClean, undefined, { sensitivity: 'base' });
+        } else if (sortState.key === 'tuning') {
+            cmp = a.tuningClean.localeCompare(b.tuningClean, undefined, { sensitivity: 'base' });
+            // push empties to end regardless of dir
+            if (!a.tuningClean && b.tuningClean) cmp = 1;
+            else if (a.tuningClean && !b.tuningClean) cmp = -1;
+        } else if (sortState.key === 'date') {
+            const ax = a.dateRank, bx = b.dateRank;
+            if (ax == null && bx == null) cmp = 0;
+            else if (ax == null) cmp = 1;
+            else if (bx == null) cmp = -1;
+            else cmp = ax - bx;
+        }
+        return cmp * dirMul;
+    });
+
+    // Render rows using original index for play mapping
+    entries.forEach(({ t, i: origIdx, titleClean: titleTxt, dateText, dateRank }) => {
         const li = document.createElement('li');
         li.className = 'track-row';
+        const dateLabel = dateText || rankToIso(dateRank);
         li.innerHTML = `
             <div class="track-row-inner">
-                <button class="play-icon" aria-label="Play" data-index="${i}">▶</button>
+                <button class="play-icon" aria-label="Play" data-index="${origIdx}">▶</button>
                 <div class="track-meta">
-                    <strong class="title">${clean(t.title)}</strong>
-                    ${t.year ? `<span class="sep"> • </span><span class="year">${t.year}</span>` : ''}
+                    <strong class="title">${titleTxt}</strong>
+                    ${dateLabel ? `<span class="sep"> • </span><span class="date">${dateLabel}</span>` : ''}
                     ${t.tuning ? `<span class="sep"> • </span><span class="tuning">${t.tuning}</span>` : ''}
                 </div>
             </div>`;
@@ -141,8 +245,9 @@ function renderMusicList() {
         } catch {}
     }
 
-    // Click handler to play from list and update icons
-    container.addEventListener('click', (e) => {
+    // Click handler to play from list and update icons (attach once)
+    if (!container.__listClickHandlerRegistered) {
+      container.addEventListener('click', (e) => {
         const btn = e.target.closest('.play-icon');
         if (!btn) return;
         const idx = parseInt(btn.getAttribute('data-index'), 10);
@@ -183,7 +288,9 @@ function renderMusicList() {
                 }
             }, 100);
         }
-    }, { passive: true });
+      }, { passive: true });
+      container.__listClickHandlerRegistered = true;
+    }
 
     // If a player exists, keep the list icons synced with its state
     const attachPlayerSync = () => {
