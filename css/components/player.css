@@ -29,7 +29,7 @@
     align-items: center; 
     justify-content: center; 
     border-radius: var(--radius-circle); 
-    transition: all var(--transition-normal); 
+    transition: background var(--transition-normal), color var(--transition-normal); /* Only transition background/color, not position */
     position: absolute; 
     top: var(--spacing-2xs); /* At top, above title */
     left: 50%; /* Center horizontally */
@@ -37,7 +37,10 @@
     z-index: 2; 
   }
   .player-toggle-btn:hover { background: rgba(233, 196, 106, 0.2); color: var(--primary-gold); }
-  .player-toggle-btn i { transition: transform var(--transition-normal); }
+  .player-toggle-btn i { 
+    /* Remove transition for instant arrow direction change */
+    transition: none; 
+  }
   
   /* When expanded, arrow points UP (rotate 180 degrees) */
   /* When collapsed, arrow points DOWN (default, no rotation) */
