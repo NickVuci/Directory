@@ -38,6 +38,13 @@
   }
   .player-toggle-btn:hover { background: rgba(233, 196, 106, 0.2); color: var(--primary-gold); }
   .player-toggle-btn i { transition: transform var(--transition-normal); }
+  
+  /* When expanded, arrow points UP (rotate 180 degrees) */
+  /* When collapsed, arrow points DOWN (default, no rotation) */
+  .footer-player:not(.collapsed) .player-toggle-btn i {
+    /* Rotate arrow 180° when expanded to point up */
+    transform: rotate(180deg);
+  }
 
   /* Header - reduced spacing for compactness */
   .player-header { 
@@ -78,7 +85,8 @@
     transform: translate(-50%, -50%);
   }
   .footer-player.collapsed .player-toggle-btn i { 
-    transform: rotate(180deg); 
+    /* No rotation when collapsed - arrow points down */
+    transform: rotate(0deg); 
   }
   .footer-player.collapsed .track-info,
   .footer-player.collapsed .player-controls,
