@@ -93,15 +93,18 @@
     .header h2 { font-size: var(--font-size-base); }
     .content { inline-size: 95%; padding: var(--spacing-xs); }
     
-    /* Mobile footer - keep in document flow like desktop, not fixed */
+    /* Mobile footer - fixed to stay above browser toolbar */
     .footer {
-      position: relative; /* Changed from fixed to relative */
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
       padding-bottom: env(safe-area-inset-bottom, 0);
     }
     
-    /* Add padding to main-content to account for safe area */
+    /* Add padding to main-content so it doesn't get hidden behind fixed footer */
     .main-content {
-      padding-bottom: env(safe-area-inset-bottom, 0);
+      padding-bottom: calc(200px + env(safe-area-inset-bottom, 0)); /* Reserve space for player */
     }
 
     /* Example container query for button wrapping */
