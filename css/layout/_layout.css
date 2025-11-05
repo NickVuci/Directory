@@ -51,16 +51,15 @@
     color: var(--text-light);
   }
 
-  /* Footer */
+  /* Footer - minimal wrapper for player */
   .footer {
     grid-area: footer;
     inline-size: 100%;
-    text-align: center;
-    padding: var(--spacing-xl);
+    padding: 0;
+    margin: 0;
     background: var(--dark-bg);
     backdrop-filter: blur(var(--spacing-md));
-    color: var(--text-secondary);
-    z-index: var(--z-header);
+    z-index: var(--z-player);
     border-top: 2px solid var(--border-accent);
   }
 
@@ -93,6 +92,15 @@
     .header h1 { font-size: 1.6em; }
     .header h2 { font-size: var(--font-size-base); }
     .content { inline-size: 95%; padding: var(--spacing-xs); }
+    
+    /* Mobile footer - fixed to bottom with safe area */
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
 
     /* Example container query for button wrapping */
     @container nav-buttons (width < 400px) {
