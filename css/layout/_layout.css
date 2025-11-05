@@ -93,12 +93,14 @@
     .header h2 { font-size: var(--font-size-base); }
     .content { inline-size: 95%; padding: var(--spacing-xs); }
     
-    /* Mobile footer - fixed to bottom with safe area */
+    /* Mobile footer - keep in document flow like desktop, not fixed */
     .footer {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: relative; /* Changed from fixed to relative */
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    
+    /* Add padding to main-content to account for safe area */
+    .main-content {
       padding-bottom: env(safe-area-inset-bottom, 0);
     }
 
