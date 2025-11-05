@@ -755,25 +755,7 @@ a:hover {
     transition: max-height var(--transition-normal), padding var(--transition-normal), opacity var(--transition-normal);
 }
 
-/* Toggle Button for Collapsing/Expanding - Positioned at the top */
-.player-toggle-btn {
-    background: transparent;
-    color: var(--text-secondary);
-    border: none;
-    cursor: pointer;
-    font-size: var(--font-size-sm);
-    width: var(--spacing-lg);
-    height: var(--spacing-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-circle);
-    transition: all var(--transition-normal);
-    position: absolute;
-    top: var(--spacing-2xs);
-    right: var(--spacing-xs);
-    z-index: 2;
-}
+/* Toggle Button styles now in css/components/player.css */
 
 /* Player Header with Track Info - Enhanced with golden styling */
 .player-header {
@@ -805,19 +787,11 @@ a:hover {
     color: var(--primary-gold);
 }
 
-.player-toggle-btn i {
-    transition: transform var(--transition-normal);
-}
+/* Toggle button hover and transition styles now in css/components/player.css */
 
-/* Collapsed Player State */
-.footer-player.collapsed {
-    max-height: var(--spacing-xl);
-    overflow: hidden;
-}
+/* Collapsed Player State - now in css/components/player.css */
 
-.footer-player.collapsed .player-toggle-btn i {
-    transform: rotate(180deg);
-}
+/* Collapsed state styles now in css/components/player.css */
 
 .footer-player.collapsed .track-info,
 .footer-player.collapsed .player-controls,

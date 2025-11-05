@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Create icon element
             const iconElement = document.createElement('i');
-            iconElement.className = 'fas fa-chevron-up'; // Using Font Awesome
+            iconElement.className = 'fas fa-chevron-down'; // Start with down arrow (expanded state)
             // Fallback for when Font Awesome might not be available
-            iconElement.textContent = '▲'; 
+            iconElement.textContent = '▼'; 
             
             newToggleBtn.appendChild(iconElement);
             audioPlayer.prepend(newToggleBtn); // Add to the beginning of the player
@@ -48,13 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (player) {
         if (startCollapsed) {
             player.classList.add('collapsed');
-            // Update icon if it exists
-            const icon = player.querySelector('.player-toggle-btn i');
-            if (icon) {
-                icon.className = 'fas fa-chevron-down'; // Change to down arrow when collapsed
-                // Fallback text
-                icon.textContent = '▼';
-            }
+            // Icon rotation is handled by CSS, no need to change icon class
         }
         
         // Store initial state
@@ -66,17 +60,8 @@ function setupToggleListener(button, player) {
     button.addEventListener('click', function() {
         player.classList.toggle('collapsed');
         
-        // Update icon based on state
-        const icon = this.querySelector('i');
-        if (icon) {
-            if (player.classList.contains('collapsed')) {
-                icon.className = 'fas fa-chevron-down';
-                icon.textContent = '▼'; // Fallback text
-            } else {
-                icon.className = 'fas fa-chevron-up';
-                icon.textContent = '▲'; // Fallback text
-            }
-        }
+        // Icon rotation is handled by CSS - no need to change icon class
+        // CSS will rotate the chevron-down icon 180° when collapsed
         
         // Save preference to localStorage
         const isCollapsed = player.classList.contains('collapsed');
