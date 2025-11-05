@@ -74,12 +74,15 @@
     margin-bottom: var(--spacing-3xs); /* Reduced from 2xs */
   }
 
-  /* Collapsed - compact height with room for toggle button */
+  /* Collapsed - taller height with equal spacing around arrow */
   .footer-player.collapsed { 
-    max-height: var(--spacing-xl); /* 24px - enough room for 16px button + padding */
-    min-height: var(--spacing-xl);
+    max-height: calc(var(--spacing-lg) + var(--spacing-lg) + var(--spacing-lg)); /* 16px top + 16px arrow + 16px bottom = 48px */
+    min-height: calc(var(--spacing-lg) + var(--spacing-lg) + var(--spacing-lg));
     overflow: hidden; 
-    padding: var(--spacing-2xs) var(--spacing-xs); /* 4px top/bottom, 6px sides */
+    padding: var(--spacing-lg) var(--spacing-sm); /* Equal padding top/bottom for centered arrow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .footer-player.collapsed .player-toggle-btn {
     /* Keep button centered horizontally and vertically when collapsed */
@@ -162,9 +165,9 @@
   }
   @media (max-width: 768px) {
     .footer-player.collapsed { 
-      max-height: var(--spacing-lg); /* 16px - compact but enough for button */
-      min-height: var(--spacing-lg); 
-      padding: var(--spacing-3xs) var(--spacing-2xs); /* 2px top/bottom, 4px sides */
+      max-height: calc(var(--spacing-md) + var(--spacing-md) + var(--spacing-md)); /* 12px top + 12px arrow + 12px bottom = 36px */
+      min-height: calc(var(--spacing-md) + var(--spacing-md) + var(--spacing-md)); 
+      padding: var(--spacing-md) var(--spacing-sm); /* Equal padding for centered arrow */
     }
     .player-toggle-btn { 
       inline-size: var(--spacing-md); /* 12px button */
