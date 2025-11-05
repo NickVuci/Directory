@@ -453,19 +453,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Footer styling */
-.footer {
-    grid-area: footer;
-    width: 100%;
-    text-align: center;
-    padding: var(--spacing-xl);
-    background: var(--dark-bg);
-    backdrop-filter: blur(var(--spacing-md));
-    color: var(--text-secondary);
-    z-index: var(--z-header);
-    border-top: 2px solid var(--border-accent);
-    animation: fadeIn 1.5s var(--easing-smooth);
-}
+/* Footer styling now in css/layout/_layout.css */
 
 /* ==========================================
    LEGACY DESKTOP MUSIC PLAYER REMOVED
@@ -541,25 +529,11 @@ a:hover {
 }
     /* ==========================================
        MOBILE MUSIC PLAYER
-       ========================================== */    /* Mobile Player Footer Container */
-    .footer {
-        grid-area: footer;
-        width: 100%;
-        padding: 0;
-        background: var(--dark-bg);
-        backdrop-filter: blur(var(--spacing-lg));
-        border-top: 2px solid var(--border-accent);
-        z-index: var(--z-player);
-        min-height: var(--mobile-footer-height); /* Compact layout for mobile */
-        /* Pin footer above mobile browser nav bar and account for safe areas */
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: var(--vv-bottom-inset, 0); /* Adjust using visual viewport inset on mobile browsers */
-        /* Ensure content inside the footer clears the home indicator */
-        padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom, 0));
-        margin-bottom: 0;
-    }    /* Mobile Player Container */
+       ========================================== */
+    
+    /* Mobile footer styles now in css/layout/_layout.css */
+    
+    /* Mobile Player Container */
     .mobile-music-player {
         display: block;
         width: 100%;
@@ -1077,26 +1051,8 @@ a:hover {
     border-radius: 0;
 }
 
-/* Footer Player Styling - Clean aesthetic matching header */
-.footer-player {
-    display: flex;
-    flex-direction: column;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background: var(--dark-bg);
-    backdrop-filter: blur(var(--spacing-md));
-    position: relative;
-}
-
-.footer-player .copyright {
-    margin-top: var(--spacing-2xs);
-    font-size: var(--font-size-3xs);
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-.footer-player .copyright p {
-    margin-bottom: 0;
-}
+/* Footer Player Styling now in css/components/player.css */
+/* Copyright styling now in css/components/player.css */
 
 /* Playlist Toggle Button and Persistent Playlist Removed */
 

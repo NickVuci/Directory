@@ -1,24 +1,85 @@
 /* @layer components: audio player */
 @layer components {
+  /* Audio player wrapper (legacy, may be unused) */
   .audio-player { background: var(--dark-bg); backdrop-filter: blur(var(--spacing-md)); border: none; border-radius: var(--radius-md); padding: var(--spacing-xs); padding-top: calc(var(--spacing-xs) + var(--spacing-md)); max-width: 100%; overflow: hidden; position: relative; }
 
-  /* Footer Player container */
-  .footer-player { inline-size: 100%; max-inline-size: 800px; margin-inline: auto; transition: max-height var(--transition-normal), padding var(--transition-normal), opacity var(--transition-normal); display: flex; flex-direction: column; padding: var(--spacing-xs) var(--spacing-sm); background: var(--dark-bg); backdrop-filter: blur(var(--spacing-md)); position: relative; }
+  /* Footer Player container - SINGLE SOURCE OF TRUTH */
+  .footer-player { 
+    inline-size: 100%; 
+    max-inline-size: 800px; 
+    margin-inline: auto; 
+    transition: max-height var(--transition-normal), padding var(--transition-normal), opacity var(--transition-normal); 
+    display: flex; 
+    flex-direction: column; 
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-xs); /* Compact: 8px top, 8px sides, 6px bottom */
+    background: transparent; /* Let footer handle background */
+    position: relative; 
+  }
 
-  /* Toggle */
-  .player-toggle-btn { background: transparent; color: var(--text-secondary); border: none; cursor: pointer; font-size: var(--font-size-sm); inline-size: var(--spacing-lg); block-size: var(--spacing-lg); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-circle); transition: all var(--transition-normal); position: absolute; top: var(--spacing-2xs); right: var(--spacing-xs); z-index: 2; }
+  /* Toggle - centered horizontally, positioned at top above title */
+  .player-toggle-btn { 
+    background: transparent; 
+    color: var(--text-secondary); 
+    border: none; 
+    cursor: pointer; 
+    font-size: var(--font-size-sm); 
+    inline-size: var(--spacing-lg); 
+    block-size: var(--spacing-lg); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: var(--radius-circle); 
+    transition: all var(--transition-normal); 
+    position: absolute; 
+    top: var(--spacing-2xs); /* At top, above title */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for horizontal centering only */
+    z-index: 2; 
+  }
   .player-toggle-btn:hover { background: rgba(233, 196, 106, 0.2); color: var(--primary-gold); }
   .player-toggle-btn i { transition: transform var(--transition-normal); }
 
-  /* Header */
-  .player-header { margin-bottom: var(--spacing-2xs); display: flex; align-items: center; justify-content: center; padding-top: var(--spacing-md); position: relative; }
+  /* Header - reduced spacing for compactness */
+  .player-header { 
+    margin-bottom: var(--spacing-3xs); /* Reduced from 2xs */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding-top: var(--spacing-xs); /* Reduced from md (12px) to xs (6px) */
+    position: relative; 
+  }
   .track-info { text-align: center; flex-grow: 1; }
-  .track-title { font-size: var(--font-size-md); color: var(--primary-gold); margin-bottom: var(--spacing-2xs); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-  .track-details { font-size: var(--font-size-xs); color: var(--text-secondary); margin-bottom: var(--spacing-2xs); }
+  .track-title { 
+    font-size: var(--font-size-md); 
+    color: var(--primary-gold); 
+    margin-bottom: var(--spacing-3xs); /* Reduced from 2xs */
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    font-weight: 600; 
+  }
+  .track-details { 
+    font-size: var(--font-size-xs); 
+    color: var(--text-secondary); 
+    margin-bottom: var(--spacing-3xs); /* Reduced from 2xs */
+  }
 
-  /* Collapsed */
-  .footer-player.collapsed { max-height: var(--spacing-xl); overflow: hidden; }
-  .footer-player.collapsed .player-toggle-btn i { transform: rotate(180deg); }
+  /* Collapsed - compact height with room for toggle button */
+  .footer-player.collapsed { 
+    max-height: var(--spacing-xl); /* 24px - enough room for 16px button + padding */
+    min-height: var(--spacing-xl);
+    overflow: hidden; 
+    padding: var(--spacing-2xs) var(--spacing-xs); /* 4px top/bottom, 6px sides */
+  }
+  .footer-player.collapsed .player-toggle-btn {
+    /* Keep button centered horizontally and vertically when collapsed */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .footer-player.collapsed .player-toggle-btn i { 
+    transform: rotate(180deg); 
+  }
   .footer-player.collapsed .track-info,
   .footer-player.collapsed .player-controls,
   .footer-player.collapsed .progress-container,
@@ -27,13 +88,23 @@
   .footer-player:not(.collapsed) .progress-container,
   .footer-player:not(.collapsed) .volume-control { opacity: 1; visibility: visible; height: auto; transition: opacity var(--transition-normal), visibility var(--transition-normal), height var(--transition-normal), margin var(--transition-normal); }
 
-  /* Controls */
-  .player-controls { display: flex; justify-content: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-2xs); }
+  /* Controls - compact spacing */
+  .player-controls { 
+    display: flex; 
+    justify-content: center; 
+    gap: var(--spacing-sm); 
+    margin-bottom: var(--spacing-3xs); /* Reduced from 2xs */
+  }
   .control-btn { width: 1.8rem; height: 1.8rem; border-radius: var(--button-radius); font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
   .play-pause-btn { inline-size: 2.2rem; block-size: 2.2rem; font-size: 1rem; }
 
-  /* Progress */
-  .progress-container { display: flex; align-items: center; gap: var(--spacing-2xs); }
+  /* Progress - compact spacing */
+  .progress-container { 
+    display: flex; 
+    align-items: center; 
+    gap: var(--spacing-2xs); 
+    margin-bottom: var(--spacing-3xs); /* Added to separate from volume */
+  }
   .time-display.current-time, .time-display.duration { text-align: center; font-size: var(--font-size-xs); }
   .progress-bar-container { flex: 1; position: relative; }
   .progress-bar { appearance: none; -webkit-appearance: none; inline-size: 100%; block-size: 4px; border-radius: var(--slider-track-radius); background: var(--slider-track-bg); outline: none; cursor: pointer; transition: background var(--transition-normal); }
@@ -43,8 +114,14 @@
   .progress-bar::-webkit-slider-thumb:hover, .progress-bar::-moz-range-thumb:hover { transform: scale(1.2); }
   .progress-bar::-webkit-slider-runnable-track, .progress-bar::-moz-range-track { block-size: 4px; border-radius: var(--slider-track-radius); background: var(--slider-track-bg); }
 
-  /* Volume */
-  .volume-control { display: flex; align-items: center; gap: var(--spacing-sm); pointer-events: auto; margin-top: var(--spacing-2xs); }
+  /* Volume - no extra margin-top needed */
+  .volume-control { 
+    display: flex; 
+    align-items: center; 
+    gap: var(--spacing-sm); 
+    pointer-events: auto; 
+    margin-bottom: var(--spacing-3xs); /* Space before copyright */
+  }
   .volume-icon { font-size: var(--font-size-xs); color: var(--text-secondary); user-select: none; inline-size: var(--spacing-lg); block-size: var(--spacing-lg); display: flex; align-items: center; justify-content: center; }
   .volume-slider-container { flex: 1; max-inline-size: 650px; }
   .volume-slider { inline-size: 100%; block-size: var(--spacing-2xs); -webkit-appearance: none; appearance: none; background: var(--slider-track-bg); border-radius: var(--slider-track-radius); outline: none; cursor: pointer; }
@@ -54,6 +131,17 @@
   .volume-slider::-webkit-slider-runnable-track { block-size: var(--spacing-2xs); border-radius: var(--slider-track-radius); background: var(--slider-track-bg); }
   .volume-slider:active { outline: none; }
 
+  /* Copyright - minimal spacing */
+  .footer-player .copyright {
+    margin-top: var(--spacing-3xs); /* Minimal top margin */
+    font-size: var(--font-size-3xs);
+    color: var(--text-secondary);
+    text-align: center;
+  }
+  .footer-player .copyright p {
+    margin: 0;
+  }
+
   /* Responsive */
   @media (pointer: coarse) {
     .control-btn { min-inline-size: 2rem; min-block-size: 2rem; }
@@ -62,10 +150,35 @@
     .progress-bar::-webkit-slider-thumb, .progress-bar::-moz-range-thumb { inline-size: 12px; block-size: 12px; }
   }
   @media (max-width: 768px) {
-    .footer-player.collapsed { max-height: var(--spacing-lg); min-height: var(--spacing-lg); }
-    .player-toggle-btn { inline-size: var(--spacing-md); block-size: var(--spacing-md); font-size: var(--font-size-xs); top: var(--spacing-3xs); right: var(--spacing-2xs); }
-    .player-header { margin-bottom: var(--spacing-3xs); padding-top: var(--spacing-sm); }
+    .footer-player.collapsed { 
+      max-height: var(--spacing-lg); /* 16px - compact but enough for button */
+      min-height: var(--spacing-lg); 
+      padding: var(--spacing-3xs) var(--spacing-2xs); /* 2px top/bottom, 4px sides */
+    }
+    .player-toggle-btn { 
+      inline-size: var(--spacing-md); /* 12px button */
+      block-size: var(--spacing-md); 
+      font-size: var(--font-size-xs); 
+      top: var(--spacing-3xs); /* At top on mobile */
+      left: 50%; /* Centered horizontally */
+      transform: translateX(-50%);
+    }
+    .footer-player.collapsed .player-toggle-btn {
+      /* Ensure centered both ways on mobile when collapsed */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .player-header { 
+      margin-bottom: var(--spacing-3xs); 
+      padding-top: var(--spacing-2xs); /* Reduced further on mobile */
+    }
     .footer-player .control-btn { inline-size: 1.6rem; block-size: 1.6rem; font-size: 0.75rem; }
     .footer-player .play-pause-btn { inline-size: 2rem; block-size: 2rem; font-size: 0.9rem; }
+    
+    /* Ensure footer-player has minimal padding on mobile */
+    .footer-player {
+      padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-2xs);
+    }
   }
 }
