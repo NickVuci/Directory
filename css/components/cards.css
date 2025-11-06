@@ -1,7 +1,5 @@
 /* @layer components: cards */
 @layer components {
-  .card-hover-base:hover { background: var(--card-hover-bg); color: var(--card-hover-color); transform: var(--card-transform); box-shadow: var(--card-shadow); }
-
   .section-card {
     background: var(--bg-transparent);
     border-radius: var(--radius-md);
