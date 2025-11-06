@@ -18,16 +18,11 @@ Personal website for Nick Vuci's xenharmonic music projects and tools.
 - `css/core.css` - Distributable core CSS for other apps (imports core + essentials)
 - `main.js` - Hash-based navigation and content swapping (About/Music/Tools/Contact)
 - `js/player-core.js` - Core footer audio player
-- `js/player-init.js` - Player bootstrap and playlist integration hooks
+- `js/player-init.js` - Player bootstrap
 - `js/player-ios.js` - iOS-specific UX enhancements (media session, touch targets)
 - `js/player-toggle.js` - Collapse/expand footer player
 - `js/tracks.js` - Music track database and metadata
 - `dev-docs/` - Developer documentation and refactoring notes
-
-### Legacy demos and assets
-
-- Old playlist demo/test pages have been removed from the repo; the stub pages under `js/playlist/` now redirect to the site’s music list.
-- The previous desktop floating player was removed in favor of a persistent footer player.
 
 ## Development
 
@@ -43,14 +38,6 @@ For technical documentation and refactoring plans, see the `dev-docs/` directory
 ## Housekeeping
 
 - `js-modules/` (root) currently contains empty placeholders and is not used by the live site; consider deleting in a future cleanup commit.
-- Legacy playlist demo/test pages have been removed to keep the production tree lean.
-
-## Roadmap (Playlist UI)
-
-- Context menu for track actions (play next, add to queue, favorite)
-- Queue management (selection, reordering via drag-and-drop)
-- Scroll and visibility optimizations for large playlists
-- Media artwork support (Media Session `artwork` integration)
 
 ## Contact
 
