@@ -5,7 +5,7 @@ This folder implements a layered CSS architecture for maintainability and reuse.
 Layers (via `@layer`):
 - base: variables, reset, base elements, typography, links
 - layout: page structure (grid, header, main, footer, containers)
-- components: reusable UI (buttons, cards, forms, nav, player, playlist, social)
+- components: reusable UI (buttons, cards, forms, nav, player, social)
 - utilities: small helpers and animations
 - pages: page-specific overrides (about, music, tools, contact)
 - overrides: rare, last-resort fixes

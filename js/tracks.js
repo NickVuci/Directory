@@ -1,6 +1,5 @@
 /**
  * Minimal track data derived from filenames in /music
- * Keeps only what the player and playlist need, with auto-formatted titles and dates
  * Version: 3.0-min
  */
 
@@ -109,21 +108,6 @@
 
   window.tracksData = {
     tracks: minimalTracks,
-
-    // Minimal schema used by PlaylistDataManager; keep artist present for sanitation
-    trackSchema: {
-      required: ['id', 'title', 'file'],
-      optional: ['artist', 'tuning', 'date', 'dateDisplay'],
-      types: {
-        id: 'string',
-        title: 'string',
-        file: 'string',
-        artist: 'string',
-        tuning: 'string',
-        date: 'string',
-        dateDisplay: 'string'
-      }
-    },
 
     // Player defaults
     defaultVolume: 0.7,
