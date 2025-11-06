@@ -66,7 +66,7 @@
     'NickVuci-20210528-JI (4567 CrossSet)-PreludeAndFugue.mp3',
     'NickVuci-20210530-16edo-AntiIonianDubstep.mp3',
     'NickVuci-20210605-16edo-AntiLydianDubstep.mp3',
-    'NickVuci-20210611-16edo-AntiDorianDubstep1.mp3',
+    'NickVuci-20210611-16edo-AntiDorianDubstep.mp3',
     'NickVuci-20210707-JI (AlFarabi7)-Gymnopedie3.mp3',
     'NickVuci-20210707-JI (Mode12)-Gymnopedie1.mp3',
     'NickVuci-20210712-24EDO-Surge_DXEP_Improv.mp3',
