@@ -14,6 +14,20 @@
   .collection-stats strong { color: var(--primary-gold); }
   .collection-stats span { color: var(--text-light); }
 
+  /* Music info section */
+  .music-info { 
+    margin-top: var(--spacing-lg); 
+    padding: var(--spacing-md); 
+    background: rgba(168, 218, 220, 0.05); 
+    border-radius: var(--radius-md); 
+    border-left: 3px solid var(--border-accent); 
+  }
+  .music-info p { 
+    color: var(--text-secondary); 
+    line-height: 1.6; 
+    font-size: var(--font-size-md); 
+  }
+
   /* Music list layout tweaks */
   .music-list .all-tracks-list { list-style: none; padding-left: 0; margin: 0; }
   .music-list .track-row-inner { display: flex; align-items: center; gap: var(--spacing-sm); }
