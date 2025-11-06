@@ -92,4 +92,42 @@
     --content-max-width: min(1200px, calc(100vw - var(--spacing-2xl)));
     --content-padding: clamp(var(--spacing-sm), 3vw, var(--spacing-lg));
   }
+
+  /* Minimalist scrollbar styling (matches button styling) */
+  /* Firefox */
+  :root {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-accent) transparent;
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-accent);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-normal);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-gold);
+  }
+
+  /* Hide scrollbar buttons (up/down arrows) */
+  ::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
