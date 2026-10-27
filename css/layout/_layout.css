@@ -16,18 +16,25 @@
   .header {
     grid-area: header;
     inline-size: 100%;
-    background: var(--dark-bg);
-    backdrop-filter: blur(var(--spacing-md));
-    padding-block-start: calc(env(safe-area-inset-top) + clamp(var(--spacing-sm), 2vw, var(--spacing-xl)));
-    padding-block-end: clamp(var(--spacing-sm), 2vw, var(--spacing-xl));
+    background: var(--surface-raised);
+    padding-block-start: calc(env(safe-area-inset-top) + var(--space-4));
+    padding-block-end: var(--space-2);
     padding-inline: 0;
     text-align: center;
-    color: var(--primary-gold);
+    color: var(--ink);
     z-index: var(--z-header);
-    border-bottom: 2px solid var(--border-accent);
+    border-bottom: 1px solid var(--tyrian-soft);
   }
-  .header h1 { font-size: clamp(1.6em, 4vw, var(--font-size-2xl)); margin-block-end: var(--spacing-xs); }
-  .header h2 { font-size: clamp(var(--font-size-base), 2vw, var(--font-size-lg)); color: var(--text-secondary); margin-block-end: clamp(var(--spacing-md), 3vw, var(--spacing-lg)); }
+
+  /* Horizontal lockup: monogram, then the typeset wordmark (Nick in blue, Vuci in gold) */
+  .header h1 { display: flex; align-items: center; justify-content: center; gap: var(--space-3); margin-block-end: var(--space-1); }
+  .header .monogram { block-size: 36px; inline-size: auto; }
+  .wordmark { font-family: var(--font-sans); font-size: clamp(22px, 4vw, 28px); line-height: 32px; font-weight: 400; letter-spacing: 0.18em; }
+  .wordmark-nick { color: var(--blue); }
+  .wordmark-vuci { color: var(--gold); }
+
+  /* Descriptor in the eyebrow style */
+  .header h2 { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-ink); margin-block-end: var(--space-3); }
 
   /* Main content area */
   .main-content {
@@ -48,7 +55,7 @@
     background: transparent;
     border-radius: var(--radius-lg);
     text-align: start;
-    color: var(--text-light);
+    color: var(--ink);
   }
 
   /* Footer - minimal wrapper for player */
@@ -57,10 +64,9 @@
     inline-size: 100%;
     padding: 0;
     margin: 0;
-    background: var(--dark-bg);
-    backdrop-filter: blur(var(--spacing-md));
+    background: var(--surface-raised);
     z-index: var(--z-player);
-    border-top: 2px solid var(--border-accent);
+    border-top: 1px solid var(--tyrian-soft);
   }
 
   /* Nav buttons container */
@@ -73,7 +79,6 @@
     padding-inline: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
   }
 
-  .nav-buttons button.active { background: var(--button-hover-bg); color: var(--button-hover-color); }
 
   /* Mobile adjustments */
   @media (max-width: 768px) {
@@ -89,8 +94,8 @@
       height: auto;
       padding: calc(var(--spacing-lg) + env(safe-area-inset-top)) 0 var(--spacing-sm);
     }
-    .header h1 { font-size: 1.6em; }
-    .header h2 { font-size: var(--font-size-base); }
+    .header .monogram { block-size: 30px; }
+    .wordmark { font-size: 20px; letter-spacing: 0.12em; }
     .content { inline-size: 95%; padding: var(--spacing-xs); }
     
     /* Mobile footer - fixed to stay above browser toolbar */
@@ -109,7 +114,7 @@
 
     /* Example container query for button wrapping */
     @container nav-buttons (width < 400px) {
-      .nav-buttons button { flex: 1; width: auto; min-inline-size: 0; }
+      .nav-buttons button { flex: 1; width: auto; min-inline-size: 0; letter-spacing: 0.1em; padding-inline: var(--space-1); }
     }
   }
 

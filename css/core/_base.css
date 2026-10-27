@@ -3,13 +3,26 @@
   html, body { height: 100%; }
 
   body {
-    font-family: 'Lato', sans-serif;
-    color: var(--text-light);
-    background: linear-gradient(135deg, #1e1f26, #283c63);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    background: var(--surface);
   }
 
-  a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease, text-decoration 0.3s ease; }
-  a:hover { color: var(--text-light); text-decoration: underline; }
+  h1, h2, h3, h4, h5 { font-weight: 500; }
+  h3 { font-family: var(--font-display); font-size: 36px; line-height: 42px; color: var(--tyrian); }
+  h4 { font-family: var(--font-display); font-size: 24px; line-height: 30px; font-weight: 600; color: var(--tyrian); }
+
+  a { color: var(--blue); text-decoration: none; transition: color var(--transition-fast); }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Keyboard focus: a 2px blue ring with a 2px gap in the ground colour */
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+  /* Notation: every number that is music */
+  .ratio, .tuning { font-family: var(--font-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
 
   /* Utility */
   .visually-hidden {
