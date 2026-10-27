@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4.43 0 198.86 80" width="597" height="240">
+  <title>Nick Vuci monogram — for dark grounds</title>
+  <defs>
+    <clipPath id="dc"><rect x="-6.43" y="0" width="202.86" height="80"></rect></clipPath>
+    <polyline id="dz" points="-18.94,110.57 0.00,75.34 38.00,4.66 76.00,75.34 114.00,4.66 152.00,75.34 190.00,4.66 208.94,-30.57" fill="none" stroke-width="4.0" stroke-linejoin="miter" stroke-miterlimit="10"></polyline>
+    <clipPath id="df1"><polygon points="114.00,9.32 106.69,-50.23 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df2"><polygon points="114.00,9.32 107.90,-50.37 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df3"><polygon points="114.00,9.32 109.12,-50.48 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df4"><polygon points="114.00,9.32 110.34,-50.57 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df5"><polygon points="114.00,9.32 111.56,-50.63 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df6"><polygon points="114.00,9.32 112.78,-50.66 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df7"><polygon points="114.00,9.32 114.00,-50.68 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df8"><polygon points="114.00,9.32 115.22,-50.66 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df9"><polygon points="114.00,9.32 116.44,-50.63 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df10"><polygon points="114.00,9.32 117.66,-50.57 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df11"><polygon points="114.00,9.32 118.88,-50.48 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df12"><polygon points="114.00,9.32 120.10,-50.37 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="df13"><polygon points="114.00,9.32 121.31,-50.23 214.43,-60.00 214.43,100.00 114.00,100.00"></polygon></clipPath>
+  </defs>
+  <g clip-path="url(#dc)">
+    <use href="#dz" stroke="#7393FF"></use>
+    <g clip-path="url(#df1)"><use href="#dz" stroke="#7794F7"></use></g>
+    <g clip-path="url(#df2)"><use href="#dz" stroke="#7F95E8"></use></g>
+    <g clip-path="url(#df3)"><use href="#dz" stroke="#8796D8"></use></g>
+    <g clip-path="url(#df4)"><use href="#dz" stroke="#8E97C9"></use></g>
+    <g clip-path="url(#df5)"><use href="#dz" stroke="#9699BA"></use></g>
+    <g clip-path="url(#df6)"><use href="#dz" stroke="#9E9AAA"></use></g>
+    <g clip-path="url(#df7)"><use href="#dz" stroke="#A69B9B"></use></g>
+    <g clip-path="url(#df8)"><use href="#dz" stroke="#AE9C8B"></use></g>
+    <g clip-path="url(#df9)"><use href="#dz" stroke="#B69E7C"></use></g>
+    <g clip-path="url(#df10)"><use href="#dz" stroke="#BD9F6D"></use></g>
+    <g clip-path="url(#df11)"><use href="#dz" stroke="#C5A05D"></use></g>
+    <g clip-path="url(#df12)"><use href="#dz" stroke="#CDA14E"></use></g>
+    <g clip-path="url(#df13)"><use href="#dz" stroke="#D1A246"></use></g>
+  </g>
+</svg>

@@ -2,24 +2,29 @@
 @layer components {
   .section-card {
     background: var(--bg-transparent);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2);
     text-align: start;
-    animation: fadeIn 1s var(--easing-smooth);
   }
-  .section-card h3 { font-size: var(--font-size-2xl); color: var(--primary-gold); margin-block-end: var(--spacing-sm); }
-  .section-card p, .section-card ul { font-size: var(--font-size-md); line-height: 1.6; color: var(--text-secondary); }
+  /* Title block: display title in Tyrian, then a short gold rule */
+  .section-card h3 { margin-block-end: var(--space-4); }
+  .section-card h3::after { content: ""; display: block; inline-size: 40px; block-size: 2px; margin-block-start: var(--space-3); background: var(--gold); }
+  .section-card p, .section-card ul { font-size: 15px; line-height: 26px; color: var(--ink); }
   .section-card ul { list-style: none; padding-inline-start: 0; }
-  .section-card ul li { margin-block: var(--spacing-sm) 0; }
-  .section-card ul li a { color: var(--text-secondary); text-decoration: none; transition: color var(--transition-normal), text-decoration var(--transition-normal); }
-  .section-card ul li a:hover { color: var(--text-light); }
+  .section-card ul li { margin-block: 0; padding-block: var(--space-2); border-block-end: 1px solid var(--hairline); }
+  .section-card ul li:first-child { border-block-start: 1px solid var(--hairline); }
+  .section-card ul li a { color: var(--blue); text-decoration: none; }
+  .section-card ul li a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
   .section-hero {
     position: relative; background: var(--bg-transparent);
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    color: var(--text-light);
-    margin-bottom: var(--spacing-lg);
-    overflow: hidden; animation: fadeIn 1.5s ease-in-out;
+    padding: var(--space-4) var(--space-4);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    margin-bottom: var(--space-3);
   }
+
+  /* Reading rhythm in the About page */
+  .about-content p + p { margin-block-start: var(--space-3); }
+  .about-content h4 { margin-block-start: var(--space-4); }
 }
