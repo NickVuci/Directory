@@ -27,4 +27,10 @@
   /* Reading rhythm in the About page */
   .about-content p + p { margin-block-start: var(--space-3); }
   .about-content h4 { margin-block-start: var(--space-4); }
+
+  /* Phones: the reading column uses the full width */
+  @media (max-width: 768px) {
+    .section-hero { padding-inline: 0; }
+    .section-card { padding-inline: 0; }
+  }
 }

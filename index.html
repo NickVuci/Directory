@@ -1,68 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">    
-    <title>Nick Vuci - Xenharmonic Musician</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Nick Vuci — Xenharmonic Musician</title>
+    <meta name="description" content="Music in equal temperaments and just intonation beyond twelve tones, with tools for composing and studying microtonal harmony.">
 
-    <!-- Favicon Links -->
-    <link rel="icon" type="image/x-icon" href="favicon/favicon-32x32.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Nick Vuci">
+    <meta property="og:title" content="Nick Vuci — Xenharmonic Musician">
+    <meta property="og:description" content="Music in equal temperaments and just intonation beyond twelve tones, with tools for composing and studying microtonal harmony.">
+    <meta property="og:url" content="https://nickvuci.com/">
+    <meta property="og:image" content="https://nickvuci.com/favicon/android-chrome-512x512.png">
+    <meta name="twitter:card" content="summary">
+
+    <!-- Favicons: the NV app icon -->
+    <link rel="icon" href="favicon/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png">
-    
-    <!-- Theme Color for iOS/Android -->
+
+    <!-- Browser chrome follows the band header -->
     <meta name="theme-color" content="#2a0f2b" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#2b1138" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Typefaces: Cormorant Garamond (display), Montserrat (text), IBM Plex Mono (notation) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Montserrat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+    <!-- Typefaces: Cormorant Garamond (display), Montserrat (text), IBM Plex Mono (notation) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Montserrat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 
-  <!-- Site CSS (production): minified modular bundle -->
-  <link rel="stylesheet" href="css/dist/app.min.css">
-  
-  <!-- Note: Footer and player styling now consolidated in modular CSS -->
+    <!-- Site CSS (production): minified modular bundle -->
+    <link rel="stylesheet" href="css/dist/app.min.css">
 </head>
 <body>
-    <!-- Header with title, subtitle, and navigation buttons -->
+    <a class="skip-link" href="#content">Skip to content</a>
+
     <header class="header">
         <div class="lockup">
             <img class="monogram" src="assets/nv-mark-dark.svg" alt="" width="139" height="56">
             <div class="lockup-text">
-                <h1 class="wordmark"><span class="wordmark-nick">Nick</span> <span class="wordmark-vuci">Vuci</span></h1>
-                <h2>Xenharmonic Musician</h2>
+                <p class="wordmark"><span class="wordmark-nick">Nick</span> <span class="wordmark-vuci">Vuci</span></p>
+                <p class="descriptor">Xenharmonic Musician</p>
             </div>
         </div>
 
-        <!-- Navigation buttons directly inside the header -->        
-         <nav class="nav-buttons">
-            <button class="btn-unified" onclick="showContent('about')">About</button>
-            <button class="btn-unified" onclick="showContent('music-list')">Music</button>
-            <button class="btn-unified" onclick="showContent('tools')">Tools</button>
-            <button class="btn-unified" onclick="showContent('contact')">Contact</button>
+        <nav class="nav-buttons" aria-label="Primary">
+            <a class="nav-link" href="#page=about" data-page="about">About</a>
+            <a class="nav-link" href="#page=music-list" data-page="music-list">Music</a>
+            <a class="nav-link" href="#page=tools" data-page="tools">Tools</a>
+            <a class="nav-link" href="#page=contact" data-page="contact">Contact</a>
         </nav>
     </header>
-    
-    <!-- Content area for sections -->
+
     <main class="main-content">
-        <section id="content1" class="content"></section>
-        <section id="content2" class="content" style="display: none;"></section>    
+        <div id="content" class="content" tabindex="-1" aria-live="polite"></div>
+        <p class="site-credit">&copy; <span id="year">2026</span> Nick Vuci. All rights reserved.</p>
     </main>
-  <!-- Footer with Audio Player -->    
-    <footer class="footer">
-        <!-- Audio player will be inserted here by player-init.js -->
-        <!-- Copyright is added by the player-init.js script -->
-    </footer>
-      <!-- Core JavaScript -->
-  <script defer src="main.js"></script>      <!-- Audio Player Scripts -->
-  <script defer src="js/tracks.js"></script>
-  <script defer src="js/player-core.js"></script>
-  <script defer src="js/player-init.js"></script>
-  <script defer src="js/player-ios.js"></script>
-  <script defer src="js/player-toggle.js"></script>
+
+    <!-- Audio player is built here by js/player.js -->
+    <footer class="footer"></footer>
+
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <script defer src="js/tracks.js"></script>
+    <script defer src="js/player.js"></script>
+    <script defer src="main.js"></script>
 </body>
 </html>

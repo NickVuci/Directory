@@ -22,23 +22,18 @@
   }
   .music-info p { color: var(--ink); line-height: 26px; font-size: 15px; }
 
-  /* Music list layout: hairline-ruled rows */
+  /* Music list: each row is one large button, hairline-ruled */
   .music-list .all-tracks-list { list-style: none; padding-left: 0; margin: 0; }
-  .music-list .track-row { border-block-end: 1px solid var(--hairline); padding-block: var(--space-1); }
+  .music-list .track-row { border-block-end: 1px solid var(--hairline); }
   .music-list .track-row:first-child { border-block-start: 1px solid var(--hairline); }
-  .music-list .track-row-inner { display: flex; align-items: center; gap: var(--spacing-sm); }
-  .music-list .track-meta .title { font-weight: 500; }
-  .music-list .track-meta .sep { color: var(--ink-muted); }
-  .music-list .track-meta .tuning { font-size: 13px; color: var(--ink-muted); }
-  .music-list .play-icon {
-    background: none;
-    border: none;
-    color: var(--blue);
-    cursor: pointer;
-    padding: var(--space-2);
-    line-height: 1;
-  }
-  .music-list .play-icon:hover { color: var(--tyrian); }
+  .track-btn { display: flex; align-items: center; gap: var(--space-3); inline-size: 100%; min-block-size: 56px; padding: var(--space-2); font: inherit; color: var(--ink); text-align: start; background: none; border: 0; cursor: pointer; transition: background var(--transition-fast); }
+  .track-btn:hover { background: var(--tyrian-wash); }
+  .track-btn.current { background: var(--blue-soft); }
+  .track-state { flex: none; display: inline-flex; color: var(--blue); }
+  .track-text { min-inline-size: 0; display: flex; flex-direction: column; }
+  .track-name { font-weight: 500; overflow-wrap: anywhere; }
+  .track-sub { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+  .track-sub .tuning { font-size: 12px; }
 
   /* Sort controls: quiet text buttons, the active one marked by a rule and a direction arrow */
   .music-list .sort-bar { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-3); }

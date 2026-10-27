@@ -26,13 +26,25 @@
     t = t.replace(/_/g, ' ').replace(/-/g, ' ');
     // Insert spaces between a lower->Upper boundary (camel case)
     t = t.replace(/([a-z])([A-Z])/g, '$1 $2');
-    // Insert spaces between letters and numbers boundaries
-    t = t.replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Za-z])/g, '$1 $2');
+    // Separate a word from a trailing number ("Prelude3" -> "Prelude 3"), but leave
+    // scale names like "5L3s" and "3L 4s" intact
+    t = t.replace(/([a-z]{3,})(\d)/g, '$1 $2');
+    // Small words stay lower-case inside a title ("Prelude And Fugue" -> "Prelude and Fugue")
+    t = t.replace(/(?<=\S )(And|For|With|Of|In|At|The|To|On)(?= )/g, w => w.toLowerCase());
     // Trim common noisy suffix tokens at end
     t = t.replace(/\b(MP3|FLAC|WAV|MIXED)\b$/i, '').trim();
     // Collapse extra spaces
     t = t.replace(/\s{2,}/g, ' ').trim();
     return t;
+  }
+
+  // Titles that the filename cannot express (ratios, punctuation)
+  const titleOverrides = { '7over4Beat': '7/4 Beat' };
+
+  // "22edo" -> "22-EDO"; anything else (JI (Mode12), Free Pitch) is shown as written
+  function formatTuning(raw) {
+    const m = /^(\d+)edo$/i.exec(raw || '');
+    return m ? `${m[1]}-EDO` : (raw || '');
   }
 
   // Build a minimal track object from a filename
@@ -44,14 +56,17 @@
     const tuning = parts[2];
     const titleRaw = parts.slice(3).join('-'); // keep exactly as written for id
     const { iso, display } = formatDateToken(dateToken);
-    const id = titleRaw; // exact as in filename (without extension)
-    const title = formatTitle(titleRaw);
+    // The date makes the id unique (two tracks are both called PreludeAndFugue);
+    // legacyId keeps older shared links working
+    const id = `${dateToken}-${titleRaw}`.replace(/\s+/g, '_');
+    const title = titleOverrides[titleRaw] || formatTitle(titleRaw);
     return {
       id,
+      legacyId: titleRaw,
       title,
       artist: 'Nick Vuci',
       file: `music/${base}`,
-      tuning,
+      tuning: formatTuning(tuning),
       date: iso,
       dateDisplay: display
     };
