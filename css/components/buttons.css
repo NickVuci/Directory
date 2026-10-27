@@ -1,29 +1,42 @@
 /* @layer components: buttons */
 @layer components {
+  /* Ghost button: ink-muted border, nearly square corners */
   .btn-unified {
     background: var(--button-bg);
     color: var(--button-color);
     border: var(--button-border);
-    border-radius: var(--button-radius, var(--radius-lg));
+    border-radius: var(--button-radius, var(--radius-sm));
+    font-family: var(--font-sans);
+    font-weight: 500;
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
   }
-  .btn-unified:hover { background: var(--button-hover-bg); color: var(--button-hover-color); }
+  .btn-unified:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
   .btn-unified:active { opacity: 0.9; }
-  /* Persist hover look when active/current page */
-  .btn-unified.active,
-  .btn-unified[aria-current="page"] {
-    background: var(--button-hover-bg);
-    color: var(--button-hover-color);
-  }
 
-  /* Navigation button modifier - responsive sizing for nav buttons */
+  /* Navigation tabs on the band: muted text, the current page in band-blue with a rule beneath */
   .nav-buttons .btn-unified {
-    padding-block: clamp(var(--spacing-sm), 1.5vw, var(--spacing-md));
-    padding-inline: clamp(var(--spacing-md), 2vw, var(--spacing-xl));
-    font-size: clamp(var(--font-size-sm), 1.5vw, var(--font-size-base));
-    border-radius: var(--radius-md);
-    width: 120px;
-    min-width: 80px;
+    padding-block: var(--space-2);
+    padding-inline: clamp(var(--space-2), 2vw, var(--space-4));
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--on-band-muted);
+    border: 0;
+    border-block-end: 2px solid transparent;
+    border-radius: 0;
+    width: auto;
+    min-width: 0;
   }
+  .nav-buttons .btn-unified:hover { background: transparent; color: var(--on-band); border-block-end-color: var(--band-line); }
+  .nav-buttons .btn-unified.active,
+  .nav-buttons .btn-unified[aria-current="page"] { background: transparent; color: var(--band-blue); border-block-end-color: var(--band-blue); }
+  .nav-buttons .btn-unified:focus-visible { outline-color: var(--band-blue); }
+
+  /* Player buttons: primary action in blue, the rest ghost */
+  .btn-unified.play-pause-btn { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
+  .btn-unified.play-pause-btn:hover { background: var(--blue); color: var(--on-blue); opacity: 0.9; }
 }

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Nick Vuci app icon</title>
+  <rect width="512" height="512" rx="96" fill="#0C1230"></rect>
+  <g transform="translate(76.80 186.24) scale(1.7440) translate(7.75 0)">
+  <defs>
+    <clipPath id="ic"><rect x="-9.75" y="0" width="209.50" height="80"></rect></clipPath>
+    <polyline id="iz" points="-20.50,106.19 0.00,71.84 38.00,8.16 76.00,71.84 114.00,8.16 152.00,71.84 190.00,8.16 210.50,-26.19" fill="none" stroke-width="7.0" stroke-linejoin="miter" stroke-miterlimit="10"></polyline>
+    <clipPath id="if1"><polygon points="114.00,16.31 106.69,-43.24 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if2"><polygon points="114.00,16.31 107.90,-43.37 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if3"><polygon points="114.00,16.31 109.12,-43.49 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if4"><polygon points="114.00,16.31 110.34,-43.57 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if5"><polygon points="114.00,16.31 111.56,-43.64 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if6"><polygon points="114.00,16.31 112.78,-43.67 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if7"><polygon points="114.00,16.31 114.00,-43.69 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if8"><polygon points="114.00,16.31 115.22,-43.67 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if9"><polygon points="114.00,16.31 116.44,-43.64 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if10"><polygon points="114.00,16.31 117.66,-43.57 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if11"><polygon points="114.00,16.31 118.88,-43.49 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if12"><polygon points="114.00,16.31 120.10,-43.37 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+    <clipPath id="if13"><polygon points="114.00,16.31 121.31,-43.24 217.75,-60.00 217.75,100.00 114.00,100.00"></polygon></clipPath>
+  </defs>
+  <g clip-path="url(#ic)">
+    <use href="#iz" stroke="#7393FF"></use>
+    <g clip-path="url(#if1)"><use href="#iz" stroke="#7794F7"></use></g>
+    <g clip-path="url(#if2)"><use href="#iz" stroke="#7F95E8"></use></g>
+    <g clip-path="url(#if3)"><use href="#iz" stroke="#8796D8"></use></g>
+    <g clip-path="url(#if4)"><use href="#iz" stroke="#8E97C9"></use></g>
+    <g clip-path="url(#if5)"><use href="#iz" stroke="#9699BA"></use></g>
+    <g clip-path="url(#if6)"><use href="#iz" stroke="#9E9AAA"></use></g>
+    <g clip-path="url(#if7)"><use href="#iz" stroke="#A69B9B"></use></g>
+    <g clip-path="url(#if8)"><use href="#iz" stroke="#AE9C8B"></use></g>
+    <g clip-path="url(#if9)"><use href="#iz" stroke="#B69E7C"></use></g>
+    <g clip-path="url(#if10)"><use href="#iz" stroke="#BD9F6D"></use></g>
+    <g clip-path="url(#if11)"><use href="#iz" stroke="#C5A05D"></use></g>
+    <g clip-path="url(#if12)"><use href="#iz" stroke="#CDA14E"></use></g>
+    <g clip-path="url(#if13)"><use href="#iz" stroke="#D1A246"></use></g>
+  </g>
+  </g>
+</svg>
