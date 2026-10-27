@@ -27,7 +27,9 @@
     --on-band: #f3eaf0;
     --on-band-muted: #c9b4c6;
     --band-line: #4a2648;
+    --band-edge: #8e6a8a;
     --band-blue: #7393ff;
+    --on-band-blue: #0c1230;
     --band-gold: #d1a246;
 
     /* Fonts */
@@ -156,6 +158,7 @@
       --on-band: #efeae0;
       --on-band-muted: #bba8bd;
       --band-line: #45265a;
+      --band-edge: #7d5c82;
     }
   }
 

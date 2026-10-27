@@ -21,7 +21,7 @@
     font-size: 20px;
     line-height: 24px;
     font-weight: 600;
-    color: var(--tyrian);
+    color: var(--on-band);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -31,15 +31,13 @@
     font-family: var(--font-mono);
     font-size: 12px;
     line-height: 18px;
-    color: var(--ink-muted);
+    color: var(--on-band-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* Nocturne Tyrian is for text 24px and up; the player title is smaller */
-  @media (prefers-color-scheme: dark) { .player-title { color: var(--ink); } }
 
-  .time { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums; min-inline-size: 4ch; color: var(--ink-muted); }
+  .time { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums; min-inline-size: 4ch; color: var(--on-band-muted); }
   .time-current { text-align: end; }
 
   /* Sliders: a 2px line, gold for what has played, with a round playhead */
@@ -58,12 +56,12 @@
   .progress::-webkit-slider-runnable-track,
   .volume::-webkit-slider-runnable-track {
     block-size: 2px;
-    background: linear-gradient(to right, var(--gold) var(--p, 0%), var(--hairline) var(--p, 0%));
+    background: linear-gradient(to right, var(--band-gold) var(--p, 0%), var(--band-line) var(--p, 0%));
   }
   .progress::-moz-range-track,
   .volume::-moz-range-track {
     block-size: 2px;
-    background: linear-gradient(to right, var(--gold) var(--p, 0%), var(--hairline) var(--p, 0%));
+    background: linear-gradient(to right, var(--band-gold) var(--p, 0%), var(--band-line) var(--p, 0%));
   }
   .progress::-webkit-slider-thumb,
   .volume::-webkit-slider-thumb {
@@ -74,7 +72,7 @@
     margin-block-start: -5px;
     border: 0;
     border-radius: var(--radius-pill);
-    background: var(--blue);
+    background: var(--band-blue);
   }
   .progress::-moz-range-thumb,
   .volume::-moz-range-thumb {
@@ -82,10 +80,17 @@
     block-size: 12px;
     border: 0;
     border-radius: var(--radius-pill);
-    background: var(--blue);
+    background: var(--band-blue);
   }
 
   .mute-btn { inline-size: 36px; block-size: 36px; }
+
+  /* Buttons on the band: band-edge borders, on-band icons, the one band-blue fill for play */
+  .player .icon-btn { color: var(--on-band); border-color: var(--band-edge); }
+  .player .icon-btn:hover { background: var(--band-line); border-color: var(--band-blue); color: var(--band-blue); }
+  .player .icon-btn--primary { background: var(--band-blue); border-color: var(--band-blue); color: var(--on-band-blue); }
+  .player .icon-btn--primary:hover { background: var(--band-blue); color: var(--on-band-blue); opacity: 0.9; }
+  .player :focus-visible { outline-color: var(--band-blue); }
 
   /* Phones: title and transport on one row, the timeline beneath; volume is the device's */
   @media (max-width: 720px) {
