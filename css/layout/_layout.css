@@ -12,29 +12,30 @@
     overflow: hidden;
   }
 
-  /* Header */
+  /* Header: a Tyrian band carrying the horizontal lockup, then the navigation */
   .header {
     grid-area: header;
     inline-size: 100%;
-    background: var(--surface-raised);
+    background: var(--band);
     padding-block-start: calc(env(safe-area-inset-top) + var(--space-4));
-    padding-block-end: var(--space-2);
-    padding-inline: 0;
+    padding-block-end: 0;
+    padding-inline: var(--space-3);
     text-align: center;
-    color: var(--ink);
+    color: var(--on-band);
     z-index: var(--z-header);
-    border-bottom: 1px solid var(--tyrian-soft);
+    border-bottom: 1px solid var(--band-line);
   }
 
-  /* Horizontal lockup: monogram, then the typeset wordmark (Nick in blue, Vuci in gold) */
-  .header h1 { display: flex; align-items: center; justify-content: center; gap: var(--space-3); margin-block-end: var(--space-1); }
-  .header .monogram { block-size: 36px; inline-size: auto; }
-  .wordmark { font-family: var(--font-sans); font-size: clamp(22px, 4vw, 28px); line-height: 32px; font-weight: 400; letter-spacing: 0.18em; }
-  .wordmark-nick { color: var(--blue); }
-  .wordmark-vuci { color: var(--gold); }
+  /* Horizontal lockup: monogram left, wordmark above the descriptor on its right */
+  .lockup { display: flex; align-items: center; justify-content: center; gap: var(--space-4); margin-block-end: var(--space-4); }
+  .lockup .monogram { block-size: 56px; inline-size: auto; flex: none; }
+  .lockup-text { text-align: start; min-inline-size: 0; }
+  .wordmark { font-family: var(--font-sans); font-size: clamp(22px, 4vw, 30px); line-height: 32px; font-weight: 400; letter-spacing: 0.18em; white-space: nowrap; }
+  .wordmark-nick { color: var(--band-blue); }
+  .wordmark-vuci { color: var(--band-gold); }
 
   /* Descriptor in the eyebrow style */
-  .header h2 { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-ink); margin-block-end: var(--space-3); }
+  .lockup h2 { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--on-band-muted); margin-block-start: var(--space-2); }
 
   /* Main content area */
   .main-content {
@@ -94,8 +95,10 @@
       height: auto;
       padding: calc(var(--spacing-lg) + env(safe-area-inset-top)) 0 var(--spacing-sm);
     }
-    .header .monogram { block-size: 30px; }
-    .wordmark { font-size: 20px; letter-spacing: 0.12em; }
+    .lockup { gap: var(--space-3); margin-block-end: var(--space-3); }
+    .lockup .monogram { block-size: 42px; }
+    .wordmark { font-size: 20px; line-height: 26px; letter-spacing: 0.12em; }
+    .lockup h2 { font-size: 11px; letter-spacing: 0.12em; margin-block-start: var(--space-1); }
     .content { inline-size: 95%; padding: var(--spacing-xs); }
     
     /* Mobile footer - fixed to stay above browser toolbar */
