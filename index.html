@@ -13,9 +13,9 @@
     <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png">
     
     <!-- Theme Color for iOS/Android -->
-    <meta name="theme-color" content="#fffdf8" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#141b3d" media="(prefers-color-scheme: dark)">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2a0f2b" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#2b1138" media="(prefers-color-scheme: dark)">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <!-- Typefaces: Cormorant Garamond (display), Montserrat (text), IBM Plex Mono (notation) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,15 +30,14 @@
 <body>
     <!-- Header with title, subtitle, and navigation buttons -->
     <header class="header">
-        <h1>
-            <picture>
-                <source media="(prefers-color-scheme: dark)" srcset="assets/nv-mark-dark.svg">
-                <img class="monogram" src="assets/nv-mark.svg" alt="" width="90" height="36">
-            </picture>
-            <span class="wordmark"><span class="wordmark-nick">Nick</span> <span class="wordmark-vuci">Vuci</span></span>
-        </h1>
-        <h2>Xenharmonic Musician</h2>        
-        
+        <div class="lockup">
+            <img class="monogram" src="assets/nv-mark-dark.svg" alt="" width="139" height="56">
+            <div class="lockup-text">
+                <h1 class="wordmark"><span class="wordmark-nick">Nick</span> <span class="wordmark-vuci">Vuci</span></h1>
+                <h2>Xenharmonic Musician</h2>
+            </div>
+        </div>
+
         <!-- Navigation buttons directly inside the header -->        
          <nav class="nav-buttons">
             <button class="btn-unified" onclick="showContent('about')">About</button>

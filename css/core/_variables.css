@@ -22,6 +22,14 @@
     --tyrian-soft: #efe2ec;
     --tyrian-wash: #f8f1f5;
 
+    /* Band: the deep Tyrian ground of the website header */
+    --band: #2a0f2b;
+    --on-band: #f3eaf0;
+    --on-band-muted: #c9b4c6;
+    --band-line: #4a2648;
+    --band-blue: #7393ff;
+    --band-gold: #d1a246;
+
     /* Fonts */
     --font-display: "Cormorant Garamond", "EB Garamond", garamond, "Times New Roman", serif;
     --font-sans: "Montserrat", "Helvetica Neue", arial, system-ui, sans-serif;
@@ -144,6 +152,10 @@
       --tyrian-mid: #a65a98;
       --tyrian-soft: #2c1736;
       --tyrian-wash: #170f2c;
+      --band: #2b1138;
+      --on-band: #efeae0;
+      --on-band-muted: #bba8bd;
+      --band-line: #45265a;
     }
   }
 

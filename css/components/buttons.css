@@ -14,7 +14,7 @@
   .btn-unified:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
   .btn-unified:active { opacity: 0.9; }
 
-  /* Navigation tabs: text on the ground, the current page in blue with a rule beneath */
+  /* Navigation tabs on the band: muted text, the current page in band-blue with a rule beneath */
   .nav-buttons .btn-unified {
     padding-block: var(--space-2);
     padding-inline: clamp(var(--space-2), 2vw, var(--space-4));
@@ -24,16 +24,17 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     background: transparent;
-    color: var(--ink-muted);
+    color: var(--on-band-muted);
     border: 0;
     border-block-end: 2px solid transparent;
     border-radius: 0;
     width: auto;
     min-width: 0;
   }
-  .nav-buttons .btn-unified:hover { background: transparent; color: var(--blue); border-block-end-color: var(--tyrian-soft); }
+  .nav-buttons .btn-unified:hover { background: transparent; color: var(--on-band); border-block-end-color: var(--band-line); }
   .nav-buttons .btn-unified.active,
-  .nav-buttons .btn-unified[aria-current="page"] { background: transparent; color: var(--blue); border-block-end-color: var(--blue); }
+  .nav-buttons .btn-unified[aria-current="page"] { background: transparent; color: var(--band-blue); border-block-end-color: var(--band-blue); }
+  .nav-buttons .btn-unified:focus-visible { outline-color: var(--band-blue); }
 
   /* Player buttons: primary action in blue, the rest ghost */
   .btn-unified.play-pause-btn { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
