@@ -1,42 +1,53 @@
 /* @layer components: buttons */
 @layer components {
-  /* Ghost button: ink-muted border, nearly square corners */
-  .btn-unified {
-    background: var(--button-bg);
-    color: var(--button-color);
-    border: var(--button-border);
-    border-radius: var(--button-radius, var(--radius-sm));
-    font-family: var(--font-sans);
-    font-weight: 500;
-    cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-  }
-  .btn-unified:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
-  .btn-unified:active { opacity: 0.9; }
-
   /* Navigation tabs on the band: muted text, the current page in band-blue with a rule beneath */
-  .nav-buttons .btn-unified {
-    padding-block: var(--space-2);
-    padding-inline: clamp(var(--space-2), 2vw, var(--space-4));
+  .nav-link {
+    display: block;
+    padding: var(--space-2) var(--space-1);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
     letter-spacing: 0.18em;
+    text-align: center;
     text-transform: uppercase;
-    background: transparent;
     color: var(--on-band-muted);
-    border: 0;
     border-block-end: 2px solid transparent;
-    border-radius: 0;
-    width: auto;
-    min-width: 0;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
   }
-  .nav-buttons .btn-unified:hover { background: transparent; color: var(--on-band); border-block-end-color: var(--band-line); }
-  .nav-buttons .btn-unified.active,
-  .nav-buttons .btn-unified[aria-current="page"] { background: transparent; color: var(--band-blue); border-block-end-color: var(--band-blue); }
-  .nav-buttons .btn-unified:focus-visible { outline-color: var(--band-blue); }
+  .nav-link:hover { color: var(--on-band); border-block-end-color: var(--band-line); text-decoration: none; }
+  .nav-link.active,
+  .nav-link[aria-current="page"] { color: var(--band-blue); border-block-end-color: var(--band-blue); }
+  .nav-link:focus-visible { outline: 2px solid var(--band-blue); outline-offset: -2px; }
 
-  /* Player buttons: primary action in blue, the rest ghost */
-  .btn-unified.play-pause-btn { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
-  .btn-unified.play-pause-btn:hover { background: var(--blue); color: var(--on-blue); opacity: 0.9; }
+  @media (max-width: 480px) {
+    .nav-link { letter-spacing: 0.08em; font-size: 11px; }
+  }
+
+  /* Ghost icon button (ink-muted edge); the primary variant is the one blue button */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: 40px;
+    block-size: 40px;
+    padding: 0;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--ink-muted);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  }
+  .icon-btn:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+  .icon-btn--primary { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
+  .icon-btn--primary:hover { background: var(--blue); color: var(--on-blue); opacity: 0.9; }
+  @media (pointer: coarse) { .icon-btn { inline-size: 44px; block-size: 44px; } }
+
+  /* Thin single-weight line icons in currentColor, with sharp joins */
+  .icon { fill: none; stroke: currentcolor; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: butt; }
+
+  /* A button that reads as a link */
+  .text-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--blue); cursor: pointer; }
+  .text-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
 }

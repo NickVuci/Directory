@@ -1,371 +1,278 @@
-// Rebuild clean file to fix earlier merge corruption
+// Page routing and the music list.
+//
+// Pages are plain HTML fragments loaded into #content. The URL hash is the single
+// source of truth: #page=tools, #page=music-list&track=20240817-PreludeAndFugue.
+// Navigation links are ordinary <a href="#page=...">, so Back, middle-click and
+// bookmarks all work.
 
-// Add this at the top of the file
-let currentContent = 'content1';
+const PAGES = {
+    'about': { file: 'about.html', label: 'About' },
+    'music-list': { file: 'music-list.html', label: 'Music' },
+    'tools': { file: 'tools.html', label: 'Tools' },
+    'contact': { file: 'contact.html', label: 'Contact' }
+};
+const DEFAULT_PAGE = 'about';
+const PAGE_ALIASES = { music: 'music-list' }; // older links
 
-// URL management functions
-function parseURL() {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    return { page: params.get('page'), track: params.get('track') };
+const content = document.getElementById('content');
+const mainEl = document.querySelector('.main-content');
+const htmlCache = new Map();
+let loadController = null;
+let sharedTrackId = null; // track the visitor chose; kept in the URL so it can be shared
+
+/* ---- URL ---- */
+
+function parseHash() {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    let page = params.get('page') || DEFAULT_PAGE;
+    page = PAGE_ALIASES[page] || page;
+    if (!Object.hasOwn(PAGES, page)) page = DEFAULT_PAGE;
+    return { page, track: params.get('track') };
 }
 
-function updateURL(page, trackId) {
+function buildHash(page, trackId) {
     const params = new URLSearchParams();
-    if (page && page !== 'about') params.set('page', page);
+    if (page && page !== DEFAULT_PAGE) params.set('page', page);
     if (trackId) params.set('track', trackId);
-    const newHash = params.toString();
-    if (window.location.hash !== '#' + newHash) {
-        const newURL = window.location.pathname + window.location.search + '#' + newHash;
-        history.replaceState(null, null, newURL);
-    }
-}
-window.updateURL = updateURL;
-
-function getCurrentPageName() {
-    const activeButton = document.querySelector('.nav-buttons button.active');
-    if (activeButton) {
-        const onclickAttr = activeButton.getAttribute('onclick');
-        const match = onclickAttr.match(/showContent\('([^']+)'\)/);
-        return match ? match[1] : 'about';
-    }
-    return 'about';
+    const hash = params.toString();
+    return hash ? '#' + hash : '';
 }
 
-function showContent(section, updateUrlFlag = true) {
-    updateActiveButton(section);
-    const oldContent = document.getElementById(currentContent);
-    const newContent = document.getElementById(currentContent === 'content1' ? 'content2' : 'content1');
-    oldContent.classList.remove('fade-in');
-    oldContent.classList.add('fade-out');
-    setTimeout(() => {
-        fetch(`${section}.html`)
-            .then(r => r.text())
-            .then(html => {
-                newContent.innerHTML = html;
-                newContent.style.display = 'block';
-                newContent.classList.remove('fade-out');
-                newContent.classList.add('fade-in');
-                oldContent.style.display = 'none';
-                currentContent = currentContent === 'content1' ? 'content2' : 'content1';
-                if (updateUrlFlag) {
-                    const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
-                    updateURL(section, currentTrackId);
-                }
-                onSectionLoaded(section);
-            });
-    }, 500);
+// replaceState does not fire hashchange, so this never re-enters the router.
+function syncURL(page) {
+    const hash = buildHash(page, sharedTrackId);
+    if (window.location.hash === hash || (!hash && !window.location.hash)) return;
+    history.replaceState(null, '', window.location.pathname + window.location.search + hash);
 }
 
-function updateActiveButton(section) {
-    const buttons = document.querySelectorAll('.nav-buttons button');
-    buttons.forEach(btn => { btn.classList.remove('active'); btn.removeAttribute('aria-current'); });
-    const activeButton = document.querySelector(`.nav-buttons button[onclick="showContent('${section}')"]`);
-    if (activeButton) { activeButton.classList.add('active'); activeButton.setAttribute('aria-current', 'page'); }
+/* ---- pages ---- */
+
+function setActiveLink(page) {
+    document.querySelectorAll('.nav-buttons a').forEach(link => {
+        const active = link.dataset.page === page;
+        link.classList.toggle('active', active);
+        if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    });
 }
 
-let isLoadingFromURL = false;
-function loadFromURL() {
-    isLoadingFromURL = true;
-    const { page, track } = parseURL();
-    let targetPage = 'about';
-    if (page) targetPage = page; else if (track) targetPage = 'music-list';
-    showContent(targetPage, false);
-    setTimeout(() => {
-        if (track && window.globalPlayer) {
-            const idx = window.globalPlayer.tracks.findIndex(t => t.id === track);
-            if (idx !== -1) window.globalPlayer.loadTrack(idx); else selectRandomTrack(window.globalPlayer);
-        } else if (window.globalPlayer) {
-            selectRandomTrack(window.globalPlayer);
+function showContent(html) {
+    content.innerHTML = html;
+    content.classList.remove('fade-in');
+    void content.offsetWidth; // restart the animation
+    content.classList.add('fade-in');
+}
+
+function showError(page) {
+    showContent(`
+        <div class="section-hero"><div class="section-card">
+            <h3>Page unavailable</h3>
+            <p>This page could not be loaded. Check your connection and try again.</p>
+            <p><button type="button" class="text-btn" data-retry="${page}">Try again</button></p>
+        </div></div>`);
+}
+
+async function loadPage(page, { moveFocus = false } = {}) {
+    setActiveLink(page);
+    document.title = `${PAGES[page].label} — Nick Vuci`;
+
+    if (loadController) loadController.abort();
+    loadController = new AbortController();
+    const { signal } = loadController;
+
+    try {
+        let html = htmlCache.get(page);
+        if (html === undefined) {
+            const res = await fetch(PAGES[page].file, { signal });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            html = await res.text();
+            htmlCache.set(page, html);
         }
-        const currentTrackId = window.globalPlayer?.getCurrentTrackId?.() || null;
-        updateURL(targetPage, currentTrackId);
-        isLoadingFromURL = false;
-    }, 600);
-}
+        showContent(html);
+        if (page === 'music-list') renderMusicList();
+    } catch (err) {
+        if (err.name === 'AbortError') return; // superseded by a newer navigation
+        console.error(`Could not load ${page}:`, err);
+        showError(page);
+    }
 
-function onSectionLoaded(section) {
-    if (section === 'music') {
-        setTimeout(() => {
-            if (window.globalPlayer) {
-                window.globalPlayer.updateCollectionStats();
-                if (!isLoadingFromURL) window.globalPlayer.updateMusicSection();
-            }
-        }, 100);
-    } else if (section === 'music-list') {
-        setTimeout(renderMusicList, 50);
-    } else if (section === 'contact') {
-        setTimeout(bindContactForm, 50);
+    if (moveFocus) {
+        mainEl.scrollTop = 0;
+        content.focus({ preventScroll: true });
     }
 }
+
+content.addEventListener('click', (e) => {
+    const retry = e.target.closest('[data-retry]');
+    if (retry) loadPage(retry.dataset.retry, { moveFocus: true });
+});
+
+function route({ initial = false } = {}) {
+    const { page, track } = parseHash();
+    if (initial) {
+        sharedTrackId = track;
+        if (window.globalPlayer) window.globalPlayer.selectInitial(track);
+    }
+    loadPage(page, { moveFocus: !initial }).then(() => syncURL(page));
+}
+
+window.addEventListener('hashchange', () => route());
+
+// A track the visitor picks or skips to goes into the URL; the random first
+// track does not, so a plain visit keeps a clean address.
+document.addEventListener('player:change', (e) => {
+    if (!e.detail.user) return;
+    sharedTrackId = window.globalPlayer.getCurrentTrackId();
+    syncURL(parseHash().page);
+});
+
+/* ---- music list ---- */
+
+const PLAY_ICON = '<path d="M8 5.5 18.5 12 8 18.5Z"/>';
+const PAUSE_ICON = '<path d="M8.5 5.5v13M15.5 5.5v13"/>';
+
+function rowIcon(playing) {
+    return `<svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">${playing ? PAUSE_ICON : PLAY_ICON}</svg>`;
+}
+
+function loadSortState() {
+    const fallback = { key: 'date', dir: 'desc' };
+    try {
+        const saved = JSON.parse(localStorage.getItem('musicListSort'));
+        if (saved && ['title', 'date', 'tuning'].includes(saved.key) && ['asc', 'desc'].includes(saved.dir)) return saved;
+    } catch { /* unreadable or unavailable */ }
+    return fallback;
+}
+
+function saveSortState(state) {
+    try { localStorage.setItem('musicListSort', JSON.stringify(state)); } catch { /* ignore */ }
+}
+
+let musicSort = null;
 
 function renderMusicList() {
     const container = document.getElementById('all-tracks-list');
     if (!container) return;
-    const tracks = (window.tracksData && Array.isArray(window.tracksData.tracks)) ? window.tracksData.tracks : [];
-    const totalTracksEl = document.getElementById('total-tracks');
-    if (totalTracksEl) totalTracksEl.textContent = tracks.length;
-    container.innerHTML = '';
+    const tracks = window.tracksData?.tracks ?? [];
+    if (!musicSort) musicSort = loadSortState();
 
-    // Sorting state (persist across re-renders)
-    const defaultSort = { key: 'date', dir: 'desc' }; // newest first by default
-    if (!window.musicListSort) {
-        try {
-            const saved = localStorage.getItem('musicListSort');
-            window.musicListSort = saved ? JSON.parse(saved) : defaultSort;
-        } catch { window.musicListSort = defaultSort; }
-    }
-    // Back-compat: migrate old 'year' key to 'date'
-    if (window.musicListSort.key === 'year') {
-        window.musicListSort.key = 'date';
-        // Migrate to newest-first by default when coming from the old 'year' key
-        window.musicListSort.dir = 'desc';
-        try { localStorage.setItem('musicListSort', JSON.stringify(window.musicListSort)); } catch {}
-    }
-    const sortState = window.musicListSort;
+    container.textContent = '';
 
-    // Build sort controls
+    // Sort controls
     const sortBar = document.createElement('div');
     sortBar.className = 'sort-bar';
     const label = document.createElement('span');
     label.className = 'sort-label';
-    label.textContent = 'Sort by:';
+    label.textContent = 'Sort by';
     sortBar.appendChild(label);
 
-    function makeSortBtn(key, text) {
+    [['title', 'Title'], ['date', 'Date'], ['tuning', 'Tuning']].forEach(([key, text]) => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'sort-btn' + (sortState.key === key ? ' active' : '');
-        btn.setAttribute('data-key', key);
+        btn.className = 'sort-btn';
+        const active = musicSort.key === key;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', String(active));
         btn.textContent = text;
-        if (sortState.key === key) {
-            const dirEl = document.createElement('span');
-            dirEl.className = 'dir';
-            dirEl.textContent = sortState.dir === 'asc' ? '▲' : '▼';
-            btn.appendChild(dirEl);
+        if (active) {
+            const dir = document.createElement('span');
+            dir.className = 'dir';
+            dir.setAttribute('aria-hidden', 'true');
+            dir.textContent = musicSort.dir === 'asc' ? '▲' : '▼';
+            btn.appendChild(dir);
+            btn.setAttribute('aria-label', `${text}, ${musicSort.dir === 'asc' ? 'ascending' : 'descending'}`);
         }
         btn.addEventListener('click', () => {
-            if (window.musicListSort.key === key) {
-                window.musicListSort.dir = window.musicListSort.dir === 'asc' ? 'desc' : 'asc';
+            if (musicSort.key === key) {
+                musicSort.dir = musicSort.dir === 'asc' ? 'desc' : 'asc';
             } else {
-                window.musicListSort.key = key;
-                window.musicListSort.dir = (key === 'date') ? 'desc' : 'asc';
+                musicSort = { key, dir: key === 'date' ? 'desc' : 'asc' };
             }
-            try { localStorage.setItem('musicListSort', JSON.stringify(window.musicListSort)); } catch {}
+            saveSortState(musicSort);
             renderMusicList();
-        }, { passive: true });
-        return btn;
-    }
-    sortBar.appendChild(makeSortBtn('title', 'Title'));
-    sortBar.appendChild(makeSortBtn('date', 'Date'));
-    sortBar.appendChild(makeSortBtn('tuning', 'Tuning'));
+            container.querySelector('.sort-btn.active')?.focus();
+        });
+        sortBar.appendChild(btn);
+    });
     container.appendChild(sortBar);
+
+    // Rows, keeping each track's index in the player's list
+    const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+    const sign = musicSort.dir === 'asc' ? 1 : -1;
+    const byDateDesc = (a, b) => (b.t.date || '').localeCompare(a.t.date || '');
+    const entries = tracks.map((t, i) => ({ t, i })).sort((a, b) => {
+        let cmp = 0;
+        if (musicSort.key === 'title') cmp = collator.compare(a.t.title || '', b.t.title || '');
+        else if (musicSort.key === 'tuning') cmp = collator.compare(a.t.tuning || '', b.t.tuning || '');
+        else cmp = (a.t.date || '').localeCompare(b.t.date || '');
+        return cmp * sign || byDateDesc(a, b);
+    });
 
     const list = document.createElement('ul');
     list.className = 'all-tracks-list';
-
-    // Helpers
-    const clean = (title) => (title ? title.replace(/^Nick\s*Vuci\s*[-–:]*\s*/i, '').trim() : 'Untitled');
-    const getDateRank = (t) => {
-        if (t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date)) return parseInt(t.date.replace(/-/g, ''), 10);
-        if (t.file) {
-            const m = String(t.file).match(/-(\d{4})(\d{2})(\d{2})-/);
-            if (m) return parseInt(`${m[1]}${m[2]}${m[3]}`, 10);
-        }
-        return null;
-    };
-    const rankToIso = (rank) => {
-        if (rank == null) return '';
-        const s = String(rank).padStart(8, '0');
-        return `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`;
-    };
-
-    // Prepare entries with original indices
-    const entries = tracks.map((t, i) => ({
-        t,
-        i,
-        titleClean: clean(t.title || ''),
-        tuningClean: (t.tuning || '').toString(),
-        dateRank: getDateRank(t),
-        dateText: t.dateDisplay || (t.date ? t.date : '')
-    }));
-
-    // Sort entries
-    const dirMul = (sortState.dir === 'asc') ? 1 : -1;
-    entries.sort((a, b) => {
-        let cmp = 0;
-        if (sortState.key === 'title') {
-            cmp = a.titleClean.localeCompare(b.titleClean, undefined, { sensitivity: 'base' });
-        } else if (sortState.key === 'tuning') {
-            cmp = a.tuningClean.localeCompare(b.tuningClean, undefined, { sensitivity: 'base' });
-            // push empties to end regardless of dir
-            if (!a.tuningClean && b.tuningClean) cmp = 1;
-            else if (a.tuningClean && !b.tuningClean) cmp = -1;
-        } else if (sortState.key === 'date') {
-            const ax = a.dateRank, bx = b.dateRank;
-            if (ax == null && bx == null) cmp = 0;
-            else if (ax == null) cmp = 1;
-            else if (bx == null) cmp = -1;
-            else cmp = ax - bx;
-        }
-        return cmp * dirMul;
-    });
-
-    // Render rows using original index for play mapping (dates hidden from UI)
-    entries.forEach(({ t, i: origIdx, titleClean: titleTxt }) => {
+    entries.forEach(({ t, i }) => {
         const li = document.createElement('li');
         li.className = 'track-row';
-        li.innerHTML = `
-            <div class="track-row-inner">
-                <button class="play-icon" aria-label="Play" data-index="${origIdx}">▶</button>
-                <div class="track-meta">
-                    <strong class="title">${titleTxt}</strong>
-                    ${t.tuning ? `<span class="sep"> • </span><span class="tuning">${t.tuning}</span>` : ''}
-                </div>
-            </div>`;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'track-btn';
+        btn.dataset.index = i;
+        btn.setAttribute('aria-label', `Play ${t.title}`);
+
+        const state = document.createElement('span');
+        state.className = 'track-state';
+        state.innerHTML = rowIcon(false);
+
+        const text = document.createElement('span');
+        text.className = 'track-text';
+        const title = document.createElement('span');
+        title.className = 'track-name';
+        title.textContent = t.title;
+        const sub = document.createElement('span');
+        sub.className = 'track-sub';
+        const tuning = document.createElement('span');
+        tuning.className = 'tuning';
+        tuning.textContent = t.tuning || '';
+        sub.appendChild(tuning);
+        if (t.date) sub.append(` · ${t.date.slice(0, 4)}`);
+        text.append(title, sub);
+
+        btn.append(state, text);
+        li.appendChild(btn);
         list.appendChild(li);
     });
     container.appendChild(list);
-    // Helper to sync list play icons with the global player state
-    function syncListIcons() {
-        try {
-            const buttons = container.querySelectorAll('.play-icon');
-            buttons.forEach(btn => { btn.textContent = '▶'; btn.setAttribute('aria-label','Play'); });
-            const gp = window.globalPlayer;
-            if (!gp || !gp.tracks || gp.currentTrackIndex == null) return;
-            const isPlaying = gp.audioElement && !gp.audioElement.paused;
-            const currentIdx = gp.currentTrackIndex;
-            const currentBtn = container.querySelector(`.play-icon[data-index="${currentIdx}"]`);
-            if (currentBtn) {
-                currentBtn.textContent = isPlaying ? '❙❙' : '▶';
-                currentBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
-            }
-        } catch {}
+
+    if (!container.dataset.bound) {
+        container.dataset.bound = '1';
+        container.addEventListener('click', (e) => {
+            const btn = e.target.closest('.track-btn');
+            const player = window.globalPlayer;
+            if (!btn || !player) return;
+            const index = Number(btn.dataset.index);
+            if (index === player.currentTrackIndex) player.toggle(true);
+            else player.loadTrack(index, { play: true, user: true });
+        });
     }
-
-    // Click handler to play from list and update icons (attach once)
-    if (!container.__listClickHandlerRegistered) {
-      container.addEventListener('click', (e) => {
-        const btn = e.target.closest('.play-icon');
-        if (!btn) return;
-        const idx = parseInt(btn.getAttribute('data-index'), 10);
-        const playSelected = () => {
-            try {
-                const gp = window.globalPlayer;
-                if (!gp) return;
-
-                const sameTrack = (gp.currentTrackIndex === idx);
-                const audio = gp.audioElement;
-
-                if (sameTrack && audio) {
-                    // Toggle play/pause when clicking the current track
-                    if (audio.paused) {
-                        audio.play().catch(() => {});
-                    } else {
-                        audio.pause();
-                    }
-                } else {
-                    // Load a different track and start playing
-                    gp.loadTrack(idx);
-                    if (gp.audioElement && gp.audioElement.paused) {
-                        gp.audioElement.play().catch(() => {});
-                    }
-                }
-                // Reflect state immediately in the list
-                syncListIcons();
-            } catch {}
-        };
-        if (window.globalPlayer) playSelected();
-        else {
-            let tries = 0;
-            const int = setInterval(() => {
-                tries++;
-                if (window.globalPlayer || tries > 20) {
-                    clearInterval(int);
-                    if (window.globalPlayer) playSelected();
-                }
-            }, 100);
-        }
-      }, { passive: true });
-      container.__listClickHandlerRegistered = true;
-    }
-
-    // If a player exists, keep the list icons synced with its state
-    const attachPlayerSync = () => {
-        const gp = window.globalPlayer;
-        if (!gp || !gp.audioElement) return false;
-        const el = gp.audioElement;
-        if (el.__musicListSyncAttached) { syncListIcons(); return true; }
-        const sync = () => syncListIcons();
-        el.addEventListener('play', sync);
-        el.addEventListener('pause', sync);
-        el.addEventListener('ended', sync);
-        el.addEventListener('loadedmetadata', sync);
-        // Initial sync
-        syncListIcons();
-        el.__musicListSyncAttached = true;
-        return true;
-    };
-
-    if (!attachPlayerSync()) {
-        // Retry briefly if the player isn't ready yet
-        let tries = 0;
-        const t = setInterval(() => {
-            if (attachPlayerSync() || ++tries > 25) clearInterval(t);
-        }, 120);
-    }
+    syncMusicList();
 }
 
-function bindContactForm() {
-    const form = document.getElementById('contact-form');
-    if (!form) return;
-    const statusEl = document.getElementById('cf-status');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    function setStatus(msg, type = 'info') {
-        if (!statusEl) return;
-        statusEl.textContent = msg;
-        statusEl.hidden = !msg;
-        statusEl.dataset.type = type;
-    }
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = (document.getElementById('cf-name')?.value || '').trim();
-        const email = (document.getElementById('cf-email')?.value || '').trim();
-        const message = (document.getElementById('cf-message')?.value || '').trim();
-        const honeypot = (document.getElementById('cf-company')?.value || '').trim();
-        const emailOk = /^\S+@\S+\.\S+$/.test(email);
-        if (honeypot) { setStatus('Thanks! Message received.', 'success'); return; }
-        if (!name || !emailOk || !message) { setStatus('Please enter your name, a valid email, and a message.', 'error'); return; }
-        const endpoint = form.getAttribute('data-endpoint');
-        if (endpoint && endpoint.startsWith('http')) {
-            const payload = { name, email, message, _subject: `Website Contact from ${name}`, _source: 'nickvuci.com/contact' };
-            if (submitBtn) submitBtn.disabled = true;
-            setStatus('Sending…', 'info');
-            fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) })
-            .then(async (res) => {
-                if (res.ok) { setStatus('Thanks! Your message was sent.', 'success'); form.reset(); }
-                else { let detail = ''; try { const data = await res.json(); detail = data?.errors?.[0]?.message || data?.message || ''; } catch {} throw new Error(detail || `Request failed (${res.status})`); }
-            })
-            .catch((err) => { console.error('Form submit failed:', err); setStatus('Sorry, there was a problem sending your message. Please try again or email directly.', 'error'); })
-            .finally(() => { if (submitBtn) submitBtn.disabled = false; });
-        } else {
-            const recipient = form.getAttribute('data-recipient') || 'contact@nickvuci.com';
-            const subject = `Website Contact from ${name}`;
-            const bodyLines = [ message, '', `— Sent from nickvuci.com contact page`, `From: ${name}`, `Email: ${email}` ];
-            const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-            try { window.location.href = mailtoUrl; setStatus('Opening your email app… If nothing happens, ensure a default mail app is set.', 'success'); }
-            catch (err) { console.error('Failed to open mail client', err); setStatus('Could not open your email app. You can email me directly instead.', 'error'); }
-        }
+// Mark the current track and show pause on it while it plays.
+function syncMusicList() {
+    const container = document.getElementById('all-tracks-list');
+    const player = window.globalPlayer;
+    if (!container || !player) return;
+    container.querySelectorAll('.track-btn').forEach(btn => {
+        const index = Number(btn.dataset.index);
+        const current = index === player.currentTrackIndex;
+        const playing = current && player.isPlaying;
+        const title = player.tracks[index]?.title ?? '';
+        btn.classList.toggle('current', current);
+        if (current) btn.setAttribute('aria-current', 'true'); else btn.removeAttribute('aria-current');
+        btn.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${title}`);
+        btn.querySelector('.track-state').innerHTML = rowIcon(playing);
     });
 }
+document.addEventListener('player:change', syncMusicList);
 
-window.addEventListener('hashchange', () => { loadFromURL(); });
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.hash) {
-        loadFromURL();
-    } else {
-        showContent('about');
-        setTimeout(() => { if (window.globalPlayer) { selectRandomTrack(window.globalPlayer); } }, 700);
-    }
-});
+route({ initial: true });

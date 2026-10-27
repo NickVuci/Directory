@@ -1,16 +1,32 @@
 /* @layer layout: site structure */
 @layer layout {
-  /* Body layout grid (structure only) */
+  /* The page is a fixed-height grid: band header, scrolling content, slim player.
+     Nothing is position: fixed, so mobile browser bars cannot cover the player. */
   body {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas:
       "header"
       "main"
       "footer";
-    min-height: 100vh;
+    block-size: 100vh;
+    block-size: 100dvh;
     overflow: hidden;
   }
+
+  .skip-link {
+    position: absolute;
+    inset-block-start: var(--space-2);
+    inset-inline-start: var(--space-2);
+    z-index: calc(var(--z-player) + 1);
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface-raised);
+    color: var(--ink);
+    border: 1px solid var(--ink-muted);
+    border-radius: var(--radius-sm);
+    transform: translateY(-200%);
+  }
+  .skip-link:focus { transform: none; }
 
   /* Header: a Tyrian band carrying the horizontal lockup, then the navigation */
   .header {
@@ -35,96 +51,62 @@
   .wordmark-vuci { color: var(--band-gold); }
 
   /* Descriptor in the eyebrow style */
-  .lockup h2 { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--on-band-muted); margin-block-start: var(--space-2); }
+  .descriptor { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--on-band-muted); margin-block-start: var(--space-2); }
 
-  /* Main content area */
+  /* Navigation tabs: equal columns so four labels always fit */
+  .nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: clamp(0px, 2vw, var(--space-4));
+    max-inline-size: 560px;
+    margin-inline: auto;
+  }
+  .nav-buttons .nav-link { flex: 1 1 0; min-inline-size: 0; }
+
+  /* Main content area: the only thing that scrolls */
   .main-content {
     grid-area: main;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 0; /* for proper scrolling in grid */
+    min-height: 0;
+    overscroll-behavior: contain;
   }
 
   .content {
-    inline-size: min(90%, var(--content-max-width));
-    max-inline-size: var(--content-max-width);
+    inline-size: min(100%, var(--content-max-width));
     padding: var(--content-padding);
     margin-inline: auto;
-    margin-block: var(--spacing-sm);
-    background: transparent;
-    border-radius: var(--radius-lg);
-    text-align: start;
+    margin-block: var(--space-3) 0;
     color: var(--ink);
+    text-align: start;
+  }
+  .content:focus { outline: none; }
+
+  .site-credit {
+    margin-block: var(--space-5) var(--space-4);
+    padding-inline: var(--space-3);
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ink-muted);
+    text-align: center;
   }
 
-  /* Footer - minimal wrapper for player */
+  /* Footer: the player bar */
   .footer {
     grid-area: footer;
     inline-size: 100%;
-    padding: 0;
-    margin: 0;
     background: var(--surface-raised);
     z-index: var(--z-player);
     border-top: 1px solid var(--tyrian-soft);
   }
 
-  /* Nav buttons container */
-  .nav-buttons {
-    container-type: inline-size;
-    container-name: nav-buttons;
-    display: flex;
-    justify-content: center;
-    gap: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
-    padding-inline: clamp(var(--spacing-xs), 2vw, var(--spacing-xl));
-  }
-
-
-  /* Mobile adjustments */
   @media (max-width: 768px) {
-    body {
-      height: 100dvh; /* dynamic viewport height */
-      min-height: 100vh;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .header {
-      position: sticky;
-      top: env(safe-area-inset-top, 0);
-      height: auto;
-      padding: calc(var(--spacing-lg) + env(safe-area-inset-top)) 0 var(--spacing-sm);
-    }
     .lockup { gap: var(--space-3); margin-block-end: var(--space-3); }
     .lockup .monogram { block-size: 42px; }
     .wordmark { font-size: 20px; line-height: 26px; letter-spacing: 0.12em; }
-    .lockup h2 { font-size: 11px; letter-spacing: 0.12em; margin-block-start: var(--space-1); }
-    .content { inline-size: 95%; padding: var(--spacing-xs); }
-    
-    /* Mobile footer - fixed to stay above browser toolbar */
-    .footer {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding-bottom: env(safe-area-inset-bottom, 0);
-    }
-    
-    /* Add padding to main-content so it doesn't get hidden behind fixed footer */
-    .main-content {
-      padding-bottom: calc(200px + env(safe-area-inset-bottom, 0)); /* Reserve space for player */
-    }
-
-    /* Example container query for button wrapping */
-    @container nav-buttons (width < 400px) {
-      .nav-buttons button { flex: 1; width: auto; min-inline-size: 0; letter-spacing: 0.1em; padding-inline: var(--space-1); }
-    }
-  }
-
-  /* Fallbacks for unsupported features */
-  @supports not (container-type: inline-size) {
-    /* Allow buttons to wrap naturally when container queries unavailable */
-    .nav-buttons { flex-wrap: wrap; }
-    .nav-buttons button { flex: 1 1 auto; width: auto; }
+    .descriptor { font-size: 11px; letter-spacing: 0.12em; margin-block-start: var(--space-1); }
+    .content { padding: var(--space-2) var(--space-3); }
   }
 }

@@ -1,44 +1,31 @@
 # Nick Vuci Website
 
-Personal website for Nick Vuci's xenharmonic music projects and tools.
+Personal website for Nick Vuci's xenharmonic music and tools: [nickvuci.com](https://nickvuci.com).
 
-## Features
-
-- Persistent footer audio player (desktop and mobile) with URL deep-linking to tracks
-- Responsive layout using modern CSS (clamp, container queries where supported)
-- Music library and dynamic Now Playing details
-- Links to microtonal music tools and applications
+It is a static site with no framework. Styling follows the Nick Vuci design system (tokens, type, Tyrian band header, Ivory and Nocturne themes).
 
 ## Structure
 
-- `index.html` - Main website entry point
-- `css/dist/app.min.css` - Production bundle (minified)
-- `css/app.css` - Development bundle (imports core, layout, components, pages)
-- `css/core/` - Reusable core bundle (variables, reset, base)
-- `css/core.css` - Distributable core CSS for other apps (imports core + essentials)
-- `main.js` - Hash-based navigation and content swapping (About/Music/Tools/Contact)
-- `js/player-core.js` - Core footer audio player
-- `js/player-init.js` - Player bootstrap
-- `js/player-ios.js` - iOS-specific UX enhancements (media session, touch targets)
-- `js/player-toggle.js` - Collapse/expand footer player
-- `js/tracks.js` - Music track database and metadata
-- `dev-docs/` - Developer documentation and refactoring notes
+- `index.html` – the shell: band header, navigation, content area, player footer
+- `about.html`, `music-list.html`, `tools.html`, `contact.html` – page fragments loaded into the shell
+- `main.js` – hash routing (`#page=tools`, `#page=music-list&track=<id>`) and the music list
+- `js/tracks.js` – the track list, built from the filenames in `music/`
+- `js/player.js` – the slim audio player (`window.globalPlayer`)
+- `css/` – modular source (`app.css` imports core, layout, components, pages); `css/dist/app.min.css` is the bundle the site loads
+- `assets/` – NV monogram and app icon, local social icons (`assets/icons/`)
+- `favicon/` – the NV app icon at each size
+
+## Adding a track
+
+Put the MP3 in `music/` named `NickVuci-YYYYMMDD-<tuning>-<Title>.mp3`, then add the filename to the list in `js/tracks.js`. Tuning `22edo` is shown as 22-EDO. Track ids are `<date>-<title>`, so they stay unique.
 
 ## Development
 
-For technical documentation and refactoring plans, see the `dev-docs/` directory.
+```bash
+npm install
+npm run build      # rebuild css/dist/
+npm run lint:css
+python3 -m http.server 8000   # serve locally; pages are fetched, so file:// will not work
+```
 
-### CSS refactor (2025-10)
-
-- Introduced layered CSS architecture using `@layer` and modular files under `css/`.
-- New reusable core lives in `css/core/` (see `css/README.md`).
-- Site loads the production bundle `css/dist/app.min.css` built from modular source files.
-- PostCSS toolchain for bundling/minification: `npm run build` produces minified bundles in `css/dist/`.
-
-## Housekeeping
-
-- `js-modules/` (root) currently contains empty placeholders and is not used by the live site; consider deleting in a future cleanup commit.
-
-## Contact
-
-For more information, visit the website at [nickvuci.com](https://nickvuci.com).
+Commit the rebuilt `css/dist/` with any CSS change.
