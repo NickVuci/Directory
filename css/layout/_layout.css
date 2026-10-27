@@ -93,13 +93,14 @@
     text-align: center;
   }
 
-  /* Footer: the player bar */
+  /* Footer: the player, a Tyrian band that mirrors the header */
   .footer {
     grid-area: footer;
     inline-size: 100%;
-    background: var(--surface-raised);
+    background: var(--band);
+    color: var(--on-band);
     z-index: var(--z-player);
-    border-top: 1px solid var(--tyrian-soft);
+    border-top: 1px solid var(--band-line);
   }
 
   @media (max-width: 768px) {
