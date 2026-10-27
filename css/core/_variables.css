@@ -1,15 +1,48 @@
 /* @layer base: variables */
 @layer base {
   :root {
-    /* Color Palette */
-    --primary-gold: #e9c46a;
-    --text-secondary: #a8dadc;
-    --text-light: #f0f0f0;
-    --accent-orange: #f4a261;
-    --dark-bg: #1e1f26;
-    --light-bg: #283c63;
+    /* Color: Nick Vuci design system, Ivory theme (default) */
+    --surface: #f7f4ec;
+    --surface-raised: #fffdf8;
+    --surface-sunk: #ece7db;
+    --ink: #121933;
+    --ink-muted: #565c70;
+    --hairline: #dcd5c6;
+    --blue: #1640c8;
+    --on-blue: #fffdf8;
+    --blue-soft: #dde4f7;
+    --gold: #b8892b;
+    --gold-ink: #7a5a1c;
+    --gold-soft: #efe4cb;
+    --on-gold: #121933;
+    --alert: #9b2335;
+    --focus-ring: var(--blue);
+    --tyrian: #5e1a52;
+    --tyrian-mid: #8a3a7c;
+    --tyrian-soft: #efe2ec;
+    --tyrian-wash: #f8f1f5;
+
+    /* Band: the deep Tyrian ground of the website header */
+    --band: #2a0f2b;
+    --on-band: #f3eaf0;
+    --on-band-muted: #c9b4c6;
+    --band-line: #4a2648;
+    --band-blue: #7393ff;
+    --band-gold: #d1a246;
+
+    /* Fonts */
+    --font-display: "Cormorant Garamond", "EB Garamond", garamond, "Times New Roman", serif;
+    --font-sans: "Montserrat", "Helvetica Neue", arial, system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", menlo, monospace;
+
+    /* Legacy names, mapped onto the tokens above */
+    --text-secondary: var(--ink-muted);
+    --text-light: var(--ink);
+    --accent-orange: var(--gold-ink);
+    --dark-bg: var(--surface-raised);
+    --light-bg: var(--surface);
     --bg-transparent: transparent;
-    --border-accent: #e9c56a5b;
+    --border-accent: var(--tyrian-soft);
 
     /* Typography Scale */
     --font-size-3xs: clamp(0.45rem, 0.5em, 0.55rem);
@@ -22,6 +55,14 @@
     --font-size-xl: clamp(1.25rem, 1.5em, 1.75rem);
     --font-size-2xl: clamp(1.5rem, 2em, 2.5rem);
     --font-size-3xl: clamp(2rem, 3em, 3.5rem);
+
+    /* Spacing: design-system steps */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 40px;
+    --space-6: 64px;
 
     /* Spacing Scale */
     --spacing-3xs: 2px;
@@ -42,11 +83,12 @@
 
     /* Radius */
     --radius-xs: 2px;
-    --radius-sm: 3px;
-    --radius-md: 4px;
-    --radius-lg: 10px;
-    --radius-xl: 15px;
+    --radius-sm: 2px;
+    --radius-md: 2px;
+    --radius-lg: 4px;
+    --radius-xl: 4px;
     --radius-circle: 50%;
+    --radius-pill: 999px;
 
     /* Z-index */
     --z-base: 1;
@@ -62,35 +104,59 @@
     /* Effective value in original file was the latter duplicate; keep that */
     --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-    /* Shadows */
-    --shadow-light: 0 4px 10px #0000001a;
-    --shadow-medium: 0 8px 32px #0000004d;
-    --shadow-heavy: 0 12px 50px #00000080;
+    /* Shadows: none in this system; structure comes from hairlines */
+    --shadow-light: none;
+    --shadow-medium: none;
+    --shadow-heavy: none;
 
     /* Components */
-    --slider-track-bg: #a8dadc4d;
-    --slider-thumb-color: var(--primary-gold);
+    --slider-track-bg: var(--hairline);
+    --slider-thumb-color: var(--blue);
     --slider-track-radius: var(--radius-xs);
 
-    --button-bg: var(--border-accent);
-    --button-border: 1px solid var(--primary-gold);
-    --button-color: var(--primary-gold);
-    --button-hover-bg: var(--primary-gold);
-    --button-hover-color: var(--dark-bg);
-    --button-radius: var(--radius-circle);
+    --button-bg: transparent;
+    --button-border: 1px solid var(--ink-muted);
+    --button-color: var(--ink);
+    --button-hover-bg: var(--blue);
+    --button-hover-color: var(--on-blue);
+    --button-radius: var(--radius-sm);
 
-    --card-bg: var(--border-accent);
-    --card-border: 1px solid var(--primary-gold);
-    --card-hover-bg: var(--primary-gold);
-    --card-hover-color: var(--dark-bg);
-    --card-transform: translateY(-2px);
-    --card-shadow: var(--shadow-medium);
+    --card-bg: var(--surface-raised);
+    --card-border: 1px solid var(--tyrian-soft);
 
     /* Layout helpers */
     --spacing-inline: var(--spacing-md);
     --spacing-block: var(--spacing-lg);
-    --content-max-width: min(1200px, calc(100vw - var(--spacing-2xl)));
+    --content-max-width: min(680px, calc(100vw - var(--spacing-2xl)));
     --content-padding: clamp(var(--spacing-sm), 3vw, var(--spacing-lg));
+  }
+
+  /* Nocturne: the dark theme, followed automatically */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface: #0c1230;
+      --surface-raised: #141b3d;
+      --surface-sunk: #080c22;
+      --ink: #efeae0;
+      --ink-muted: #a7abbe;
+      --hairline: #283055;
+      --blue: #7393ff;
+      --on-blue: #0c1230;
+      --blue-soft: #1c2758;
+      --gold: #d1a246;
+      --gold-ink: #ddb867;
+      --gold-soft: #81693c;
+      --on-gold: #0c1230;
+      --alert: #e57a88;
+      --tyrian: #a85b9c;
+      --tyrian-mid: #a65a98;
+      --tyrian-soft: #2c1736;
+      --tyrian-wash: #170f2c;
+      --band: #2b1138;
+      --on-band: #efeae0;
+      --on-band-muted: #bba8bd;
+      --band-line: #45265a;
+    }
   }
 
   /* Minimalist scrollbar styling (matches button styling) */
@@ -117,7 +183,7 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-gold);
+    background: var(--blue);
   }
 
   /* Hide scrollbar buttons (up/down arrows) */
