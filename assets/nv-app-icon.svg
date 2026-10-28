@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <title>Nick Vuci app icon</title>
   <rect width="512" height="512" rx="96" fill="#0C1230"></rect>
-  <g transform="translate(76.80 186.24) scale(1.7440) translate(7.75 0)">
+  <g transform="translate(22.40 165.50) scale(2.2677) translate(7.75 0)">
   <defs>
     <clipPath id="ic"><rect x="-9.75" y="0" width="209.50" height="80"></rect></clipPath>
     <polyline id="iz" points="-20.50,106.19 0.00,71.84 38.00,8.16 76.00,71.84 114.00,8.16 152.00,71.84 190.00,8.16 210.50,-26.19" fill="none" stroke-width="7.0" stroke-linejoin="miter" stroke-miterlimit="10"></polyline>
