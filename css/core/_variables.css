@@ -22,7 +22,7 @@
     --tyrian-soft: #efe2ec;
     --tyrian-wash: #f8f1f5;
 
-    /* Band: the deep Tyrian ground of the website header */
+    /* Band: the deep Tyrian ground of the website header and player footer */
     --band: #2a0f2b;
     --on-band: #f3eaf0;
     --on-band-muted: #c9b4c6;
@@ -37,28 +37,7 @@
     --font-sans: "Montserrat", "Helvetica Neue", arial, system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", menlo, monospace;
 
-    /* Legacy names, mapped onto the tokens above */
-    --text-secondary: var(--ink-muted);
-    --text-light: var(--ink);
-    --accent-orange: var(--gold-ink);
-    --dark-bg: var(--surface-raised);
-    --light-bg: var(--surface);
-    --bg-transparent: transparent;
-    --border-accent: var(--tyrian-soft);
-
-    /* Typography Scale */
-    --font-size-3xs: clamp(0.45rem, 0.5em, 0.55rem);
-    --font-size-2xs: clamp(0.5rem, 0.6em, 0.65rem);
-    --font-size-xs: clamp(0.6rem, 0.7em, 0.75rem);
-    --font-size-sm: clamp(0.7rem, 0.8em, 0.85rem);
-    --font-size-base: 1em;
-    --font-size-md: clamp(1rem, 1.1em, 1.15rem);
-    --font-size-lg: clamp(1.1rem, 1.2em, 1.3rem);
-    --font-size-xl: clamp(1.25rem, 1.5em, 1.75rem);
-    --font-size-2xl: clamp(1.5rem, 2em, 2.5rem);
-    --font-size-3xl: clamp(2rem, 3em, 3.5rem);
-
-    /* Spacing: design-system steps */
+    /* Spacing: design-system steps (4 8 16 24 40 64) */
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 16px;
@@ -66,69 +45,26 @@
     --space-5: 40px;
     --space-6: 64px;
 
-    /* Spacing Scale */
-    --spacing-3xs: 2px;
-    --spacing-2xs: 4px;
+    /* Older spacing steps still used by a few rules */
     --spacing-xs: 6px;
     --spacing-sm: 8px;
     --spacing-md: 12px;
     --spacing-lg: 16px;
-    --spacing-xl: 24px;
     --spacing-2xl: 32px;
-    --spacing-3xl: 48px;
-
-    /* Layout */
-    --header-height: clamp(100px, 120px, 150px);
-    --footer-height: clamp(70px, 80px, 90px);
-    --mobile-footer-height: clamp(60px, 65px, 70px);
-    --mobile-breakpoint: 768px;
 
     /* Radius */
-    --radius-xs: 2px;
     --radius-sm: 2px;
-    --radius-md: 2px;
-    --radius-lg: 4px;
-    --radius-xl: 4px;
-    --radius-circle: 50%;
     --radius-pill: 999px;
 
     /* Z-index */
-    --z-base: 1;
-    --z-dropdown: 100;
     --z-header: 999;
     --z-player: 1000;
 
-    /* Animation & Transitions */
+    /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
-    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Effective value in original file was the latter duplicate; keep that */
-    --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-    /* Shadows: none in this system; structure comes from hairlines */
-    --shadow-light: none;
-    --shadow-medium: none;
-    --shadow-heavy: none;
-
-    /* Components */
-    --slider-track-bg: var(--hairline);
-    --slider-thumb-color: var(--blue);
-    --slider-track-radius: var(--radius-xs);
-
-    --button-bg: transparent;
-    --button-border: 1px solid var(--ink-muted);
-    --button-color: var(--ink);
-    --button-hover-bg: var(--blue);
-    --button-hover-color: var(--on-blue);
-    --button-radius: var(--radius-sm);
-
-    --card-bg: var(--surface-raised);
-    --card-border: 1px solid var(--tyrian-soft);
 
     /* Layout helpers */
-    --spacing-inline: var(--spacing-md);
-    --spacing-block: var(--spacing-lg);
     --content-max-width: min(680px, calc(100vw - var(--spacing-2xl)));
     --content-padding: clamp(var(--spacing-sm), 3vw, var(--spacing-lg));
   }
@@ -162,11 +98,10 @@
     }
   }
 
-  /* Minimalist scrollbar styling (matches button styling) */
   /* Firefox */
   :root {
     scrollbar-width: thin;
-    scrollbar-color: var(--border-accent) transparent;
+    scrollbar-color: var(--tyrian-soft) transparent;
   }
 
   /* Webkit browsers (Chrome, Safari, Edge) */
@@ -180,7 +115,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--border-accent);
+    background: var(--tyrian-soft);
     border-radius: var(--radius-sm);
     transition: background var(--transition-normal);
   }
