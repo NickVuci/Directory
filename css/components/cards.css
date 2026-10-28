@@ -1,7 +1,7 @@
 /* @layer components: cards */
 @layer components {
   .section-card {
-    background: var(--bg-transparent);
+    background: transparent;
     border-radius: var(--radius-sm);
     padding: var(--space-2);
     text-align: start;
@@ -17,7 +17,7 @@
   .section-card ul li a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
   .section-hero {
-    position: relative; background: var(--bg-transparent);
+    position: relative; background: transparent;
     padding: var(--space-4) var(--space-4);
     border-radius: var(--radius-sm);
     color: var(--ink);
