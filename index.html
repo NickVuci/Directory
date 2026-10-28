@@ -57,11 +57,13 @@
 
     <main class="main-content">
         <div id="content" class="content" tabindex="-1" aria-live="polite"></div>
-        <p class="site-credit">&copy; <span id="year">2026</span> Nick Vuci. All rights reserved.</p>
     </main>
 
-    <!-- Audio player is built here by js/player.js -->
-    <footer class="footer"></footer>
+    <footer class="footer">
+        <!-- Audio player is built here by js/player.js -->
+        <div class="player-mount"></div>
+        <p class="site-credit">&copy; <span id="year">2026</span> Nick Vuci. All rights reserved.</p>
+    </footer>
 
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
     <script defer src="js/tracks.js"></script>

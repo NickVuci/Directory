@@ -8,7 +8,7 @@
     gap: var(--space-2) var(--space-4);
     max-inline-size: 1100px;
     margin-inline: auto;
-    padding: var(--space-2) var(--space-4) calc(var(--space-2) + env(safe-area-inset-bottom));
+    padding: var(--space-2) var(--space-4);
   }
 
   .player-controls { grid-area: controls; display: flex; gap: var(--space-2); }

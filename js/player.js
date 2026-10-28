@@ -257,6 +257,6 @@
     }
   }
 
-  const footer = document.querySelector('.footer');
-  if (footer) window.globalPlayer = new SitePlayer(footer);
+  const mount = document.querySelector('.player-mount');
+  if (mount) window.globalPlayer = new SitePlayer(mount);
 })();
