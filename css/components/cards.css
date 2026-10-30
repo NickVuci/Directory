@@ -6,7 +6,7 @@
     padding: var(--space-2);
     text-align: start;
   }
-  /* Title block: display title in Tyrian, then a short gold rule */
+  /* Title block: display title in burgundy, then a short gold rule */
   .section-card h3 { margin-block-end: var(--space-4); }
   .section-card h3::after { content: ""; display: block; inline-size: 40px; block-size: 2px; margin-block-start: var(--space-3); background: var(--gold); }
   .section-card p, .section-card ul { font-size: 15px; line-height: 26px; color: var(--ink); }

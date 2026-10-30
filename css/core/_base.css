@@ -12,8 +12,8 @@
   }
 
   h1, h2, h3, h4, h5 { font-weight: 500; }
-  h3 { font-family: var(--font-display); font-size: 36px; line-height: 42px; color: var(--tyrian); }
-  h4 { font-family: var(--font-display); font-size: 24px; line-height: 30px; font-weight: 600; color: var(--tyrian); }
+  h3 { font-family: var(--font-display); font-size: 36px; line-height: 42px; color: var(--burgundy-ink); }
+  h4 { font-family: var(--font-display); font-size: 24px; line-height: 30px; font-weight: 600; color: var(--burgundy-ink); }
 
   a { color: var(--blue); text-decoration: none; transition: color var(--transition-fast); }
   a:hover { text-decoration: underline; text-underline-offset: 3px; }

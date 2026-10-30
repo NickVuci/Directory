@@ -28,7 +28,7 @@
   }
   .skip-link:focus { transform: none; }
 
-  /* Header: a Tyrian band carrying the horizontal lockup, then the navigation */
+  /* Header: a burgundy band carrying the horizontal lockup, then the navigation */
   .header {
     grid-area: header;
     inline-size: 100%;
@@ -93,7 +93,7 @@
     text-align: center;
   }
 
-  /* Footer: the player, a Tyrian band that mirrors the header */
+  /* Footer: the player, a burgundy band that mirrors the header */
   .footer {
     grid-area: footer;
     inline-size: 100%;

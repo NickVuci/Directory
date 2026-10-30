@@ -15,19 +15,20 @@
     --gold-ink: #7a5a1c;
     --gold-soft: #efe4cb;
     --on-gold: #121933;
-    --alert: #9b2335;
+    --alert: #b42a12;
     --focus-ring: var(--blue);
-    --tyrian: #5e1a52;
-    --tyrian-mid: #8a3a7c;
-    --tyrian-soft: #efe2ec;
-    --tyrian-wash: #f8f1f5;
+    --burgundy: #6b1d34;
+    --burgundy-ink: #6b1d34;
+    --burgundy-mid: #7a2c40;
+    --burgundy-soft: #f3e4e8;
+    --burgundy-wash: #faf2f3;
 
-    /* Band: the deep Tyrian ground of the website header and player footer */
-    --band: #2a0f2b;
-    --on-band: #f3eaf0;
-    --on-band-muted: #c9b4c6;
-    --band-line: #4a2648;
-    --band-edge: #8e6a8a;
+    /* Band: the deep burgundy ground of the website header and player footer */
+    --band: #2e0f16;
+    --on-band: #f5ecee;
+    --on-band-muted: #d1b6bd;
+    --band-line: #4f2530;
+    --band-edge: #916a72;
     --band-blue: #7393ff;
     --on-band-blue: #0c1230;
     --band-gold: #d1a246;
@@ -83,25 +84,26 @@
       --blue-soft: #1c2758;
       --gold: #d1a246;
       --gold-ink: #ddb867;
-      --gold-soft: #81693c;
+      --gold-soft: #45361a;
       --on-gold: #0c1230;
-      --alert: #e57a88;
-      --tyrian: #a85b9c;
-      --tyrian-mid: #a65a98;
-      --tyrian-soft: #2c1736;
-      --tyrian-wash: #170f2c;
-      --band: #2b1138;
+      --alert: #ff8b6e;
+      --burgundy: #cf7a90;
+      --burgundy-ink: #e8d5d0;
+      --burgundy-mid: #b39499;
+      --burgundy-soft: #3d1726;
+      --burgundy-wash: #22101a;
+      --band: #331120;
       --on-band: #efeae0;
-      --on-band-muted: #bba8bd;
-      --band-line: #45265a;
-      --band-edge: #7d5c82;
+      --on-band-muted: #c4abb3;
+      --band-line: #5a2a35;
+      --band-edge: #9a7690;
     }
   }
 
   /* Firefox */
   :root {
     scrollbar-width: thin;
-    scrollbar-color: var(--tyrian-soft) transparent;
+    scrollbar-color: var(--burgundy-soft) transparent;
   }
 
   /* Webkit browsers (Chrome, Safari, Edge) */
@@ -115,7 +117,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--tyrian-soft);
+    background: var(--burgundy-soft);
     border-radius: var(--radius-sm);
     transition: background var(--transition-normal);
   }

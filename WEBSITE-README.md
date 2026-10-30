@@ -2,7 +2,7 @@
 
 Personal website for Nick Vuci's xenharmonic music and tools: [nickvuci.com](https://nickvuci.com).
 
-It is a static site with no framework. Styling follows the Nick Vuci design system (tokens, type, Tyrian band header, Ivory and Nocturne themes).
+It is a static site with no framework. Styling follows the Nick Vuci design system (tokens, type, burgundy band header, Ivory and Nocturne themes).
 
 ## Structure
 
