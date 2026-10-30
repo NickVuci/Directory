@@ -70,9 +70,10 @@
     --content-padding: clamp(var(--spacing-sm), 3vw, var(--spacing-lg));
   }
 
-  /* Nocturne: the dark theme, followed automatically */
+  /* Nocturne: the dark theme. It follows the system unless the visitor picks a theme
+     with the header toggle, which sets data-theme on <html>. */
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --surface: #0c1230;
       --surface-raised: #141b3d;
       --surface-sunk: #080c22;
@@ -99,6 +100,37 @@
       --band-edge: #9a7690;
     }
   }
+
+  :root[data-theme="dark"] {
+    --surface: #0c1230;
+    --surface-raised: #141b3d;
+    --surface-sunk: #080c22;
+    --ink: #efeae0;
+    --ink-muted: #a7abbe;
+    --hairline: #283055;
+    --blue: #7393ff;
+    --on-blue: #0c1230;
+    --blue-soft: #1c2758;
+    --gold: #d1a246;
+    --gold-ink: #ddb867;
+    --gold-soft: #45361a;
+    --on-gold: #0c1230;
+    --alert: #ff8b6e;
+    --burgundy: #cf7a90;
+    --burgundy-ink: #e8d5d0;
+    --burgundy-mid: #b39499;
+    --burgundy-soft: #3d1726;
+    --burgundy-wash: #22101a;
+    --band: #331120;
+    --on-band: #efeae0;
+    --on-band-muted: #c4abb3;
+    --band-line: #5a2a35;
+    --band-edge: #9a7690;
+  }
+
+  :root { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark; } }
 
   /* Firefox */
   :root {
