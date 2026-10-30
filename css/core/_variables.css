@@ -3,6 +3,9 @@
   :root {
     /* Color: Nick Vuci design system, Ivory theme (default) */
     --surface: #f7f4ec;
+    /* Page ground: a 135° gradient from ground-start to ground-end (flat ivory in this theme) */
+    --ground-start: #f7f4ec;
+    --ground-end: #f7f4ec;
     --surface-raised: #fffdf8;
     --surface-sunk: #ece7db;
     --ink: #121933;
@@ -74,15 +77,17 @@
      with the header toggle, which sets data-theme on <html>. */
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --surface: #0c1230;
-      --surface-raised: #141b3d;
-      --surface-sunk: #080c22;
+      --surface: #232d44;
+      --ground-start: #1e1f26;
+      --ground-end: #283c63;
+      --surface-raised: #2a3550;
+      --surface-sunk: #181920;
       --ink: #efeae0;
-      --ink-muted: #a7abbe;
-      --hairline: #283055;
-      --blue: #7393ff;
+      --ink-muted: #b4b8c9;
+      --hairline: #3a4870;
+      --blue: #86a3ff;
       --on-blue: #0c1230;
-      --blue-soft: #1c2758;
+      --blue-soft: #33457a;
       --gold: #d1a246;
       --gold-ink: #ddb867;
       --gold-soft: #45361a;
@@ -90,7 +95,7 @@
       --alert: #ff8b6e;
       --burgundy: #cf7a90;
       --burgundy-ink: #e8d5d0;
-      --burgundy-mid: #b39499;
+      --burgundy-mid: #c0a4a9;
       --burgundy-soft: #3d1726;
       --burgundy-wash: #22101a;
       --band: #331120;
@@ -102,15 +107,17 @@
   }
 
   :root[data-theme="dark"] {
-    --surface: #0c1230;
-    --surface-raised: #141b3d;
-    --surface-sunk: #080c22;
+    --surface: #232d44;
+    --ground-start: #1e1f26;
+    --ground-end: #283c63;
+    --surface-raised: #2a3550;
+    --surface-sunk: #181920;
     --ink: #efeae0;
-    --ink-muted: #a7abbe;
-    --hairline: #283055;
-    --blue: #7393ff;
+    --ink-muted: #b4b8c9;
+    --hairline: #3a4870;
+    --blue: #86a3ff;
     --on-blue: #0c1230;
-    --blue-soft: #1c2758;
+    --blue-soft: #33457a;
     --gold: #d1a246;
     --gold-ink: #ddb867;
     --gold-soft: #45361a;
@@ -118,7 +125,7 @@
     --alert: #ff8b6e;
     --burgundy: #cf7a90;
     --burgundy-ink: #e8d5d0;
-    --burgundy-mid: #b39499;
+    --burgundy-mid: #c0a4a9;
     --burgundy-soft: #3d1726;
     --burgundy-wash: #22101a;
     --band: #331120;
