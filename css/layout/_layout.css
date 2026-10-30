@@ -28,7 +28,7 @@
   }
   .skip-link:focus { transform: none; }
 
-  /* Header: a Tyrian band carrying the horizontal lockup, then the navigation */
+  /* Header: a burgundy band carrying the horizontal lockup, then the navigation */
   .header {
     grid-area: header;
     inline-size: 100%;
@@ -40,6 +40,36 @@
     color: var(--on-band);
     z-index: var(--z-header);
     border-bottom: 1px solid var(--band-line);
+    position: relative;
+  }
+
+  /* Light/dark toggle: a quiet ghost button in the band's top corner.
+     A crescent in the light theme, a sun in the dark; the two cross-fade with a slight turn. */
+  .theme-toggle {
+    position: absolute;
+    inset-block-start: calc(env(safe-area-inset-top) + var(--space-3));
+    inset-inline-end: var(--space-3);
+    display: grid;
+    place-items: center;
+    inline-size: 36px;
+    block-size: 36px;
+    padding: 0;
+    color: var(--on-band-muted);
+    background: transparent;
+    border: 1px solid var(--band-line);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+  .theme-toggle:hover { color: var(--band-gold); border-color: var(--band-edge); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--band-blue); outline-offset: 2px; }
+  .theme-icon { grid-area: 1 / 1; transition: opacity var(--transition-normal), transform var(--transition-normal); }
+  .theme-icon--sun { opacity: 0; transform: rotate(-45deg) scale(0.8); }
+  .theme-toggle.is-dark .theme-icon--moon { opacity: 0; transform: rotate(45deg) scale(0.8); }
+  .theme-toggle.is-dark .theme-icon--sun { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-icon { transition: none; }
   }
 
   /* Horizontal lockup: monogram left, wordmark above the descriptor on its right */
@@ -93,7 +123,7 @@
     text-align: center;
   }
 
-  /* Footer: the player, a Tyrian band that mirrors the header */
+  /* Footer: the player, a burgundy band that mirrors the header */
   .footer {
     grid-area: footer;
     inline-size: 100%;
@@ -104,10 +134,26 @@
   }
 
   @media (max-width: 768px) {
+    .theme-toggle { inset-block-start: calc(env(safe-area-inset-top) + var(--space-2)); inset-inline-end: var(--space-2); inline-size: 32px; block-size: 32px; }
     .lockup { gap: var(--space-3); margin-block-end: var(--space-3); }
     .lockup .monogram { block-size: 42px; }
     .wordmark { font-size: 20px; line-height: 26px; letter-spacing: 0.12em; }
     .descriptor { font-size: 11px; letter-spacing: 0.12em; margin-block-start: var(--space-1); }
     .content { padding: var(--space-2) var(--space-3); }
+  }
+
+  /* Small phones: keep the lockup clear of the theme toggle */
+  @media (max-width: 400px) {
+    .header { padding-inline: 48px; }
+    .lockup { gap: 12px; }
+    .lockup .monogram { block-size: 34px; }
+    .wordmark { font-size: 18px; line-height: 22px; letter-spacing: 0.1em; }
+    .descriptor { font-size: 10px; letter-spacing: 0.1em; }
+  }
+
+  @media (max-width: 350px) {
+    .lockup { gap: 10px; }
+    .lockup .monogram { block-size: 28px; }
+    .descriptor { font-size: 9px; letter-spacing: 0.06em; white-space: nowrap; }
   }
 }

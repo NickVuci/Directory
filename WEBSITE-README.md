@@ -2,7 +2,7 @@
 
 Personal website for Nick Vuci's xenharmonic music and tools: [nickvuci.com](https://nickvuci.com).
 
-It is a static site with no framework. Styling follows the Nick Vuci design system (tokens, type, Tyrian band header, Ivory and Nocturne themes).
+It is a static site with no framework. Styling follows the Nick Vuci design system (tokens, type, burgundy band header, Ivory and Nocturne themes).
 
 ## Structure
 
@@ -11,6 +11,7 @@ It is a static site with no framework. Styling follows the Nick Vuci design syst
 - `main.js` – hash routing (`#page=tools`, `#page=music-list&track=<id>`) and the music list
 - `js/tracks.js` – the track list, built from the filenames in `music/`
 - `js/player.js` – the slim audio player (`window.globalPlayer`)
+- `js/theme.js` – the light/dark toggle in the header; follows the system until the visitor picks, and remembers the choice
 - `css/` – modular source (`app.css` imports core, layout, components, pages); `css/dist/app.min.css` is the bundle the site loads
 - `assets/` – NV monogram and app icon, local social icons (`assets/icons/`)
 - `favicon/` – the NV app icon at each size
