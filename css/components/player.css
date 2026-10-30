@@ -85,11 +85,12 @@
 
   .mute-btn { inline-size: 36px; block-size: 36px; }
 
-  /* Buttons on the band: band-edge borders, on-band icons, the one band-blue fill for play */
-  .player .icon-btn { color: var(--on-band); border-color: var(--band-edge); }
-  .player .icon-btn:hover { background: var(--band-line); border-color: var(--band-blue); color: var(--band-blue); }
-  .player .icon-btn--primary { background: var(--band-blue); border-color: var(--band-blue); color: var(--on-band-blue); }
-  .player .icon-btn--primary:hover { background: var(--band-blue); color: var(--on-band-blue); opacity: 0.9; }
+  /* Buttons on the band, styled like the header's light/dark toggle: band-line edge,
+     muted icon, gold on hover. Play keeps a full-strength icon and edge so it still leads. */
+  .player .icon-btn { color: var(--on-band-muted); border-color: var(--band-line); }
+  .player .icon-btn:hover { color: var(--band-gold); border-color: var(--band-edge); }
+  .player .icon-btn--primary { color: var(--on-band); border-color: var(--band-edge); }
+  .player .icon-btn--primary:hover { color: var(--band-gold); }
   .player :focus-visible { outline-color: var(--band-blue); }
 
   /* Phones: title and transport on one row, the timeline beneath; volume is the device's */

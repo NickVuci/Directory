@@ -1,6 +1,9 @@
 /* @layer components: buttons */
 @layer components {
-  /* Navigation tabs on the band: muted text, the current page in band-blue with a rule beneath */
+  /* Every button follows the light/dark toggle: a quiet ghost with a muted icon or label
+     that turns gold on hover, and icons that change state cross-fade with a slight turn. */
+
+  /* Navigation tabs on the band: muted text that turns gold on hover; the current page in band-blue with a rule beneath */
   .nav-link {
     display: block;
     padding: var(--space-2) var(--space-1);
@@ -14,7 +17,7 @@
     border-block-end: 2px solid transparent;
     transition: color var(--transition-fast), border-color var(--transition-fast);
   }
-  .nav-link:hover { color: var(--on-band); border-block-end-color: var(--band-line); text-decoration: none; }
+  .nav-link:hover { color: var(--band-gold); border-block-end-color: var(--band-edge); text-decoration: none; }
   .nav-link.active,
   .nav-link[aria-current="page"] { color: var(--band-blue); border-block-end-color: var(--band-blue); }
   .nav-link:focus-visible { outline: 2px solid var(--band-blue); outline-offset: -2px; }
@@ -23,31 +26,38 @@
     .nav-link { letter-spacing: 0.08em; font-size: 11px; }
   }
 
-  /* Ghost icon button (ink-muted edge); the primary variant is the one blue button */
+  /* Ghost icon button: muted icon and a fine edge, gold on hover. The primary variant keeps
+     a full-strength icon so the main action still leads. */
   .icon-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-grid;
+    place-items: center;
     flex: none;
     inline-size: 40px;
     block-size: 40px;
     padding: 0;
-    color: var(--ink);
+    color: var(--ink-muted);
     background: transparent;
-    border: 1px solid var(--ink-muted);
+    border: 1px solid var(--hairline);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
   }
-  .icon-btn:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
-  .icon-btn--primary { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
-  .icon-btn--primary:hover { background: var(--blue); color: var(--on-blue); opacity: 0.9; }
+  .icon-btn:hover { color: var(--gold-ink); border-color: var(--ink-muted); }
+  .icon-btn--primary { color: var(--ink); border-color: var(--ink-muted); }
+  .icon-btn--primary:hover { color: var(--gold-ink); }
   @media (pointer: coarse) { .icon-btn { inline-size: 44px; block-size: 44px; } }
+
+  /* Two-state icons (play/pause, mute): both are drawn, stacked, and cross-fade with a slight turn */
+  .swap-icon { grid-area: 1 / 1; transition: opacity var(--transition-normal), transform var(--transition-normal); }
+  .swap-icon--on { opacity: 0; transform: rotate(-45deg) scale(0.8); }
+  .is-on > .swap-icon--off { opacity: 0; transform: rotate(45deg) scale(0.8); }
+  .is-on > .swap-icon--on { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .swap-icon { transition: none; } }
 
   /* Thin single-weight line icons in currentColor, with sharp joins */
   .icon { fill: none; stroke: currentcolor; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: butt; }
 
   /* A button that reads as a link */
   .text-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--blue); cursor: pointer; }
-  .text-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .text-btn:hover { color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; }
 }

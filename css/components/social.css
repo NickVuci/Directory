@@ -1,8 +1,8 @@
 /* @layer components: social icons */
 @layer components {
   .social-icons { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-4); }
-  .social-link { display: inline-flex; align-items: center; justify-content: center; inline-size: 48px; block-size: 48px; border-radius: var(--radius-sm); border: 1px solid var(--ink-muted); color: var(--ink); transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast); }
-  .social-link:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); text-decoration: none; }
+  .social-link { display: inline-flex; align-items: center; justify-content: center; inline-size: 48px; block-size: 48px; border-radius: var(--radius-sm); border: 1px solid var(--hairline); color: var(--ink-muted); transition: border-color var(--transition-fast), color var(--transition-fast); }
+  .social-link:hover { border-color: var(--ink-muted); color: var(--gold-ink); text-decoration: none; }
   /* Icons are local SVG masks (set inline, so the path is relative to the page) painted in currentColor, so they follow the theme */
   .social-icon { display: block; inline-size: 24px; block-size: 24px; background: currentcolor; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
 }

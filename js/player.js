@@ -21,8 +21,13 @@
     muted: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4Z"/><path d="m16 9.5 5 5M21 9.5l-5 5"/>'
   };
 
-  function icon(name) {
-    return `<svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
+  function icon(name, extra) {
+    return `<svg class="icon${extra ? ' ' + extra : ''}" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
+  }
+
+  // Both states drawn and stacked; toggling .is-on on the button cross-fades them
+  function swapIcons(off, on) {
+    return icon(off, 'swap-icon swap-icon--off') + icon(on, 'swap-icon swap-icon--on');
   }
 
   function store(key, value) {
@@ -69,7 +74,7 @@
           </div>
           <div class="player-controls">
             <button type="button" class="icon-btn prev-btn" aria-label="Previous track">${icon('prev')}</button>
-            <button type="button" class="icon-btn icon-btn--primary play-btn" aria-label="Play">${icon('play')}</button>
+            <button type="button" class="icon-btn icon-btn--primary play-btn" aria-label="Play">${swapIcons('play', 'pause')}</button>
             <button type="button" class="icon-btn next-btn" aria-label="Next track">${icon('next')}</button>
           </div>
           <div class="player-timeline">
@@ -78,7 +83,7 @@
             <span class="time time-duration">0:00</span>
           </div>
           <div class="player-volume">
-            <button type="button" class="icon-btn mute-btn" aria-label="Mute">${icon('volume')}</button>
+            <button type="button" class="icon-btn mute-btn" aria-label="Mute">${swapIcons('volume', 'muted')}</button>
             <input type="range" class="volume" min="0" max="100" value="70" step="1" aria-label="Volume">
           </div>
           <audio preload="metadata"></audio>
@@ -205,7 +210,7 @@
 
     updateMuteButton() {
       const muted = this.audio.volume === 0;
-      this.muteBtn.innerHTML = icon(muted ? 'muted' : 'volume');
+      this.muteBtn.classList.toggle('is-on', muted);
       this.muteBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
     }
 
@@ -223,7 +228,7 @@
 
     syncState(user) {
       const playing = this.isPlaying;
-      this.playBtn.innerHTML = icon(playing ? 'pause' : 'play');
+      this.playBtn.classList.toggle('is-on', playing);
       this.playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
       document.dispatchEvent(new CustomEvent('player:change', {
         detail: { index: this.currentTrackIndex, playing, user: !!user }

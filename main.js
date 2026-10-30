@@ -130,8 +130,10 @@ document.addEventListener('player:change', (e) => {
 const PLAY_ICON = '<path d="M8 5.5 18.5 12 8 18.5Z"/>';
 const PAUSE_ICON = '<path d="M8.5 5.5v13M15.5 5.5v13"/>';
 
-function rowIcon(playing) {
-    return `<svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">${playing ? PAUSE_ICON : PLAY_ICON}</svg>`;
+// Play and pause drawn once, stacked; .is-on on the holder cross-fades them
+function rowIcon() {
+    const svg = (path, cls) => `<svg class="icon swap-icon ${cls}" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">${path}</svg>`;
+    return svg(PLAY_ICON, 'swap-icon--off') + svg(PAUSE_ICON, 'swap-icon--on');
 }
 
 function loadSortState() {
@@ -221,7 +223,7 @@ function renderMusicList() {
 
         const state = document.createElement('span');
         state.className = 'track-state';
-        state.innerHTML = rowIcon(false);
+        state.innerHTML = rowIcon();
 
         const text = document.createElement('span');
         text.className = 'track-text';
@@ -270,7 +272,7 @@ function syncMusicList() {
         btn.classList.toggle('current', current);
         if (current) btn.setAttribute('aria-current', 'true'); else btn.removeAttribute('aria-current');
         btn.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${title}`);
-        btn.querySelector('.track-state').innerHTML = rowIcon(playing);
+        btn.querySelector('.track-state').classList.toggle('is-on', playing);
     });
 }
 document.addEventListener('player:change', syncMusicList);
