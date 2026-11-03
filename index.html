@@ -47,7 +47,11 @@
             <svg class="icon theme-icon theme-icon--sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.6"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>
         </button>
         <div class="lockup">
-            <img class="monogram" src="assets/nv-mark-dark.svg" alt="" width="139" height="56">
+            <!-- Below 769px the header mark is 42px tall or less, so it swaps to the heavier small-size monogram -->
+            <picture class="monogram-pic">
+                <source media="(max-width: 768px)" srcset="assets/nv-mark-small-dark.svg">
+                <img class="monogram" src="assets/nv-mark-dark.svg" alt="" width="139" height="56">
+            </picture>
             <div class="lockup-text">
                 <p class="wordmark"><span class="wordmark-nick">Nick</span> <span class="wordmark-vuci">Vuci</span></p>
                 <p class="descriptor">Xenharmonic Musician</p>

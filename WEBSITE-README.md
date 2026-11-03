@@ -13,8 +13,8 @@ It is a static site with no framework. Styling follows the Nick Vuci design syst
 - `js/player.js` – the slim audio player (`window.globalPlayer`)
 - `js/theme.js` – the light/dark toggle in the header; follows the system until the visitor picks, and remembers the choice
 - `css/` – modular source (`app.css` imports core, layout, components, pages); `css/dist/app.min.css` is the bundle the site loads
-- `assets/` – NV monogram and app icon, local social icons (`assets/icons/`)
-- `favicon/` – the NV app icon at each size
+- `assets/` – the NV monogram (`nv-mark-dark.svg` regular, `nv-mark-small-dark.svg` small, plus light-ground copies), the app icon, local social icons (`assets/icons/`). The header shows the regular mark above 768px and swaps to the small mark (heavier line) at 768px and below, where the mark is 42px tall or less. Both follow the Nick Vuci style guide's Logo versions and specifications; replace them with that section's files rather than editing them.
+- `favicon/` – the NV app icon at each size, exported from `assets/nv-app-icon.svg`
 
 ## Adding a track
 

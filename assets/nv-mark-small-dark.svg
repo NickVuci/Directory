@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-9.89 0 209.79 80" width="629" height="240" shape-rendering="geometricPrecision">
+  <title>Nick Vuci monogram — small (heavier line), for dark grounds</title>
+  <defs><clipPath id="dsc"><rect x="-29.89" y="0" width="249.79" height="80"/></clipPath><linearGradient id="dsg" gradientUnits="userSpaceOnUse" x1="110.00" y1="0" x2="118.00" y2="0"><stop offset="0" stop-color="#7393FF"/><stop offset="1" stop-color="#D1A246"/></linearGradient></defs>
+  <polyline clip-path="url(#dsc)" points="-17.74,102.14 0.00,72.14 38.00,7.86 76.00,72.14 114.00,7.86 152.00,72.14 190.00,7.86 207.74,-22.14" fill="none" stroke="url(#dsg)" stroke-width="8.0" stroke-linejoin="miter" stroke-miterlimit="10"/>
+</svg>
