@@ -9,7 +9,7 @@
   const root = document.documentElement;
   const button = document.querySelector('.theme-toggle');
   const system = window.matchMedia('(prefers-color-scheme: dark)');
-  const BAND = { light: '#2e0f16', dark: '#331120' };
+  const BAND = { light: '#2e0f16', dark: '#1e1f26' };
 
   function current() {
     const chosen = root.dataset.theme;

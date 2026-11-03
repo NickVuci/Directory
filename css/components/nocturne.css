@@ -1,0 +1,26 @@
+/* @layer components: Nocturne look */
+@layer components {
+  /* Nocturne is the original nickvuci.com look: charcoal bands closed by a 2px gold border-accent
+     line, and gold-edged buttons on a gold tint that fill solid gold on hover. The current page
+     is a gold tab with charcoal text. Every rule is written for both routes into dark mode:
+     the device setting (until the visitor picks) and the header toggle (data-theme="dark"). */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .header { border-bottom-width: 2px; }
+    :root:not([data-theme="light"]) .footer { border-top-width: 2px; }
+    :root:not([data-theme="light"]) .theme-toggle,
+    :root:not([data-theme="light"]) .player .icon-btn { color: var(--gold); background: var(--gold-soft); border-color: var(--gold); }
+    :root:not([data-theme="light"]) .theme-toggle:hover,
+    :root:not([data-theme="light"]) .player .icon-btn:hover { color: var(--on-gold); background: var(--gold); border-color: var(--gold); }
+    :root:not([data-theme="light"]) .nav-link.active,
+    :root:not([data-theme="light"]) .nav-link[aria-current="page"] { color: var(--on-gold); background: var(--gold); border-block-end-color: var(--gold); }
+  }
+
+  :root[data-theme="dark"] .header { border-bottom-width: 2px; }
+  :root[data-theme="dark"] .footer { border-top-width: 2px; }
+  :root[data-theme="dark"] .theme-toggle,
+  :root[data-theme="dark"] .player .icon-btn { color: var(--gold); background: var(--gold-soft); border-color: var(--gold); }
+  :root[data-theme="dark"] .theme-toggle:hover,
+  :root[data-theme="dark"] .player .icon-btn:hover { color: var(--on-gold); background: var(--gold); border-color: var(--gold); }
+  :root[data-theme="dark"] .nav-link.active,
+  :root[data-theme="dark"] .nav-link[aria-current="page"] { color: var(--on-gold); background: var(--gold); border-block-end-color: var(--gold); }
+}
