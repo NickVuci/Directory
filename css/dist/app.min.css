@@ -229,6 +229,8 @@
   body {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
+    /* One column that never grows past the viewport, so nothing can push the page sideways */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "header"
       "main"
@@ -366,10 +368,10 @@
     .content { padding: var(--space-2) var(--space-3); }
   }
 
-  /* Small phones: keep the lockup clear of the theme toggle */
+  /* Small phones: keep the lockup clear of the theme toggle. Only the lockup row shares the
+     toggle's height, so the inset goes on the lockup, leaving the tabs the full header width. */
   @media (max-width: 400px) {
-    .header { padding-inline: 48px; }
-    .lockup { gap: 12px; }
+    .lockup { gap: 12px; margin-inline: 32px; }
     .lockup .monogram { block-size: 34px; }
     .wordmark { font-size: 18px; line-height: 22px; letter-spacing: 0.1em; }
     .descriptor { font-size: 10px; letter-spacing: 0.1em; }
