@@ -9,10 +9,10 @@ const PAGES = {
     'about': { file: 'about.html', label: 'About' },
     'music-list': { file: 'music-list.html', label: 'Music' },
     'tools': { file: 'tools.html', label: 'Tools' },
-    'contact': { file: 'contact.html', label: 'Contact' }
+    'learn': { file: 'learn.html', label: 'Learn' }
 };
 const DEFAULT_PAGE = 'about';
-const PAGE_ALIASES = { music: 'music-list' }; // older links
+const PAGE_ALIASES = { music: 'music-list', contact: 'about' }; // older links
 
 const content = document.getElementById('content');
 const mainEl = document.querySelector('.main-content');
