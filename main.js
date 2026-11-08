@@ -73,7 +73,7 @@ function showError(page) {
 
 async function loadPage(page, { moveFocus = false } = {}) {
     setActiveLink(page);
-    document.title = `${PAGES[page].label} — Nick Vuci`;
+    document.title = `Nick Vuci - ${PAGES[page].label}`;
 
     if (loadController) loadController.abort();
     loadController = new AbortController();
